@@ -107,7 +107,7 @@ def main():
     print("Trade proposal generated and saved securely.")
     print("Please review the proposed tranches above.")
     print(f"To execute this trade, run the following command:")
-    print(f"\n    python executor.py --file {proposal_filename}\n")
+    print(f"\n    uv run executor.py --file {proposal_filename}\n")
     print("="*50 + "\n")
     return
         

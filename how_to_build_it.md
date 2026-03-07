@@ -9,8 +9,14 @@
 * **Ports:** Ensure your bot connects to the correct port (default `4001` for Live Gateway, `4002` for Paper Gateway).
 
 ### Python Dependencies
+We use `uv` for dependency management.
 ```bash
-pip install ib_insync pandas numpy scipy
+# Initialize project and add dependencies (already done)
+uv init
+uv add ib_insync pandas numpy scipy
+
+# Run the bot using uv
+uv run main.py
 ```
 
 ## 2. Core Library: `ib_insync`

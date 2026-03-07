@@ -1,4 +1,0 @@
-ib_insync
-scipy
-pandas
-numpy
