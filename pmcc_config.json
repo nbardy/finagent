@@ -1,0 +1,41 @@
+{
+  "connection": {
+    "host": "127.0.0.1",
+    "port": 7497,
+    "client_id_portfolio": 4,
+    "client_id_planner": 1,
+    "client_id_executor": 2,
+    "client_id_regime": 3,
+    "market_data_type": 1
+  },
+  "strategy": {
+    "underlyings": ["EWY"],
+    "min_short_dte": 10,
+    "max_short_dte": 45,
+    "min_upside_headroom_pct": 0.05,
+    "min_bid": 0.05,
+    "max_bid_ask_spread_pct": 0.40,
+    "require_long_call_cover": true,
+    "enable_collar": true,
+    "collar_max_cost_pct_of_credit": 0.30,
+    "collar_target_delta": -0.15,
+    "score_weights": {
+        "theoretical_edge": 3.0,
+        "annualized_roc": 2.0,
+        "spread_penalty": -1.5,
+        "assignment_risk_penalty": -5.0,
+        "prob_profit": 5.0,
+        "expected_pnl": 2.0,
+        "tail_loss": 2.0
+    }
+  },
+  "model": {
+    "risk_free_rate": 0.045
+  },
+  "execution": {
+    "pricing_strategy": "theoretical_edge_discovery",
+    "tranche_aggressiveness": "patient",
+    "what_if_margin_check": true,
+    "max_coverage_pct_per_run": 0.30
+  }
+}

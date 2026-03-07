@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+portfolio_state.json
+regime_state.json
+trade_proposal*.json
