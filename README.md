@@ -122,11 +122,13 @@ It can:
 - ask Codex to research in multiple turns and capture the `thread_id`
 - optionally fetch the latest public X/Twitter post for a user
 - organize outputs into `loose_notes/`, `documents/`, `analysis/`, `conclusions/`, and `final_report.md`
+- run latest-tweet lookup by itself without creating a research session
 
-Example:
+Examples:
 
 ```bash
-uv run python custom_scripts/research_session.py TSEM --ticker TSEM --x-user towersemi
+uv run python custom_scripts/research_session.py research TSEM --ticker TSEM --prompt "Research Tower Semiconductor after the recent move. Focus on foundry demand, margins, valuation, and risks." --x-user towersemi
+uv run python custom_scripts/research_session.py latest-tweet towersemi --output-dir agent_notes/towersemi_latest_tweet
 ```
 
 ### Inspect Function Signatures
@@ -144,6 +146,7 @@ uv run python one_off_scripts/show_signature.py ibkr get_open_orders
 uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
 uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
 uv run python one_off_scripts/show_signature.py custom_scripts.research_session do_research
+uv run python one_off_scripts/show_signature.py custom_scripts.research_session get_users_latest_tweet
 ```
 
 This is the fastest repo-native way to inspect the core API surface before writing a new `custom_scripts/` tool.

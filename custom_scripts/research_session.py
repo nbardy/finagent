@@ -131,6 +131,7 @@ def _write_manifest(
     *,
     topic: str,
     ticker: str | None,
+    research_prompt: str | None,
     x_username: str | None,
     thread_id: str | None,
     turns: list[CodexTurnResult],
@@ -139,6 +140,7 @@ def _write_manifest(
     manifest = {
         "topic": topic,
         "ticker": ticker,
+        "research_prompt": research_prompt,
         "x_username": x_username,
         "thread_id": thread_id,
         "updated_at": _utc_now().isoformat(timespec="seconds"),
@@ -170,6 +172,7 @@ def _write_request_brief(
     *,
     topic: str,
     ticker: str | None,
+    research_prompt: str | None,
     x_username: str | None,
 ) -> None:
     brief = [
@@ -179,6 +182,7 @@ def _write_request_brief(
         f"- Topic: {topic}",
         f"- Ticker: {ticker or 'n/a'}",
         f"- X/Twitter user: {x_username or 'n/a'}",
+        f"- Research prompt: {research_prompt or 'n/a'}",
         "",
         "Expected outputs:",
         "- `loose_notes/` for raw scratch notes",
@@ -416,6 +420,7 @@ def do_research(
     topic: str,
     *,
     ticker: str | None = None,
+    research_prompt: str | None = None,
     x_username: str | None = None,
     repo_root: Path = REPO_ROOT,
     profile: str | None = None,
@@ -424,7 +429,13 @@ def do_research(
     dry_run: bool = False,
 ) -> ResearchSessionResult:
     paths = _ensure_session_layout(topic=topic, ticker=ticker)
-    _write_request_brief(paths, topic=topic, ticker=ticker, x_username=x_username)
+    _write_request_brief(
+        paths,
+        topic=topic,
+        ticker=ticker,
+        research_prompt=research_prompt,
+        x_username=x_username,
+    )
 
     latest_tweet: LatestTweetResult | None = None
     turns: list[CodexTurnResult] = []
@@ -444,6 +455,7 @@ def do_research(
             paths,
             topic=topic,
             ticker=ticker,
+            research_prompt=research_prompt,
             x_username=x_username,
             thread_id=None,
             turns=turns,
@@ -460,6 +472,7 @@ def do_research(
     session_context = [
         f"Topic: {topic}",
         f"Ticker: {ticker or 'n/a'}",
+        f"Research prompt: {research_prompt or 'n/a'}",
         f"Research session directory: {paths.session_dir}",
         f"Loose notes directory: {paths.loose_notes_dir}",
         f"Statements directory: {paths.statements_dir}",
@@ -488,6 +501,7 @@ def do_research(
                 "Write concise raw notes into loose_notes/.",
                 "Save source captures or downloaded source files into documents/statements/, documents/filings/, and documents/articles/ as appropriate.",
                 "Do not write the final report yet.",
+                "Use the explicit research prompt below as the controlling brief when one is provided.",
                 "",
                 *session_context,
             ]
@@ -531,6 +545,7 @@ def do_research(
             paths,
             topic=topic,
             ticker=ticker,
+            research_prompt=research_prompt,
             x_username=x_username,
             thread_id=thread_id,
             turns=turns,
@@ -548,29 +563,70 @@ def do_research(
 
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Create a structured FinAgent research session and optionally run Codex research turns."
+        description="Run FinAgent research workflows or fetch a user's latest public X/Twitter post."
     )
-    parser.add_argument("topic", help="Research topic, usually a company or ticker.")
-    parser.add_argument("--ticker", help="Ticker symbol to include in the session metadata.")
-    parser.add_argument("--x-user", help="Optional X/Twitter username to inspect before research.")
-    parser.add_argument(
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    research_parser = subparsers.add_parser(
+        "research",
+        help="Create a structured research session and run prompt-driven Codex research turns.",
+    )
+    research_parser.add_argument("topic", help="Research topic, usually a company or ticker.")
+    research_parser.add_argument("--ticker", help="Ticker symbol to include in the session metadata.")
+    research_parser.add_argument(
+        "--prompt",
+        help="Optional explicit research brief. When omitted, the topic itself anchors the session.",
+    )
+    research_parser.add_argument(
+        "--prompt-file",
+        help="Optional path to a file whose contents should be used as the research brief.",
+    )
+    research_parser.add_argument(
+        "--x-user",
+        help="Optional X/Twitter username to inspect before research.",
+    )
+    research_parser.add_argument(
         "--profile",
         help="Optional Codex profile name. When provided, the tool uses `codex exec -p <profile>`.",
     )
-    parser.add_argument(
+    research_parser.add_argument(
         "--dangerously-bypass-approvals-and-sandbox",
         action="store_true",
         help="Pass the equivalent Codex flag through for fully automatic research turns.",
     )
-    parser.add_argument(
+    research_parser.add_argument(
         "--no-full-auto",
         action="store_true",
         help="Do not pass `--full-auto` to Codex.",
     )
-    parser.add_argument(
+    research_parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Create the session folders and manifest without invoking Codex.",
+    )
+
+    tweet_parser = subparsers.add_parser(
+        "latest-tweet",
+        help="Fetch the latest public X/Twitter post for a user without starting a research session.",
+    )
+    tweet_parser.add_argument("username", help="X/Twitter username without the @.")
+    tweet_parser.add_argument(
+        "--profile",
+        help="Optional Codex profile name. When provided, the tool uses `codex exec -p <profile>`.",
+    )
+    tweet_parser.add_argument(
+        "--dangerously-bypass-approvals-and-sandbox",
+        action="store_true",
+        help="Pass the equivalent Codex flag through for fully automatic research turns.",
+    )
+    tweet_parser.add_argument(
+        "--no-full-auto",
+        action="store_true",
+        help="Do not pass `--full-auto` to Codex.",
+    )
+    tweet_parser.add_argument(
+        "--output-dir",
+        help="Optional directory for `latest_tweet.json` and `latest_tweet.md`.",
     )
     return parser
 
@@ -579,9 +635,30 @@ def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
 
+    if args.command == "latest-tweet":
+        output_dir = Path(args.output_dir) if args.output_dir else None
+        result = get_users_latest_tweet(
+            args.username,
+            profile=args.profile,
+            full_auto=not args.no_full_auto,
+            dangerously_bypass=args.dangerously_bypass_approvals_and_sandbox,
+            output_dir=output_dir,
+        )
+        print(f"username={result.username}")
+        print(f"found={result.found}")
+        print(f"thread_id={result.thread_id or 'n/a'}")
+        print(f"source_url={result.source_url or 'n/a'}")
+        print(f"posted_at={result.posted_at or 'n/a'}")
+        return
+
+    research_prompt = args.prompt
+    if args.prompt_file:
+        research_prompt = Path(args.prompt_file).read_text(encoding="utf-8").strip()
+
     result = do_research(
         topic=args.topic,
         ticker=args.ticker,
+        research_prompt=research_prompt,
         x_username=args.x_user,
         profile=args.profile,
         full_auto=not args.no_full_auto,

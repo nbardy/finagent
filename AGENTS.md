@@ -77,6 +77,7 @@ uv run python one_off_scripts/show_signature.py ibkr get_open_orders
 uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
 uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
 uv run python one_off_scripts/show_signature.py custom_scripts.research_session do_research
+uv run python one_off_scripts/show_signature.py custom_scripts.research_session get_users_latest_tweet
 ```
 
 ## Script Output Paths
