@@ -1,0 +1,88 @@
+{
+  "description": "EWY broader coverage incremental add-on from current open orders",
+  "generated": "2026-03-11",
+  "notes": "Use this only as an incremental path from the current EWY open orders snapshot. Target structure is: keep only one 14-lot Mar20 135/121 crash tranche, keep the existing 60x Apr10 150C sell ladder, add 20 more Apr10 150C sells, and add 25x Apr10 135/125 put spreads. Before transmitting this file, cancel EWY orders 217 and 218, cancel EWY order 4, and cancel EWY orders 16, 17, and 18. Keep order 216 and keep orders 6, 7, and 8.",
+  "trades": [
+    {
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "action": "SELL",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 10,
+          "lmtPrice": 3.7,
+          "note": "Add overwrite size"
+        },
+        {
+          "tranche": 2,
+          "quantity": 10,
+          "lmtPrice": 3.6,
+          "note": "Add overwrite size"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 125.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 10,
+          "lmtPrice": 6.0,
+          "note": "Monthly downside layer"
+        },
+        {
+          "tranche": 2,
+          "quantity": 10,
+          "lmtPrice": 6.1,
+          "note": "Monthly downside layer"
+        },
+        {
+          "tranche": 3,
+          "quantity": 5,
+          "lmtPrice": 6.2,
+          "note": "Monthly downside layer"
+        }
+      ]
+    }
+  ],
+  "analysis_reference": {
+    "file": "analysis/2026-03-11/ewy_broader_overlay_balanced_14_80_25.json",
+    "target_structure": {
+      "mar20_135_121_qty": 14,
+      "apr10_150c_short_qty": 80,
+      "apr10_135_125_qty": 25
+    }
+  }
+}

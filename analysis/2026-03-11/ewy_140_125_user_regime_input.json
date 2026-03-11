@@ -1,0 +1,259 @@
+{
+  "spot": 130.41,
+  "risk_free_rate": 0.045,
+  "book": {
+    "positions": [
+      {
+        "label": "EWY 151C 20260313",
+        "right": "C",
+        "strike": 151.0,
+        "dte": 2,
+        "qty": -11,
+        "mark": 0.18
+      },
+      {
+        "label": "EWY 165C 20270115",
+        "right": "C",
+        "strike": 165.0,
+        "dte": 311,
+        "qty": 40,
+        "mark": 15.0613
+      },
+      {
+        "label": "EWY 145C 20280121",
+        "right": "C",
+        "strike": 145.0,
+        "dte": 682,
+        "qty": 18,
+        "mark": 31.84
+      },
+      {
+        "label": "EWY 150C 20280121",
+        "right": "C",
+        "strike": 150.0,
+        "dte": 682,
+        "qty": 90,
+        "mark": 30.1359
+      },
+      {
+        "label": "EWY 210C 20280121",
+        "right": "C",
+        "strike": 210.0,
+        "dte": 682,
+        "qty": 110,
+        "mark": 16.06
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "label": "Choppy month flat",
+      "days": 31,
+      "spot": 130.41,
+      "vol_shift": 0.0,
+      "probability": 0.5
+    },
+    {
+      "label": "Down 8% over month",
+      "days": 31,
+      "spot": 119.98,
+      "vol_shift": 0.01,
+      "probability": 0.4
+    },
+    {
+      "label": "Rally 8% over month",
+      "days": 31,
+      "spot": 140.84,
+      "vol_shift": -0.05,
+      "probability": 0.1
+    }
+  ],
+  "hedges": [
+    {
+      "name": "Planned call sales only",
+      "entry_cost": -35830.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr17 135/125 x25 (current mids)",
+      "entry_cost": -23455.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 37,
+          "qty": 25,
+          "mark": 13.6,
+          "iv": 0.64246
+        },
+        {
+          "label": "Short 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 37,
+          "qty": -25,
+          "mark": 8.65,
+          "iv": 0.668216
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr17 140/125 x15 (budget matched)",
+      "entry_cost": -24655.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 37,
+          "qty": 15,
+          "mark": 16.1,
+          "iv": 0.599735
+        },
+        {
+          "label": "Short 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 37,
+          "qty": -15,
+          "mark": 8.65,
+          "iv": 0.668216
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr17 140/125 x25",
+      "entry_cost": -17205.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 37,
+          "qty": 25,
+          "mark": 16.1,
+          "iv": 0.599735
+        },
+        {
+          "label": "Short 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 37,
+          "qty": -25,
+          "mark": 8.65,
+          "iv": 0.668216
+        }
+      ]
+    }
+  ]
+}

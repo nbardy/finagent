@@ -1,0 +1,56 @@
+{
+  "description": "EWY close Apr 10 2026 135/120 hedge at entry or better",
+  "generated": "2026-03-12",
+  "notes": "Resting paired BAG close for the full 69-lot Apr 10 2026 135/120 put spread. Targets scratch or better versus current average entry around 6.45.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "SELL",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 23,
+          "lmtPrice": 6.45,
+          "note": "Close Apr10 hedge at entry",
+          "tif": "GTC"
+        },
+        {
+          "tranche": 2,
+          "quantity": 23,
+          "lmtPrice": 6.50,
+          "note": "Close Apr10 hedge above entry 1",
+          "tif": "GTC"
+        },
+        {
+          "tranche": 3,
+          "quantity": 23,
+          "lmtPrice": 6.55,
+          "note": "Close Apr10 hedge above entry 2",
+          "tif": "GTC"
+        }
+      ]
+    }
+  ]
+}

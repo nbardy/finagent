@@ -1,0 +1,199 @@
+{
+  "spot": 130.3,
+  "risk_free_rate": 0.045,
+  "current_book_value": 565242.3,
+  "scenarios": [
+    {
+      "label": "Choppy month flat",
+      "probability": 0.5,
+      "days": 31,
+      "spot": 130.3,
+      "vol_shift": 0.0,
+      "book_pnl": -24735.26,
+      "hedges": {
+        "Planned call sales only": {
+          "hedge_pnl": 35828.61,
+          "combined_pnl": 11093.35,
+          "coverage_pct": 144.8
+        },
+        "Calls + Mar20 135/121 x42": {
+          "hedge_pnl": 25188.61,
+          "combined_pnl": 453.35,
+          "coverage_pct": 101.8
+        },
+        "Calls + Apr02 130/120 x50": {
+          "hedge_pnl": 6328.61,
+          "combined_pnl": -18406.65,
+          "coverage_pct": 25.6
+        },
+        "Calls + Apr10 135/125 x49": {
+          "hedge_pnl": 29808.29,
+          "combined_pnl": 5073.03,
+          "coverage_pct": 120.5
+        },
+        "Calls + Apr17 135/125 x52": {
+          "hedge_pnl": 31536.03,
+          "combined_pnl": 6800.77,
+          "coverage_pct": 127.5
+        },
+        "Calls + May15 130/120 x48": {
+          "hedge_pnl": 25065.61,
+          "combined_pnl": 330.35,
+          "coverage_pct": 101.3
+        }
+      }
+    },
+    {
+      "label": "Down 8% over month",
+      "probability": 0.4,
+      "days": 31,
+      "spot": 119.88,
+      "vol_shift": 0.01,
+      "book_pnl": -128870.41,
+      "hedges": {
+        "Planned call sales only": {
+          "hedge_pnl": 35830.0,
+          "combined_pnl": -93040.42,
+          "coverage_pct": 27.8
+        },
+        "Calls + Mar20 135/121 x42": {
+          "hedge_pnl": 39307.42,
+          "combined_pnl": -89563.0,
+          "coverage_pct": 30.5
+        },
+        "Calls + Apr02 130/120 x50": {
+          "hedge_pnl": 43484.84,
+          "combined_pnl": -85385.58,
+          "coverage_pct": 33.7
+        },
+        "Calls + Apr10 135/125 x49": {
+          "hedge_pnl": 54112.91,
+          "combined_pnl": -74757.51,
+          "coverage_pct": 42.0
+        },
+        "Calls + Apr17 135/125 x52": {
+          "hedge_pnl": 47690.74,
+          "combined_pnl": -81179.67,
+          "coverage_pct": 37.0
+        },
+        "Calls + May15 130/120 x48": {
+          "hedge_pnl": 33282.49,
+          "combined_pnl": -95587.93,
+          "coverage_pct": 25.8
+        }
+      }
+    },
+    {
+      "label": "Rally 8% over month",
+      "probability": 0.1,
+      "days": 31,
+      "spot": 140.72,
+      "vol_shift": -0.05,
+      "book_pnl": 20159.78,
+      "hedges": {
+        "Planned call sales only": {
+          "hedge_pnl": 35260.62,
+          "combined_pnl": 55420.4,
+          "coverage_pct": 0.0
+        },
+        "Calls + Mar20 135/121 x42": {
+          "hedge_pnl": 10503.2,
+          "combined_pnl": 30662.98,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr02 130/120 x50": {
+          "hedge_pnl": 5760.62,
+          "combined_pnl": 25920.4,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr10 135/125 x49": {
+          "hedge_pnl": 6793.11,
+          "combined_pnl": 26952.9,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 135/125 x52": {
+          "hedge_pnl": 15000.43,
+          "combined_pnl": 35160.21,
+          "coverage_pct": 0.0
+        },
+        "Calls + May15 130/120 x48": {
+          "hedge_pnl": 16667.86,
+          "combined_pnl": 36827.65,
+          "coverage_pct": 0.0
+        }
+      }
+    }
+  ],
+  "summaries": {
+    "No hedge": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 0.0,
+      "expected_combined_pnl": -61899.82,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -71017.55
+    },
+    "Planned call sales only": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 35772.37,
+      "expected_combined_pnl": -26127.45,
+      "weighted_downside_coverage_pct": 83.5,
+      "conditional_downside_coverage_pct": 92.8,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -35188.32
+    },
+    "Calls + Mar20 135/121 x42": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 29367.59,
+      "expected_combined_pnl": -32532.23,
+      "weighted_downside_coverage_pct": 63.1,
+      "conditional_downside_coverage_pct": 70.1,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -39553.92
+    },
+    "Calls + Apr02 130/120 x50": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 21134.3,
+      "expected_combined_pnl": -40765.52,
+      "weighted_downside_coverage_pct": 26.3,
+      "conditional_downside_coverage_pct": 29.2,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -48175.06
+    },
+    "Calls + Apr10 135/125 x49": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 37228.62,
+      "expected_combined_pnl": -24671.2,
+      "weighted_downside_coverage_pct": 77.1,
+      "conditional_downside_coverage_pct": 85.6,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -30407.21
+    },
+    "Calls + Apr17 135/125 x52": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 36344.36,
+      "expected_combined_pnl": -25555.46,
+      "weighted_downside_coverage_pct": 78.5,
+      "conditional_downside_coverage_pct": 87.3,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -32301.65
+    },
+    "Calls + May15 130/120 x48": {
+      "expected_book_pnl": -61899.82,
+      "expected_hedge_pnl": 27512.58,
+      "expected_combined_pnl": -34387.23,
+      "weighted_downside_coverage_pct": 61.0,
+      "conditional_downside_coverage_pct": 67.8,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -71017.55,
+      "avg_combined_pnl_when_downside": -42300.0
+    }
+  }
+}

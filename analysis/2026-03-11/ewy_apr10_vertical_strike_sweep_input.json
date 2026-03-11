@@ -1,0 +1,878 @@
+{
+  "spot": 130.41,
+  "risk_free_rate": 0.045,
+  "book": {
+    "positions": [
+      {
+        "label": "EWY 151C 20260313",
+        "right": "C",
+        "strike": 151.0,
+        "dte": 2,
+        "qty": -11,
+        "mark": 0.18
+      },
+      {
+        "label": "EWY 165C 20270115",
+        "right": "C",
+        "strike": 165.0,
+        "dte": 311,
+        "qty": 40,
+        "mark": 15.0613
+      },
+      {
+        "label": "EWY 145C 20280121",
+        "right": "C",
+        "strike": 145.0,
+        "dte": 682,
+        "qty": 18,
+        "mark": 31.84
+      },
+      {
+        "label": "EWY 150C 20280121",
+        "right": "C",
+        "strike": 150.0,
+        "dte": 682,
+        "qty": 90,
+        "mark": 30.1359
+      },
+      {
+        "label": "EWY 210C 20280121",
+        "right": "C",
+        "strike": 210.0,
+        "dte": 682,
+        "qty": 110,
+        "mark": 16.06
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "label": "Bottom Apr02 then rebound by earnings",
+      "probability": 0.35,
+      "days": 23,
+      "spot": 122.6,
+      "vol_shift": 0.03
+    },
+    {
+      "label": "Bottom Apr10 then rebound by earnings",
+      "probability": 0.4,
+      "days": 31,
+      "spot": 121.3,
+      "vol_shift": 0.02
+    },
+    {
+      "label": "Choppy hold into earnings window",
+      "probability": 0.15,
+      "days": 31,
+      "spot": 130.4,
+      "vol_shift": 0.01
+    },
+    {
+      "label": "Early squeeze higher before earnings",
+      "probability": 0.1,
+      "days": 31,
+      "spot": 140.8,
+      "vol_shift": -0.05
+    }
+  ],
+  "hedges": [
+    {
+      "name": "Planned call sales only",
+      "entry_cost": -35830.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 145/130 x27",
+      "entry_cost": -5401.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 27,
+          "mark": 21.27,
+          "iv": 0.8333401430532197
+        },
+        {
+          "label": "Short Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": -27,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 145/125 x19",
+      "entry_cost": -6437.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 19,
+          "mark": 21.27,
+          "iv": 0.8333401430532197
+        },
+        {
+          "label": "Short Apr10 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 30,
+          "qty": -19,
+          "mark": 5.8,
+          "iv": 0.5777094627363272
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 145/120 x20",
+      "entry_cost": -5290.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 20,
+          "mark": 21.27,
+          "iv": 0.8333401430532197
+        },
+        {
+          "label": "Short Apr10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -20,
+          "mark": 6.0,
+          "iv": 0.7399052679151015
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 145/115 x18",
+      "entry_cost": -5302.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 18,
+          "mark": 21.27,
+          "iv": 0.8333401430532197
+        },
+        {
+          "label": "Short Apr10 115P",
+          "right": "P",
+          "strike": 115.0,
+          "dte": 30,
+          "qty": -18,
+          "mark": 4.31,
+          "iv": 0.741808050422444
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 140/130 x144",
+      "entry_cost": -5734.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 30,
+          "qty": 144,
+          "mark": 12.09,
+          "iv": 0.4269171249767714
+        },
+        {
+          "label": "Short Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": -144,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 140/125 x48",
+      "entry_cost": -5638.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 30,
+          "qty": 48,
+          "mark": 12.09,
+          "iv": 0.4269171249767714
+        },
+        {
+          "label": "Short Apr10 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 30,
+          "qty": -48,
+          "mark": 5.8,
+          "iv": 0.5777094627363272
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 140/120 x49",
+      "entry_cost": -5989.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 30,
+          "qty": 49,
+          "mark": 12.09,
+          "iv": 0.4269171249767714
+        },
+        {
+          "label": "Short Apr10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -49,
+          "mark": 6.0,
+          "iv": 0.7399052679151015
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 140/115 x39",
+      "entry_cost": -5488.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 140P",
+          "right": "P",
+          "strike": 140.0,
+          "dte": 30,
+          "qty": 39,
+          "mark": 12.09,
+          "iv": 0.4269171249767714
+        },
+        {
+          "label": "Short Apr10 115P",
+          "right": "P",
+          "strike": 115.0,
+          "dte": 30,
+          "qty": -39,
+          "mark": 4.31,
+          "iv": 0.741808050422444
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 135/130 x107",
+      "entry_cost": -5870.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 107,
+          "mark": 12.8,
+          "iv": 0.7028622456108431
+        },
+        {
+          "label": "Short Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": -107,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 135/125 x43",
+      "entry_cost": -5730.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 43,
+          "mark": 12.8,
+          "iv": 0.7028622456108431
+        },
+        {
+          "label": "Short Apr10 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 30,
+          "qty": -43,
+          "mark": 5.8,
+          "iv": 0.5777094627363272
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 135/120 x44",
+      "entry_cost": -5910.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 44,
+          "mark": 12.8,
+          "iv": 0.7028622456108431
+        },
+        {
+          "label": "Short Apr10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -44,
+          "mark": 6.0,
+          "iv": 0.7399052679151015
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 135/115 x35",
+      "entry_cost": -6115.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 35,
+          "mark": 12.8,
+          "iv": 0.7028622456108431
+        },
+        {
+          "label": "Short Apr10 115P",
+          "right": "P",
+          "strike": 115.0,
+          "dte": 30,
+          "qty": -35,
+          "mark": 4.31,
+          "iv": 0.741808050422444
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 130/125 x71",
+      "entry_cost": -6010.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": 71,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        },
+        {
+          "label": "Short Apr10 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 30,
+          "qty": -71,
+          "mark": 5.8,
+          "iv": 0.5777094627363272
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 130/120 x75",
+      "entry_cost": -5830.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": 75,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        },
+        {
+          "label": "Short Apr10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -75,
+          "mark": 6.0,
+          "iv": 0.7399052679151015
+        }
+      ]
+    },
+    {
+      "name": "Calls + Apr10 130/115 x53",
+      "entry_cost": -5673.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long Apr10 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 30,
+          "qty": 53,
+          "mark": 10.0,
+          "iv": 0.7034648777123986
+        },
+        {
+          "label": "Short Apr10 115P",
+          "right": "P",
+          "strike": 115.0,
+          "dte": 30,
+          "qty": -53,
+          "mark": 4.31,
+          "iv": 0.741808050422444
+        }
+      ]
+    }
+  ]
+}

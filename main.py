@@ -30,11 +30,11 @@ def main():
 
     # 2. Portfolio Sync
     run_script("portfolio.py")
-    if not os.path.exists('portfolio_state.json'):
-        print("Error: portfolio_state.json not found. Aborting.")
+    if not os.path.exists('config/portfolio_state.json'):
+        print("Error: config/portfolio_state.json not found. Aborting.")
         return
-        
-    with open('portfolio_state.json', 'r') as f:
+
+    with open('config/portfolio_state.json', 'r') as f:
         portfolio = json.load(f)
         
     if portfolio.get('unencumbered_inventory', 0) <= 0:

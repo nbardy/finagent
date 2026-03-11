@@ -4,3 +4,8 @@ __pycache__/
 portfolio_state.json
 regime_state.json
 trade_proposal*.json
+.codex/config.toml
+.codex/skills/.system
+.codex/skills/public
+.codex/skills/playwright
+.codex-repo/

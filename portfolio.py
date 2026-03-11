@@ -3,16 +3,17 @@ from datetime import datetime
 from ib_insync import *
 
 def main():
-    with open('pmcc_config.json', 'r') as f:
+    with open('config/pmcc_config.json', 'r') as f:
         config = json.load(f)
         
     conn_cfg = config.get('connection', {})
     host = conn_cfg.get('host', '127.0.0.1')
-    port = conn_cfg.get('port', 7497)
+    port = conn_cfg.get('port', 4001)
     client_id = conn_cfg.get('client_id_portfolio', 4)
     
     strat_cfg = config.get('strategy', {})
     target_symbol = strat_cfg.get('underlyings', ['EWY'])[0]
+    min_long_dte_for_cover = int(strat_cfg.get('min_long_dte_for_cover', 180))
 
     ib = IB()
     try:
@@ -39,7 +40,7 @@ def main():
                     
                 qty = pos.position
                 
-                if qty > 0 and dte > 365:
+                if qty > 0 and dte >= min_long_dte_for_cover:
                     avg_cost_leaps = pos.avgCost / float(contract.multiplier or 100)
                     long_leaps.append({
                         "strike": float(contract.strike),
@@ -104,10 +105,10 @@ def main():
             "total_encumbrance": total_encumbrance
         }
         
-        with open('portfolio_state.json', 'w') as f:
+        with open('config/portfolio_state.json', 'w') as f:
             json.dump(state, f, indent=4)
-            
-        print("Portfolio state saved to portfolio_state.json")
+
+        print("Portfolio state saved to config/portfolio_state.json")
         
     except Exception as e:
         print(f"Error syncing portfolio: {e}")

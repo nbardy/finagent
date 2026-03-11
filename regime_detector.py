@@ -48,12 +48,12 @@ def get_vix_term_structure(ib):
     return vix_price, vix3m_price, backwardation
 
 def main():
-    with open('pmcc_config.json', 'r') as f:
+    with open('config/pmcc_config.json', 'r') as f:
         config = json.load(f)
 
     conn_cfg = config.get('connection', {})
     host = conn_cfg.get('host', '127.0.0.1')
-    port = conn_cfg.get('port', 7497)
+    port = conn_cfg.get('port', 4001)
     client_id = conn_cfg.get('client_id_regime', 3)
     market_data_type = conn_cfg.get('market_data_type', 1)
 
@@ -126,10 +126,10 @@ def main():
         }
     }
     
-    with open('regime_state.json', 'w') as f:
+    with open('config/regime_state.json', 'w') as f:
         json.dump(regime_output, f, indent=4)
-        
-    print("\nRegime state saved to regime_state.json")
+
+    print("\nRegime state saved to config/regime_state.json")
     ib.disconnect()
 
 if __name__ == "__main__":

@@ -1,0 +1,160 @@
+{
+  "description": "EWY broader coverage rebalance: smaller Mar crash sleeve plus Apr 10 covered call overwrite plus Apr 10 put spreads",
+  "generated": "2026-03-11",
+  "notes": "Balanced broader-coverage overlay for three regimes: 1-week crash, 1-month orderly drawdown, 1-month choppy sideways. Before transmitting, cancel current EWY open hedge/call orders to avoid duplicate exposure. Modeling reference used EWY close 130.30 on 2026-03-10. Entry assumptions: Mar20 135/121 spread ~7.25 debit, Apr10 150C short ~3.80 credit, Apr10 135/125 spread ~6.00 debit. Net modeled entry cash about -$5,250 credit.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 121.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 5,
+          "lmtPrice": 7.2,
+          "note": "Smaller crash sleeve"
+        },
+        {
+          "tranche": 2,
+          "quantity": 5,
+          "lmtPrice": 7.25,
+          "note": "Smaller crash sleeve"
+        },
+        {
+          "tranche": 3,
+          "quantity": 4,
+          "lmtPrice": 7.3,
+          "note": "Smaller crash sleeve"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "action": "SELL",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 30,
+          "lmtPrice": 3.8,
+          "note": "Overwrite 150C aggressive"
+        },
+        {
+          "tranche": 2,
+          "quantity": 30,
+          "lmtPrice": 3.7,
+          "note": "Overwrite 150C near weak-open fill"
+        },
+        {
+          "tranche": 3,
+          "quantity": 20,
+          "lmtPrice": 3.6,
+          "note": "Overwrite 150C lower fill"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 125.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 10,
+          "lmtPrice": 6.0,
+          "note": "Monthly downside layer"
+        },
+        {
+          "tranche": 2,
+          "quantity": 10,
+          "lmtPrice": 6.1,
+          "note": "Monthly downside layer"
+        },
+        {
+          "tranche": 3,
+          "quantity": 5,
+          "lmtPrice": 6.2,
+          "note": "Monthly downside layer"
+        }
+      ]
+    }
+  ],
+  "analysis_reference": {
+    "file": "analysis/2026-03-11/ewy_broader_overlay_balanced_14_80_25.json",
+    "headline_scenarios": {
+      "crash_8pct_1w": {
+        "book_pnl": -80383.96,
+        "overlay_pnl": 26554.72,
+        "combined_pnl": -53829.24,
+        "coverage_pct": 33.0
+      },
+      "orderly_8pct_1m": {
+        "book_pnl": -128271.32,
+        "overlay_pnl": 41537.61,
+        "combined_pnl": -86733.71,
+        "coverage_pct": 32.4
+      },
+      "choppy_flat_1m": {
+        "book_pnl": -24591.12,
+        "overlay_pnl": 23579.99,
+        "combined_pnl": -1011.13,
+        "coverage_pct": 95.9
+      },
+      "relief_bounce_4pct_1w": {
+        "book_pnl": 8107.34,
+        "overlay_pnl": -13124.06,
+        "combined_pnl": -5016.72
+      }
+    }
+  }
+}

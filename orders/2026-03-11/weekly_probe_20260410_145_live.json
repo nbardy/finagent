@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T04:06:59",
+  "generated_at": "2026-03-11T23:01:09",
   "action": "SELL",
   "contract": {
     "symbol": "EWY",
@@ -104,52 +104,33 @@
       }
     }
   ],
-  "quote_source": "yfinance",
-  "quote_warning": "Yahoo Finance quotes are public snapshots and may be delayed. Verify against your broker before transmitting orders.",
-  "spot_at_pricing": 130.3,
+  "quote_source": "ibkr",
+  "quote_warning": null,
+  "spot_at_pricing": 131.69,
   "market": {
-    "bid": 4.5,
+    "bid": 4.8,
     "ask": 5.8,
-    "mid": 5.15,
-    "last_price": 5.24,
-    "source_note": "yfinance"
+    "mid": 5.3,
+    "last_price": 4.98,
+    "source_note": "ibkr"
   },
   "metrics": {
     "pricing_model": "Black-Scholes-Merton",
     "dte": 29,
     "time_to_expiry_years": 0.079452,
-    "risk_free_rate": 0.03595,
+    "risk_free_rate": 0.045,
     "dividend_yield": 0.0,
-    "implied_volatility": 0.676273,
-    "theoretical_value": 4.8038,
-    "suggested_limit": 5.15,
-    "edge_vs_mid": 0.3462,
-    "spread_pct": 0.2524
+    "implied_volatility": 0.662171,
+    "theoretical_value": 5.1074,
+    "suggested_limit": 5.3,
+    "edge_vs_mid": 0.1926,
+    "spread_pct": 0.1887
   },
   "quote_status": {
-    "market_data_type": null,
-    "is_delayed": null,
-    "quote_time": "2026-03-09 19:46:49+00:00",
+    "market_data_type": 3,
+    "is_delayed": true,
+    "quote_time": null,
     "model_underlying_price": null,
     "pv_dividend": null
-  },
-  "weekly_plan": {
-    "generated_at": "2026-03-11T04:06:59",
-    "safe_cover_quantity": 7,
-    "selected_quantity": 7,
-    "estimated_credit_mid": 3605.0,
-    "estimated_credit_ask": 4060.0,
-    "theoretical_value_market_iv": 4.8038,
-    "theoretical_value_rv30": 3.3261,
-    "delta_market": 0.3262,
-    "prob_otm_estimate": 0.6738,
-    "edge_vs_rv30": 1.8239,
-    "cover_buckets": [
-      {
-        "strike": 145.0,
-        "expiry": "20280121",
-        "qty_available": 7
-      }
-    ]
   }
 }

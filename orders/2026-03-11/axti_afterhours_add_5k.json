@@ -1,0 +1,25 @@
+{
+  "description": "AXTI after-hours capped buy around USD 5k on March 11, 2026. Submitted directly with outsideRth=true as a plain limit order.",
+  "generated": "2026-03-11",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AXTI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "outsideRth": true,
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 105,
+          "lmtPrice": 48.0,
+          "note": "AXTI AH capped buy about 5k"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,770 @@
+{
+  "schema_version": "1.0",
+  "analysis_type": "ewy_live_put_diagonal_universe_weekly_35_40_15_10",
+  "as_of": "2026-03-12",
+  "symbol": "EWY",
+  "spot": 131.76,
+  "candidate_count": 71,
+  "scenarios": [
+    {
+      "label": "Bottom Apr02 then rebound by earnings",
+      "probability": 0.35,
+      "days": 21,
+      "spot": 123.85,
+      "vol_shift": 0.03
+    },
+    {
+      "label": "Bottom Apr10 then rebound by earnings",
+      "probability": 0.4,
+      "days": 29,
+      "spot": 122.54,
+      "vol_shift": 0.02
+    },
+    {
+      "label": "Choppy hold into earnings window",
+      "probability": 0.15,
+      "days": 29,
+      "spot": 131.76,
+      "vol_shift": 0.01
+    },
+    {
+      "label": "Early squeeze higher before earnings",
+      "probability": 0.1,
+      "days": 29,
+      "spot": 142.3,
+      "vol_shift": -0.05
+    }
+  ],
+  "top_ranked": [
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/125 put diag x143",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 40323.89,
+      "expected_combined_pnl": 57619.09,
+      "weighted_downside_coverage_pct": 106.9,
+      "avg_combined_pnl_when_downside": 38768.43
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/130 put diag x161",
+      "entry_cost": 24955.0,
+      "expected_overlay_pnl": 37767.45,
+      "expected_combined_pnl": 55062.66,
+      "weighted_downside_coverage_pct": 79.8,
+      "avg_combined_pnl_when_downside": 23103.5
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/130 put diag x263",
+      "entry_cost": 24985.0,
+      "expected_overlay_pnl": 30557.87,
+      "expected_combined_pnl": 47853.08,
+      "weighted_downside_coverage_pct": 76.6,
+      "avg_combined_pnl_when_downside": 21219.41
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/125 put diag x217",
+      "entry_cost": 24955.0,
+      "expected_overlay_pnl": 29665.58,
+      "expected_combined_pnl": 46960.79,
+      "weighted_downside_coverage_pct": 81.9,
+      "avg_combined_pnl_when_downside": 24296.68
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/130 put diag x81",
+      "entry_cost": 25110.0,
+      "expected_overlay_pnl": 24334.08,
+      "expected_combined_pnl": 41629.29,
+      "weighted_downside_coverage_pct": 45.5,
+      "avg_combined_pnl_when_downside": 3176.62
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/125 put diag x76",
+      "entry_cost": 25080.0,
+      "expected_overlay_pnl": 23824.21,
+      "expected_combined_pnl": 41119.42,
+      "weighted_downside_coverage_pct": 57.7,
+      "avg_combined_pnl_when_downside": 10288.16
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135/135 put diag x88",
+      "entry_cost": 25080.0,
+      "expected_overlay_pnl": 22079.21,
+      "expected_combined_pnl": 39374.42,
+      "weighted_downside_coverage_pct": 28.3,
+      "avg_combined_pnl_when_downside": -6776.91
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/130 put diag x65",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 21707.51,
+      "expected_combined_pnl": 39002.72,
+      "weighted_downside_coverage_pct": 61.6,
+      "avg_combined_pnl_when_downside": 12503.36
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/125 put diag x53",
+      "entry_cost": 25175.0,
+      "expected_overlay_pnl": 18390.88,
+      "expected_combined_pnl": 35686.09,
+      "weighted_downside_coverage_pct": 49.5,
+      "avg_combined_pnl_when_downside": 5498.81
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/130 put diag x48",
+      "entry_cost": 24960.0,
+      "expected_overlay_pnl": 18205.63,
+      "expected_combined_pnl": 35500.83,
+      "weighted_downside_coverage_pct": 44.5,
+      "avg_combined_pnl_when_downside": 2592.18
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/125 put diag x82",
+      "entry_cost": 25010.0,
+      "expected_overlay_pnl": 18135.15,
+      "expected_combined_pnl": 35430.35,
+      "weighted_downside_coverage_pct": 42.9,
+      "avg_combined_pnl_when_downside": 1675.64
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/135 put diag x60",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 17696.97,
+      "expected_combined_pnl": 34992.18,
+      "weighted_downside_coverage_pct": 43.2,
+      "avg_combined_pnl_when_downside": 1873.05
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/130 put diag x77",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 16598.96,
+      "expected_combined_pnl": 33894.17,
+      "weighted_downside_coverage_pct": 57.2,
+      "avg_combined_pnl_when_downside": 9954.52
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/130 put diag x38",
+      "entry_cost": 25270.0,
+      "expected_overlay_pnl": 15686.6,
+      "expected_combined_pnl": 32981.8,
+      "weighted_downside_coverage_pct": 41.8,
+      "avg_combined_pnl_when_downside": 1051.21
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 135/135 put diag x135",
+      "entry_cost": 24975.0,
+      "expected_overlay_pnl": 15490.49,
+      "expected_combined_pnl": 32785.7,
+      "weighted_downside_coverage_pct": 35.6,
+      "avg_combined_pnl_when_downside": -2564.45
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/135 put diag x45",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 15468.73,
+      "expected_combined_pnl": 32763.94,
+      "weighted_downside_coverage_pct": 31.1,
+      "avg_combined_pnl_when_downside": -5152.64
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/135 put diag x38",
+      "entry_cost": 24700.0,
+      "expected_overlay_pnl": 14984.57,
+      "expected_combined_pnl": 32279.77,
+      "weighted_downside_coverage_pct": 44.5,
+      "avg_combined_pnl_when_downside": 2623.61
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/140 put diag x36",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 14595.37,
+      "expected_combined_pnl": 31890.58,
+      "weighted_downside_coverage_pct": 36.8,
+      "avg_combined_pnl_when_downside": -1862.05
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/135 put diag x68",
+      "entry_cost": 25160.0,
+      "expected_overlay_pnl": 14214.66,
+      "expected_combined_pnl": 31509.86,
+      "weighted_downside_coverage_pct": 44.9,
+      "avg_combined_pnl_when_downside": 2865.88
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/140 put diag x27",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 13629.82,
+      "expected_combined_pnl": 30925.03,
+      "weighted_downside_coverage_pct": 39.8,
+      "avg_combined_pnl_when_downside": -131.09
+    }
+  ],
+  "all_ranked": [
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/125 put diag x143",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 40323.89,
+      "expected_combined_pnl": 57619.09,
+      "weighted_downside_coverage_pct": 106.9,
+      "avg_combined_pnl_when_downside": 38768.43
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/130 put diag x161",
+      "entry_cost": 24955.0,
+      "expected_overlay_pnl": 37767.45,
+      "expected_combined_pnl": 55062.66,
+      "weighted_downside_coverage_pct": 79.8,
+      "avg_combined_pnl_when_downside": 23103.5
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/130 put diag x263",
+      "entry_cost": 24985.0,
+      "expected_overlay_pnl": 30557.87,
+      "expected_combined_pnl": 47853.08,
+      "weighted_downside_coverage_pct": 76.6,
+      "avg_combined_pnl_when_downside": 21219.41
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/125 put diag x217",
+      "entry_cost": 24955.0,
+      "expected_overlay_pnl": 29665.58,
+      "expected_combined_pnl": 46960.79,
+      "weighted_downside_coverage_pct": 81.9,
+      "avg_combined_pnl_when_downside": 24296.68
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/130 put diag x81",
+      "entry_cost": 25110.0,
+      "expected_overlay_pnl": 24334.08,
+      "expected_combined_pnl": 41629.29,
+      "weighted_downside_coverage_pct": 45.5,
+      "avg_combined_pnl_when_downside": 3176.62
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/125 put diag x76",
+      "entry_cost": 25080.0,
+      "expected_overlay_pnl": 23824.21,
+      "expected_combined_pnl": 41119.42,
+      "weighted_downside_coverage_pct": 57.7,
+      "avg_combined_pnl_when_downside": 10288.16
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135/135 put diag x88",
+      "entry_cost": 25080.0,
+      "expected_overlay_pnl": 22079.21,
+      "expected_combined_pnl": 39374.42,
+      "weighted_downside_coverage_pct": 28.3,
+      "avg_combined_pnl_when_downside": -6776.91
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/130 put diag x65",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 21707.51,
+      "expected_combined_pnl": 39002.72,
+      "weighted_downside_coverage_pct": 61.6,
+      "avg_combined_pnl_when_downside": 12503.36
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/125 put diag x53",
+      "entry_cost": 25175.0,
+      "expected_overlay_pnl": 18390.88,
+      "expected_combined_pnl": 35686.09,
+      "weighted_downside_coverage_pct": 49.5,
+      "avg_combined_pnl_when_downside": 5498.81
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/130 put diag x48",
+      "entry_cost": 24960.0,
+      "expected_overlay_pnl": 18205.63,
+      "expected_combined_pnl": 35500.83,
+      "weighted_downside_coverage_pct": 44.5,
+      "avg_combined_pnl_when_downside": 2592.18
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/125 put diag x82",
+      "entry_cost": 25010.0,
+      "expected_overlay_pnl": 18135.15,
+      "expected_combined_pnl": 35430.35,
+      "weighted_downside_coverage_pct": 42.9,
+      "avg_combined_pnl_when_downside": 1675.64
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/135 put diag x60",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 17696.97,
+      "expected_combined_pnl": 34992.18,
+      "weighted_downside_coverage_pct": 43.2,
+      "avg_combined_pnl_when_downside": 1873.05
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/130 put diag x77",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 16598.96,
+      "expected_combined_pnl": 33894.17,
+      "weighted_downside_coverage_pct": 57.2,
+      "avg_combined_pnl_when_downside": 9954.52
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/130 put diag x38",
+      "entry_cost": 25270.0,
+      "expected_overlay_pnl": 15686.6,
+      "expected_combined_pnl": 32981.8,
+      "weighted_downside_coverage_pct": 41.8,
+      "avg_combined_pnl_when_downside": 1051.21
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 135/135 put diag x135",
+      "entry_cost": 24975.0,
+      "expected_overlay_pnl": 15490.49,
+      "expected_combined_pnl": 32785.7,
+      "weighted_downside_coverage_pct": 35.6,
+      "avg_combined_pnl_when_downside": -2564.45
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/135 put diag x45",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 15468.73,
+      "expected_combined_pnl": 32763.94,
+      "weighted_downside_coverage_pct": 31.1,
+      "avg_combined_pnl_when_downside": -5152.64
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/135 put diag x38",
+      "entry_cost": 24700.0,
+      "expected_overlay_pnl": 14984.57,
+      "expected_combined_pnl": 32279.77,
+      "weighted_downside_coverage_pct": 44.5,
+      "avg_combined_pnl_when_downside": 2623.61
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/140 put diag x36",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 14595.37,
+      "expected_combined_pnl": 31890.58,
+      "weighted_downside_coverage_pct": 36.8,
+      "avg_combined_pnl_when_downside": -1862.05
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/135 put diag x68",
+      "entry_cost": 25160.0,
+      "expected_overlay_pnl": 14214.66,
+      "expected_combined_pnl": 31509.86,
+      "weighted_downside_coverage_pct": 44.9,
+      "avg_combined_pnl_when_downside": 2865.88
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/140 put diag x27",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 13629.82,
+      "expected_combined_pnl": 30925.03,
+      "weighted_downside_coverage_pct": 39.8,
+      "avg_combined_pnl_when_downside": -131.09
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/135 put diag x32",
+      "entry_cost": 24640.0,
+      "expected_overlay_pnl": 13523.61,
+      "expected_combined_pnl": 30818.81,
+      "weighted_downside_coverage_pct": 33.8,
+      "avg_combined_pnl_when_downside": -3591.87
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/130 put diag x49",
+      "entry_cost": 25235.0,
+      "expected_overlay_pnl": 13383.7,
+      "expected_combined_pnl": 30678.91,
+      "weighted_downside_coverage_pct": 35.4,
+      "avg_combined_pnl_when_downside": -2654.41
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/135 put diag x42",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 12953.65,
+      "expected_combined_pnl": 30248.86,
+      "weighted_downside_coverage_pct": 46.7,
+      "avg_combined_pnl_when_downside": 3890.19
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/140 put diag x38",
+      "entry_cost": 25080.0,
+      "expected_overlay_pnl": 12902.45,
+      "expected_combined_pnl": 30197.66,
+      "weighted_downside_coverage_pct": 38.8,
+      "avg_combined_pnl_when_downside": -676.94
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130/145 put diag x26",
+      "entry_cost": 25220.0,
+      "expected_overlay_pnl": 12716.85,
+      "expected_combined_pnl": 30012.06,
+      "weighted_downside_coverage_pct": 35.1,
+      "avg_combined_pnl_when_downside": -2850.47
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 135/140 put diag x55",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 12387.2,
+      "expected_combined_pnl": 29682.41,
+      "weighted_downside_coverage_pct": 31.1,
+      "avg_combined_pnl_when_downside": -5176.96
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/145 put diag x21",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 12358.31,
+      "expected_combined_pnl": 29653.52,
+      "weighted_downside_coverage_pct": 37.8,
+      "avg_combined_pnl_when_downside": -1268.49
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/135 put diag x27",
+      "entry_cost": 24705.0,
+      "expected_overlay_pnl": 12315.62,
+      "expected_combined_pnl": 29610.83,
+      "weighted_downside_coverage_pct": 33.2,
+      "avg_combined_pnl_when_downside": -3932.59
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 125/140 put diag x28",
+      "entry_cost": 24920.0,
+      "expected_overlay_pnl": 12289.74,
+      "expected_combined_pnl": 29584.95,
+      "weighted_downside_coverage_pct": 41.2,
+      "avg_combined_pnl_when_downside": 723.08
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 125/145 put diag x20",
+      "entry_cost": 25400.0,
+      "expected_overlay_pnl": 11571.71,
+      "expected_combined_pnl": 28866.92,
+      "weighted_downside_coverage_pct": 33.8,
+      "avg_combined_pnl_when_downside": -3621.47
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130/145 put diag x24",
+      "entry_cost": 24960.0,
+      "expected_overlay_pnl": 11500.9,
+      "expected_combined_pnl": 28796.11,
+      "weighted_downside_coverage_pct": 29.7,
+      "avg_combined_pnl_when_downside": -5986.1
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/135 put diag x32",
+      "entry_cost": 24960.0,
+      "expected_overlay_pnl": 10672.19,
+      "expected_combined_pnl": 27967.39,
+      "weighted_downside_coverage_pct": 30.3,
+      "avg_combined_pnl_when_downside": -5613.32
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/140 put diag x24",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 10655.6,
+      "expected_combined_pnl": 27950.81,
+      "weighted_downside_coverage_pct": 30.0,
+      "avg_combined_pnl_when_downside": -5813.96
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 135/145 put diag x34",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 10502.75,
+      "expected_combined_pnl": 27797.96,
+      "weighted_downside_coverage_pct": 30.3,
+      "avg_combined_pnl_when_downside": -5600.01
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 115/125 put diag x39",
+      "entry_cost": 24960.0,
+      "expected_overlay_pnl": 10488.85,
+      "expected_combined_pnl": 27784.06,
+      "weighted_downside_coverage_pct": 30.5,
+      "avg_combined_pnl_when_downside": -5513.99
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135/140 put diag x41",
+      "entry_cost": 25010.0,
+      "expected_overlay_pnl": 10448.58,
+      "expected_combined_pnl": 27743.79,
+      "weighted_downside_coverage_pct": 15.7,
+      "avg_combined_pnl_when_downside": -14082.91
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 115/130 put diag x30",
+      "entry_cost": 24900.0,
+      "expected_overlay_pnl": 10042.57,
+      "expected_combined_pnl": 27337.77,
+      "weighted_downside_coverage_pct": 28.5,
+      "avg_combined_pnl_when_downside": -6694.27
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 120/145 put diag x19",
+      "entry_cost": 25270.0,
+      "expected_overlay_pnl": 10025.65,
+      "expected_combined_pnl": 27320.86,
+      "weighted_downside_coverage_pct": 30.0,
+      "avg_combined_pnl_when_downside": -5826.92
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/140 put diag x23",
+      "entry_cost": 25185.0,
+      "expected_overlay_pnl": 9810.79,
+      "expected_combined_pnl": 27105.99,
+      "weighted_downside_coverage_pct": 25.7,
+      "avg_combined_pnl_when_downside": -8284.65
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/140 put diag x28",
+      "entry_cost": 24780.0,
+      "expected_overlay_pnl": 9735.4,
+      "expected_combined_pnl": 27030.61,
+      "weighted_downside_coverage_pct": 21.1,
+      "avg_combined_pnl_when_downside": -10969.71
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 120/140 put diag x25",
+      "entry_cost": 25500.0,
+      "expected_overlay_pnl": 9452.36,
+      "expected_combined_pnl": 26747.57,
+      "weighted_downside_coverage_pct": 31.2,
+      "avg_combined_pnl_when_downside": -5089.78
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 135/140 put diag x59",
+      "entry_cost": 25075.0,
+      "expected_overlay_pnl": 9400.65,
+      "expected_combined_pnl": 26695.86,
+      "weighted_downside_coverage_pct": 33.3,
+      "avg_combined_pnl_when_downside": -3866.67
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 120/145 put diag x18",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 9319.69,
+      "expected_combined_pnl": 26614.9,
+      "weighted_downside_coverage_pct": 26.3,
+      "avg_combined_pnl_when_downside": -7919.02
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 135/145 put diag x31",
+      "entry_cost": 24955.0,
+      "expected_overlay_pnl": 9268.98,
+      "expected_combined_pnl": 26564.19,
+      "weighted_downside_coverage_pct": 24.2,
+      "avg_combined_pnl_when_downside": -9181.26
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/140 put diag x20",
+      "entry_cost": 24800.0,
+      "expected_overlay_pnl": 9201.55,
+      "expected_combined_pnl": 26496.75,
+      "weighted_downside_coverage_pct": 25.8,
+      "avg_combined_pnl_when_downside": -8213.01
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 115/135 put diag x23",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 8695.86,
+      "expected_combined_pnl": 25991.07,
+      "weighted_downside_coverage_pct": 24.8,
+      "avg_combined_pnl_when_downside": -8811.04
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 125/145 put diag x18",
+      "entry_cost": 25200.0,
+      "expected_overlay_pnl": 8694.01,
+      "expected_combined_pnl": 25989.21,
+      "weighted_downside_coverage_pct": 22.8,
+      "avg_combined_pnl_when_downside": -9968.59
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 120/130 put diag x55",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": 8511.03,
+      "expected_combined_pnl": 25806.24,
+      "weighted_downside_coverage_pct": 28.5,
+      "avg_combined_pnl_when_downside": -6667.33
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 130/145 put diag x21",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 8486.88,
+      "expected_combined_pnl": 25782.09,
+      "weighted_downside_coverage_pct": 18.9,
+      "avg_combined_pnl_when_downside": -12209.02
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 120/135 put diag x34",
+      "entry_cost": 24820.0,
+      "expected_overlay_pnl": 8418.24,
+      "expected_combined_pnl": 25713.45,
+      "weighted_downside_coverage_pct": 30.2,
+      "avg_combined_pnl_when_downside": -5689.26
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135/145 put diag x27",
+      "entry_cost": 24705.0,
+      "expected_overlay_pnl": 8404.77,
+      "expected_combined_pnl": 25699.98,
+      "weighted_downside_coverage_pct": 14.4,
+      "avg_combined_pnl_when_downside": -14858.23
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 120/145 put diag x16",
+      "entry_cost": 24720.0,
+      "expected_overlay_pnl": 8264.35,
+      "expected_combined_pnl": 25559.55,
+      "weighted_downside_coverage_pct": 23.1,
+      "avg_combined_pnl_when_downside": -9825.03
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 120/125 put diag x102",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 7740.05,
+      "expected_combined_pnl": 25035.26,
+      "weighted_downside_coverage_pct": 15.6,
+      "avg_combined_pnl_when_downside": -14132.76
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 115/145 put diag x17",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 6916.99,
+      "expected_combined_pnl": 24212.2,
+      "weighted_downside_coverage_pct": 22.7,
+      "avg_combined_pnl_when_downside": -10035.34
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 115/140 put diag x18",
+      "entry_cost": 25290.0,
+      "expected_overlay_pnl": 6876.44,
+      "expected_combined_pnl": 24171.65,
+      "weighted_downside_coverage_pct": 20.5,
+      "avg_combined_pnl_when_downside": -11295.77
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 115/140 put diag x21",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 6787.18,
+      "expected_combined_pnl": 24082.39,
+      "weighted_downside_coverage_pct": 21.2,
+      "avg_combined_pnl_when_downside": -10926.84
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 115/145 put diag x15",
+      "entry_cost": 25650.0,
+      "expected_overlay_pnl": 6577.03,
+      "expected_combined_pnl": 23872.24,
+      "weighted_downside_coverage_pct": 19.3,
+      "avg_combined_pnl_when_downside": -11981.08
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 115/145 put diag x16",
+      "entry_cost": 24640.0,
+      "expected_overlay_pnl": 6351.63,
+      "expected_combined_pnl": 23646.83,
+      "weighted_downside_coverage_pct": 19.6,
+      "avg_combined_pnl_when_downside": -11856.57
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 115/130 put diag x38",
+      "entry_cost": 24890.0,
+      "expected_overlay_pnl": 5789.4,
+      "expected_combined_pnl": 23084.61,
+      "weighted_downside_coverage_pct": 18.3,
+      "avg_combined_pnl_when_downside": -12586.0
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 115/135 put diag x27",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": 5743.49,
+      "expected_combined_pnl": 23038.69,
+      "weighted_downside_coverage_pct": 19.1,
+      "avg_combined_pnl_when_downside": -12140.77
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 115/140 put diag x22",
+      "entry_cost": 25520.0,
+      "expected_overlay_pnl": 5660.83,
+      "expected_combined_pnl": 22956.04,
+      "weighted_downside_coverage_pct": 22.2,
+      "avg_combined_pnl_when_downside": -10342.64
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 115/125 put diag x56",
+      "entry_cost": 24920.0,
+      "expected_overlay_pnl": 5621.07,
+      "expected_combined_pnl": 22916.28,
+      "weighted_downside_coverage_pct": 15.8,
+      "avg_combined_pnl_when_downside": -14050.79
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 135/135 put diag x185",
+      "entry_cost": 24975.0,
+      "expected_overlay_pnl": 5334.29,
+      "expected_combined_pnl": 22629.5,
+      "weighted_downside_coverage_pct": 37.7,
+      "avg_combined_pnl_when_downside": -1315.72
+    },
+    {
+      "name": "Add + 2026-03-27/2026-04-02 115/145 put diag x17",
+      "entry_cost": 25245.0,
+      "expected_overlay_pnl": 5201.37,
+      "expected_combined_pnl": 22496.58,
+      "weighted_downside_coverage_pct": 14.9,
+      "avg_combined_pnl_when_downside": -14583.82
+    },
+    {
+      "name": "Add + 2026-03-27/2026-04-02 115/140 put diag x22",
+      "entry_cost": 24640.0,
+      "expected_overlay_pnl": 3762.38,
+      "expected_combined_pnl": 21057.59,
+      "weighted_downside_coverage_pct": 14.1,
+      "avg_combined_pnl_when_downside": -15020.54
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 115/135 put diag x29",
+      "entry_cost": 25230.0,
+      "expected_overlay_pnl": 3677.53,
+      "expected_combined_pnl": 20972.74,
+      "weighted_downside_coverage_pct": 18.7,
+      "avg_combined_pnl_when_downside": -12323.93
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 115/130 put diag x42",
+      "entry_cost": 24990.0,
+      "expected_overlay_pnl": 1426.4,
+      "expected_combined_pnl": 18721.61,
+      "weighted_downside_coverage_pct": 11.6,
+      "avg_combined_pnl_when_downside": -16454.33
+    },
+    {
+      "name": "Add + 2026-03-27/2026-04-02 115/135 put diag x31",
+      "entry_cost": 25110.0,
+      "expected_overlay_pnl": 797.66,
+      "expected_combined_pnl": 18092.87,
+      "weighted_downside_coverage_pct": 9.7,
+      "avg_combined_pnl_when_downside": -17565.65
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 115/125 put diag x65",
+      "entry_cost": 25025.0,
+      "expected_overlay_pnl": -2918.58,
+      "expected_combined_pnl": 14376.63,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -26520.75
+    },
+    {
+      "name": "Add + 2026-03-27/2026-04-02 115/130 put diag x43",
+      "entry_cost": 24725.0,
+      "expected_overlay_pnl": -6642.38,
+      "expected_combined_pnl": 10652.83,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -26780.79
+    },
+    {
+      "name": "Add + 2026-03-27/2026-04-02 115/125 put diag x72",
+      "entry_cost": 24840.0,
+      "expected_overlay_pnl": -18277.57,
+      "expected_combined_pnl": -982.37,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -48036.96
+    }
+  ]
+}

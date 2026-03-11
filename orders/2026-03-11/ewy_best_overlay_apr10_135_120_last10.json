@@ -1,0 +1,42 @@
+{
+  "description": "EWY broader hedge overlay final tranche - Apr 10 2026 135/120 put spread",
+  "generated": "2026-03-11 23:12",
+  "notes": "Final 10-lot to complete the 44-lot Apr 10 135/120 broad hedge target.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 10,
+          "lmtPrice": 6.45,
+          "note": "Apr10 135/120 broad hedge final",
+          "tif": "GTC"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "description": "5210 add — deploy about USD 10K at ~10% down and ~20% down",
+  "generated": "2026-03-12",
+  "notes": [
+    "Additive to existing 5210 crash bids unless those are cancelled separately.",
+    "TSE requires 100-share lot sizes.",
+    "Prices are in yen."
+  ],
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "5210",
+        "exchange": "SMART",
+        "currency": "JPY"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 600,
+          "lmtPrice": 2800.0,
+          "note": "5210 about 10% down from 3125"
+        },
+        {
+          "tranche": 2,
+          "quantity": 600,
+          "lmtPrice": 2500.0,
+          "note": "5210 about 20% down from 3125"
+        }
+      ]
+    }
+  ]
+}

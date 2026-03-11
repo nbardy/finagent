@@ -1,0 +1,65 @@
+{
+  "generated": "2026-03-11",
+  "spot": 130.300003,
+  "plan": {
+    "mar20_135_121_qty": 14,
+    "apr10_150c_short_qty": 80,
+    "apr10_135_125_qty": 25,
+    "entry_assumptions": {
+      "mar20_135_121": 7.25,
+      "apr10_150c_short": 3.8,
+      "apr10_135_125": 6.0
+    }
+  },
+  "net_cash": -5250.0,
+  "scenarios": [
+    {
+      "label": "Crash -8% in 1 week",
+      "spot": 119.88,
+      "book_pnl": -80383.96,
+      "overlay_pnl": 26554.72,
+      "combined_pnl": -53829.24,
+      "coverage_pct": 33.0
+    },
+    {
+      "label": "Orderly -8% over 1 month",
+      "spot": 119.88,
+      "book_pnl": -128271.32,
+      "overlay_pnl": 41537.61,
+      "combined_pnl": -86733.71,
+      "coverage_pct": 32.4
+    },
+    {
+      "label": "Choppy flat over 1 month",
+      "spot": 130.3,
+      "book_pnl": -24591.12,
+      "overlay_pnl": 23579.99,
+      "combined_pnl": -1011.13,
+      "coverage_pct": 95.9
+    },
+    {
+      "label": "Sideways 1 week",
+      "spot": 130.3,
+      "book_pnl": -5372.19,
+      "overlay_pnl": 1411.46,
+      "combined_pnl": -3960.73,
+      "coverage_pct": 26.3
+    },
+    {
+      "label": "Relief bounce +4% in 1 week",
+      "spot": 135.51,
+      "book_pnl": 8107.34,
+      "overlay_pnl": -13124.06,
+      "combined_pnl": -5016.72,
+      "coverage_pct": 0.0
+    },
+    {
+      "label": "Rip +12% over 1 month",
+      "spot": 145.94,
+      "book_pnl": 106384.83,
+      "overlay_pnl": 5250.0,
+      "combined_pnl": 111634.83,
+      "coverage_pct": 0.0
+    }
+  ]
+}

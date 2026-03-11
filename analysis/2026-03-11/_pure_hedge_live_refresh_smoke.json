@@ -1,0 +1,350 @@
+{
+  "schema_version": "2.0",
+  "analysis_type": "pure_hedge_ev",
+  "macro": null,
+  "market_refresh": {
+    "attempted": true,
+    "succeeded": true,
+    "fallback_to_disk": false,
+    "source": "ibkr",
+    "market_data_type": 3,
+    "old_spot": 130.41,
+    "refreshed_spot": 131.9
+  },
+  "spot": 131.9,
+  "risk_free_rate": 0.045,
+  "current_book_value": 0,
+  "scenarios": [
+    {
+      "label": "Choppy month flat",
+      "probability": 0.5,
+      "days": 31,
+      "spot": 131.9,
+      "vol_shift": 0.0,
+      "book": {
+        "pnl": 0.0
+      },
+      "book_pnl": 0.0,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 35830.0
+          },
+          "combined": {
+            "pnl": 35830.0
+          },
+          "overlay_pnl": 35830.0,
+          "hedge_pnl": 35830.0,
+          "combined_pnl": 35830.0,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 135/125 x25 (current mids)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 34196.11
+          },
+          "combined": {
+            "pnl": 34196.11
+          },
+          "overlay_pnl": 34196.11,
+          "hedge_pnl": 34196.11,
+          "combined_pnl": 34196.11,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x15 (budget matched)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 36027.07
+          },
+          "combined": {
+            "pnl": 36027.07
+          },
+          "overlay_pnl": 36027.07,
+          "hedge_pnl": 36027.07,
+          "combined_pnl": 36027.07,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x25": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 36158.44
+          },
+          "combined": {
+            "pnl": 36158.44
+          },
+          "overlay_pnl": 36158.44,
+          "hedge_pnl": 36158.44,
+          "combined_pnl": 36158.44,
+          "coverage_pct": 0.0
+        }
+      }
+    },
+    {
+      "label": "Down 8% over month",
+      "probability": 0.4,
+      "days": 31,
+      "spot": 121.3508,
+      "vol_shift": 0.01,
+      "book": {
+        "pnl": 0.0
+      },
+      "book_pnl": 0.0,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 35830.0
+          },
+          "combined": {
+            "pnl": 35830.0
+          },
+          "overlay_pnl": 35830.0,
+          "hedge_pnl": 35830.0,
+          "combined_pnl": 35830.0,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 135/125 x25 (current mids)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 42934.08
+          },
+          "combined": {
+            "pnl": 42934.08
+          },
+          "overlay_pnl": 42934.08,
+          "hedge_pnl": 42934.08,
+          "combined_pnl": 42934.08,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x15 (budget matched)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 43258.55
+          },
+          "combined": {
+            "pnl": 43258.55
+          },
+          "overlay_pnl": 43258.55,
+          "hedge_pnl": 43258.55,
+          "combined_pnl": 43258.55,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x25": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 48210.92
+          },
+          "combined": {
+            "pnl": 48210.92
+          },
+          "overlay_pnl": 48210.92,
+          "hedge_pnl": 48210.92,
+          "combined_pnl": 48210.92,
+          "coverage_pct": 0.0
+        }
+      }
+    },
+    {
+      "label": "Rally 8% over month",
+      "probability": 0.1,
+      "days": 31,
+      "spot": 142.4492,
+      "vol_shift": -0.05,
+      "book": {
+        "pnl": 0.0
+      },
+      "book_pnl": 0.0,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 35830.0
+          },
+          "combined": {
+            "pnl": 35830.0
+          },
+          "overlay_pnl": 35830.0,
+          "hedge_pnl": 35830.0,
+          "combined_pnl": 35830.0,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 135/125 x25 (current mids)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 26573.86
+          },
+          "combined": {
+            "pnl": 26573.86
+          },
+          "overlay_pnl": 26573.86,
+          "hedge_pnl": 26573.86,
+          "combined_pnl": 26573.86,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x15 (budget matched)": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 28567.41
+          },
+          "combined": {
+            "pnl": 28567.41
+          },
+          "overlay_pnl": 28567.41,
+          "hedge_pnl": 28567.41,
+          "combined_pnl": 28567.41,
+          "coverage_pct": 0.0
+        },
+        "Calls + Apr17 140/125 x25": {
+          "book": {
+            "pnl": 0.0
+          },
+          "overlay": {
+            "pnl": 23725.69
+          },
+          "combined": {
+            "pnl": 23725.69
+          },
+          "overlay_pnl": 23725.69,
+          "hedge_pnl": 23725.69,
+          "combined_pnl": 23725.69,
+          "coverage_pct": 0.0
+        }
+      }
+    }
+  ],
+  "summaries": {
+    "No hedge": {
+      "book": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "overlay": {
+        "expected_pnl": 0.0
+      },
+      "combined": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "expected_book_pnl": 0.0,
+      "expected_overlay_pnl": 0.0,
+      "expected_hedge_pnl": 0.0,
+      "expected_combined_pnl": 0.0,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 0.0,
+      "avg_book_pnl_when_downside": 0.0,
+      "avg_combined_pnl_when_downside": 0.0
+    },
+    "Planned call sales only": {
+      "book": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "overlay": {
+        "expected_pnl": 35830.0
+      },
+      "combined": {
+        "expected_pnl": 35830.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "expected_book_pnl": 0.0,
+      "expected_overlay_pnl": 35830.0,
+      "expected_hedge_pnl": 35830.0,
+      "expected_combined_pnl": 35830.0,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 0.0,
+      "avg_book_pnl_when_downside": 0.0,
+      "avg_combined_pnl_when_downside": 0.0
+    },
+    "Calls + Apr17 135/125 x25 (current mids)": {
+      "book": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "overlay": {
+        "expected_pnl": 36929.07
+      },
+      "combined": {
+        "expected_pnl": 36929.07,
+        "avg_pnl_when_downside": 0.0
+      },
+      "expected_book_pnl": 0.0,
+      "expected_overlay_pnl": 36929.07,
+      "expected_hedge_pnl": 36929.07,
+      "expected_combined_pnl": 36929.07,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 0.0,
+      "avg_book_pnl_when_downside": 0.0,
+      "avg_combined_pnl_when_downside": 0.0
+    },
+    "Calls + Apr17 140/125 x15 (budget matched)": {
+      "book": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "overlay": {
+        "expected_pnl": 38173.7
+      },
+      "combined": {
+        "expected_pnl": 38173.7,
+        "avg_pnl_when_downside": 0.0
+      },
+      "expected_book_pnl": 0.0,
+      "expected_overlay_pnl": 38173.7,
+      "expected_hedge_pnl": 38173.7,
+      "expected_combined_pnl": 38173.7,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 0.0,
+      "avg_book_pnl_when_downside": 0.0,
+      "avg_combined_pnl_when_downside": 0.0
+    },
+    "Calls + Apr17 140/125 x25": {
+      "book": {
+        "expected_pnl": 0.0,
+        "avg_pnl_when_downside": 0.0
+      },
+      "overlay": {
+        "expected_pnl": 39736.16
+      },
+      "combined": {
+        "expected_pnl": 39736.16,
+        "avg_pnl_when_downside": 0.0
+      },
+      "expected_book_pnl": 0.0,
+      "expected_overlay_pnl": 39736.16,
+      "expected_hedge_pnl": 39736.16,
+      "expected_combined_pnl": 39736.16,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 0.0,
+      "avg_book_pnl_when_downside": 0.0,
+      "avg_combined_pnl_when_downside": 0.0
+    }
+  }
+}

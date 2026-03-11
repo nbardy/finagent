@@ -1,0 +1,25 @@
+{
+  "description": "TSEM after-hours capped buy around USD 20k on March 11, 2026. Submitted directly with outsideRth=true as a plain limit order.",
+  "generated": "2026-03-11",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "TSEM",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "outsideRth": true,
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 166,
+          "lmtPrice": 123.0,
+          "note": "TSEM after-hours capped buy about 20k"
+        }
+      ]
+    }
+  ]
+}

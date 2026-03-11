@@ -1,0 +1,197 @@
+{
+  "generated_at": "2026-03-11T23:38:00+07:00",
+  "notes": [
+    "Second-stage granular 1-lot discovery ladder for EWY Apr 10 2026 170C.",
+    "Nothing filled in the 1.65 down to 1.10 band, so this file shifts into the near-bid executable zone.",
+    "Delayed IBKR quote remained about 0.60 x 2.65; this ladder maps 1.05 down to 0.55 in 0.05 increments."
+  ],
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 1.05,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_105"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 1.00,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_100"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.95,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_095"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.90,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_090"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.85,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_085"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.80,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_080"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.75,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_075"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.70,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_070"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.65,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_065"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.60,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_060"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.55,
+      "tif": "DAY",
+      "orderRef": "EWY_Apr10_170C_probe_055"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "description": "Photonics add — ~USD 10K SOI on Paris line + ~USD 10K AXTI",
+  "generated": "2026-03-12",
+  "notes": [
+    "SOI uses the Euronext Paris line via SMART in EUR; SLOIF did not qualify in IBKR.",
+    "This file is additive. Existing AXTI bids at 39 and 38 remain live unless cancelled separately."
+  ],
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "SOI",
+        "exchange": "SMART",
+        "currency": "EUR"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 54,
+          "lmtPrice": 54.0,
+          "note": "SOI near recent tape"
+        },
+        {
+          "tranche": 2,
+          "quantity": 55,
+          "lmtPrice": 53.0,
+          "note": "SOI modest pullback"
+        },
+        {
+          "tranche": 3,
+          "quantity": 54,
+          "lmtPrice": 52.0,
+          "note": "SOI deeper pullback"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AXTI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 70,
+          "lmtPrice": 47.5,
+          "note": "AXTI near recent tape"
+        },
+        {
+          "tranche": 2,
+          "quantity": 72,
+          "lmtPrice": 46.0,
+          "note": "AXTI modest pullback"
+        },
+        {
+          "tranche": 3,
+          "quantity": 74,
+          "lmtPrice": 44.5,
+          "note": "AXTI deeper pullback"
+        }
+      ]
+    }
+  ]
+}

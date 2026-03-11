@@ -1,0 +1,1653 @@
+{
+  "schema_version": "2.0",
+  "analysis_type": "put_overlay_batch_scan",
+  "macro": {
+    "notes": "Bottom-window overlay scan for current EWY book plus planned call sales."
+  },
+  "spot": 130.41000366210938,
+  "risk_free_rate": 0.045,
+  "current_book_value": 565242.3,
+  "scenarios": [
+    {
+      "label": "Bottom Apr02 then rebound by earnings",
+      "probability": 0.35,
+      "days": 22,
+      "spot": 122.59,
+      "vol_shift": 0.03,
+      "book": {
+        "pnl": -62490.66
+      },
+      "book_pnl": -62490.66,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 34400.75
+          },
+          "combined": {
+            "pnl": -28089.9
+          },
+          "overlay_pnl": 34400.75,
+          "hedge_pnl": 34400.75,
+          "combined_pnl": -28089.9,
+          "coverage_pct": 55.0
+        },
+        "Calls + 2026-04-10 135/110 x29": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 41649.05
+          },
+          "combined": {
+            "pnl": -20841.6
+          },
+          "overlay_pnl": 41649.05,
+          "hedge_pnl": 41649.05,
+          "combined_pnl": -20841.6,
+          "coverage_pct": 66.6
+        },
+        "Calls + 2026-04-10 135/120 x44": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 46142.46
+          },
+          "combined": {
+            "pnl": -16348.19
+          },
+          "overlay_pnl": 46142.46,
+          "hedge_pnl": 46142.46,
+          "combined_pnl": -16348.19,
+          "coverage_pct": 73.8
+        },
+        "Calls + 2026-04-10 145/110 x16": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 39731.37
+          },
+          "combined": {
+            "pnl": -22759.29
+          },
+          "overlay_pnl": 39731.37,
+          "hedge_pnl": 39731.37,
+          "combined_pnl": -22759.29,
+          "coverage_pct": 63.6
+        },
+        "Calls + 2026-04-10 145/120 x20": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 41402.34
+          },
+          "combined": {
+            "pnl": -21088.32
+          },
+          "overlay_pnl": 41402.34,
+          "hedge_pnl": 41402.34,
+          "combined_pnl": -21088.32,
+          "coverage_pct": 66.3
+        },
+        "Calls + 2026-04-10 150/110 x12": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 37167.05
+          },
+          "combined": {
+            "pnl": -25323.61
+          },
+          "overlay_pnl": 37167.05,
+          "hedge_pnl": 37167.05,
+          "combined_pnl": -25323.61,
+          "coverage_pct": 59.5
+        },
+        "Calls + 2026-04-10 150/120 x14": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 37864.92
+          },
+          "combined": {
+            "pnl": -24625.74
+          },
+          "overlay_pnl": 37864.92,
+          "hedge_pnl": 37864.92,
+          "combined_pnl": -24625.74,
+          "coverage_pct": 60.6
+        },
+        "Calls + 2026-04-02/2026-04-10 110P cal x500": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 56640.0
+          },
+          "combined": {
+            "pnl": -5850.66
+          },
+          "overlay_pnl": 56640.0,
+          "hedge_pnl": 56640.0,
+          "combined_pnl": -5850.66,
+          "coverage_pct": 90.6
+        },
+        "Calls + 2026-04-02/2026-04-10 120P cal x181": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 66076.0
+          },
+          "combined": {
+            "pnl": 3585.34
+          },
+          "overlay_pnl": 66076.0,
+          "hedge_pnl": 66076.0,
+          "combined_pnl": 3585.34,
+          "coverage_pct": 105.7
+        },
+        "Calls + 2026-04-02/2026-04-10 135P cal x73": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 14224.54
+          },
+          "combined": {
+            "pnl": -48266.12
+          },
+          "overlay_pnl": 14224.54,
+          "hedge_pnl": 14224.54,
+          "combined_pnl": -48266.12,
+          "coverage_pct": 22.8
+        },
+        "Calls + 2026-04-02/2026-04-10 145P cal x254": {
+          "book": {
+            "pnl": -62490.66
+          },
+          "overlay": {
+            "pnl": 20672.02
+          },
+          "combined": {
+            "pnl": -41818.64
+          },
+          "overlay_pnl": 20672.02,
+          "hedge_pnl": 20672.02,
+          "combined_pnl": -41818.64,
+          "coverage_pct": 33.1
+        }
+      }
+    },
+    {
+      "label": "Bottom Apr10 then rebound by earnings",
+      "probability": 0.4,
+      "days": 30,
+      "spot": 121.28,
+      "vol_shift": 0.02,
+      "book": {
+        "pnl": -98932.52
+      },
+      "book_pnl": -98932.52,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 35830.0
+          },
+          "combined": {
+            "pnl": -63102.52
+          },
+          "overlay_pnl": 35830.0,
+          "hedge_pnl": 35830.0,
+          "combined_pnl": -63102.52,
+          "coverage_pct": 36.2
+        },
+        "Calls + 2026-04-10 135/110 x29": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 46036.78
+          },
+          "combined": {
+            "pnl": -52895.75
+          },
+          "overlay_pnl": 46036.78,
+          "hedge_pnl": 46036.78,
+          "combined_pnl": -52895.75,
+          "coverage_pct": 46.5
+        },
+        "Calls + 2026-04-10 135/120 x44": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 60341.31
+          },
+          "combined": {
+            "pnl": -38591.21
+          },
+          "overlay_pnl": 60341.31,
+          "hedge_pnl": 60341.31,
+          "combined_pnl": -38591.21,
+          "coverage_pct": 61.0
+        },
+        "Calls + 2026-04-10 145/110 x16": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 43902.08
+          },
+          "combined": {
+            "pnl": -55030.44
+          },
+          "overlay_pnl": 43902.08,
+          "hedge_pnl": 43902.08,
+          "combined_pnl": -55030.44,
+          "coverage_pct": 44.4
+        },
+        "Calls + 2026-04-10 145/120 x20": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 50022.45
+          },
+          "combined": {
+            "pnl": -48910.07
+          },
+          "overlay_pnl": 50022.45,
+          "hedge_pnl": 50022.45,
+          "combined_pnl": -48910.07,
+          "coverage_pct": 50.6
+        },
+        "Calls + 2026-04-10 150/110 x12": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 40407.37
+          },
+          "combined": {
+            "pnl": -58525.16
+          },
+          "overlay_pnl": 40407.37,
+          "hedge_pnl": 40407.37,
+          "combined_pnl": -58525.16,
+          "coverage_pct": 40.8
+        },
+        "Calls + 2026-04-10 150/120 x14": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 44041.91
+          },
+          "combined": {
+            "pnl": -54890.62
+          },
+          "overlay_pnl": 44041.91,
+          "hedge_pnl": 44041.91,
+          "combined_pnl": -54890.62,
+          "coverage_pct": 44.5
+        },
+        "Calls + 2026-04-02/2026-04-10 110P cal x500": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 6185.84
+          },
+          "combined": {
+            "pnl": -92746.68
+          },
+          "overlay_pnl": 6185.84,
+          "hedge_pnl": 6185.84,
+          "combined_pnl": -92746.68,
+          "coverage_pct": 6.3
+        },
+        "Calls + 2026-04-02/2026-04-10 120P cal x181": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 29964.54
+          },
+          "combined": {
+            "pnl": -68967.98
+          },
+          "overlay_pnl": 29964.54,
+          "hedge_pnl": 29964.54,
+          "combined_pnl": -68967.98,
+          "coverage_pct": 30.3
+        },
+        "Calls + 2026-04-02/2026-04-10 135P cal x73": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 23575.95
+          },
+          "combined": {
+            "pnl": -75356.58
+          },
+          "overlay_pnl": 23575.95,
+          "hedge_pnl": 23575.95,
+          "combined_pnl": -75356.58,
+          "coverage_pct": 23.8
+        },
+        "Calls + 2026-04-02/2026-04-10 145P cal x254": {
+          "book": {
+            "pnl": -98932.52
+          },
+          "overlay": {
+            "pnl": 67245.61
+          },
+          "combined": {
+            "pnl": -31686.92
+          },
+          "overlay_pnl": 67245.61,
+          "hedge_pnl": 67245.61,
+          "combined_pnl": -31686.92,
+          "coverage_pct": 68.0
+        }
+      }
+    },
+    {
+      "label": "Choppy hold into earnings window",
+      "probability": 0.15,
+      "days": 30,
+      "spot": 130.41,
+      "vol_shift": 0.01,
+      "book": {
+        "pnl": -7545.61
+      },
+      "book_pnl": -7545.61,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 35828.18
+          },
+          "combined": {
+            "pnl": 28282.57
+          },
+          "overlay_pnl": 35828.18,
+          "hedge_pnl": 35828.18,
+          "combined_pnl": 28282.57,
+          "coverage_pct": 474.8
+        },
+        "Calls + 2026-04-10 135/110 x29": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 20948.9
+          },
+          "combined": {
+            "pnl": 13403.29
+          },
+          "overlay_pnl": 20948.9,
+          "hedge_pnl": 20948.9,
+          "combined_pnl": 13403.29,
+          "coverage_pct": 277.6
+        },
+        "Calls + 2026-04-10 135/120 x44": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 27993.48
+          },
+          "combined": {
+            "pnl": 20447.87
+          },
+          "overlay_pnl": 27993.48,
+          "hedge_pnl": 27993.48,
+          "combined_pnl": 20447.87,
+          "coverage_pct": 371.0
+        },
+        "Calls + 2026-04-10 145/110 x16": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 29330.01
+          },
+          "combined": {
+            "pnl": 21784.4
+          },
+          "overlay_pnl": 29330.01,
+          "hedge_pnl": 29330.01,
+          "combined_pnl": 21784.4,
+          "coverage_pct": 388.7
+        },
+        "Calls + 2026-04-10 145/120 x20": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 34405.82
+          },
+          "combined": {
+            "pnl": 26860.21
+          },
+          "overlay_pnl": 34405.82,
+          "hedge_pnl": 34405.82,
+          "combined_pnl": 26860.21,
+          "coverage_pct": 456.0
+        },
+        "Calls + 2026-04-10 150/110 x12": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 29471.47
+          },
+          "combined": {
+            "pnl": 21925.86
+          },
+          "overlay_pnl": 29471.47,
+          "hedge_pnl": 29471.47,
+          "combined_pnl": 21925.86,
+          "coverage_pct": 390.6
+        },
+        "Calls + 2026-04-10 150/120 x14": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 33102.26
+          },
+          "combined": {
+            "pnl": 25556.65
+          },
+          "overlay_pnl": 33102.26,
+          "hedge_pnl": 33102.26,
+          "combined_pnl": 25556.65,
+          "coverage_pct": 438.7
+        },
+        "Calls + 2026-04-02/2026-04-10 110P cal x500": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 5828.31
+          },
+          "combined": {
+            "pnl": -1717.3
+          },
+          "overlay_pnl": 5828.31,
+          "hedge_pnl": 5828.31,
+          "combined_pnl": -1717.3,
+          "coverage_pct": 77.2
+        },
+        "Calls + 2026-04-02/2026-04-10 120P cal x181": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 6322.08
+          },
+          "combined": {
+            "pnl": -1223.53
+          },
+          "overlay_pnl": 6322.08,
+          "hedge_pnl": 6322.08,
+          "combined_pnl": -1223.53,
+          "coverage_pct": 83.8
+        },
+        "Calls + 2026-04-02/2026-04-10 135P cal x73": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 9250.47
+          },
+          "combined": {
+            "pnl": 1704.86
+          },
+          "overlay_pnl": 9250.47,
+          "hedge_pnl": 9250.47,
+          "combined_pnl": 1704.86,
+          "coverage_pct": 122.6
+        },
+        "Calls + 2026-04-02/2026-04-10 145P cal x254": {
+          "book": {
+            "pnl": -7545.61
+          },
+          "overlay": {
+            "pnl": 5821.91
+          },
+          "combined": {
+            "pnl": -1723.69
+          },
+          "overlay_pnl": 5821.91,
+          "hedge_pnl": 5821.91,
+          "combined_pnl": -1723.69,
+          "coverage_pct": 77.2
+        }
+      }
+    },
+    {
+      "label": "Early squeeze higher before earnings",
+      "probability": 0.1,
+      "days": 30,
+      "spot": 140.84,
+      "vol_shift": -0.05,
+      "book": {
+        "pnl": 21092.01
+      },
+      "book_pnl": 21092.01,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 35226.6
+          },
+          "combined": {
+            "pnl": 56318.61
+          },
+          "overlay_pnl": 35226.6,
+          "hedge_pnl": 35226.6,
+          "combined_pnl": 56318.61,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 135/110 x29": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 6406.05
+          },
+          "combined": {
+            "pnl": 27498.06
+          },
+          "overlay_pnl": 6406.05,
+          "hedge_pnl": 6406.05,
+          "combined_pnl": 27498.06,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 135/120 x44": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 6370.85
+          },
+          "combined": {
+            "pnl": 27462.86
+          },
+          "overlay_pnl": 6370.85,
+          "hedge_pnl": 6370.85,
+          "combined_pnl": 27462.86,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 145/110 x16": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 13337.57
+          },
+          "combined": {
+            "pnl": 34429.59
+          },
+          "overlay_pnl": 13337.57,
+          "hedge_pnl": 13337.57,
+          "combined_pnl": 34429.59,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 145/120 x20": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 14625.31
+          },
+          "combined": {
+            "pnl": 35717.32
+          },
+          "overlay_pnl": 14625.31,
+          "hedge_pnl": 14625.31,
+          "combined_pnl": 35717.32,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 150/110 x12": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 16798.64
+          },
+          "combined": {
+            "pnl": 37890.65
+          },
+          "overlay_pnl": 16798.64,
+          "hedge_pnl": 16798.64,
+          "combined_pnl": 37890.65,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-10 150/120 x14": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 18459.3
+          },
+          "combined": {
+            "pnl": 39551.32
+          },
+          "overlay_pnl": 18459.3,
+          "hedge_pnl": 18459.3,
+          "combined_pnl": 39551.32,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-02/2026-04-10 110P cal x500": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 5226.6
+          },
+          "combined": {
+            "pnl": 26318.61
+          },
+          "overlay_pnl": 5226.6,
+          "hedge_pnl": 5226.6,
+          "combined_pnl": 26318.61,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-02/2026-04-10 120P cal x181": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 5180.68
+          },
+          "combined": {
+            "pnl": 26272.69
+          },
+          "overlay_pnl": 5180.68,
+          "hedge_pnl": 5180.68,
+          "combined_pnl": 26272.69,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-02/2026-04-10 135P cal x73": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": 7062.32
+          },
+          "combined": {
+            "pnl": 28154.33
+          },
+          "overlay_pnl": 7062.32,
+          "hedge_pnl": 7062.32,
+          "combined_pnl": 28154.33,
+          "coverage_pct": 0.0
+        },
+        "Calls + 2026-04-02/2026-04-10 145P cal x254": {
+          "book": {
+            "pnl": 21092.01
+          },
+          "overlay": {
+            "pnl": -44833.49
+          },
+          "combined": {
+            "pnl": -23741.48
+          },
+          "overlay_pnl": -44833.49,
+          "hedge_pnl": -44833.49,
+          "combined_pnl": -23741.48,
+          "coverage_pct": 0.0
+        }
+      }
+    }
+  ],
+  "summaries": {
+    "No hedge": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 0.0
+      },
+      "combined": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 0.0,
+      "expected_hedge_pnl": 0.0,
+      "expected_combined_pnl": -60467.38,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -69529.53
+    },
+    "Planned call sales only": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 35269.15
+      },
+      "combined": {
+        "expected_pnl": -25198.23,
+        "avg_pnl_when_downside": -34255.66
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 35269.15,
+      "expected_hedge_pnl": 35269.15,
+      "expected_combined_pnl": -25198.23,
+      "weighted_downside_coverage_pct": 105.0,
+      "conditional_downside_coverage_pct": 116.6,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -34255.66
+    },
+    "Calls + 2026-04-10 135/110 x29": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 36774.82
+      },
+      "combined": {
+        "expected_pnl": -23692.56,
+        "avg_pnl_when_downside": -29380.41
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 36774.82,
+      "expected_hedge_pnl": 36774.82,
+      "expected_combined_pnl": -23692.56,
+      "weighted_downside_coverage_pct": 83.6,
+      "conditional_downside_coverage_pct": 92.9,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -29380.41
+    },
+    "Calls + 2026-04-10 135/120 x44": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 45122.49
+      },
+      "combined": {
+        "expected_pnl": -15344.88,
+        "avg_pnl_when_downside": -20101.3
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 45122.49,
+      "expected_hedge_pnl": 45122.49,
+      "expected_combined_pnl": -15344.88,
+      "weighted_downside_coverage_pct": 105.9,
+      "conditional_downside_coverage_pct": 117.7,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -20101.3
+    },
+    "Calls + 2026-04-10 145/110 x16": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 37200.07
+      },
+      "combined": {
+        "expected_pnl": -23267.31,
+        "avg_pnl_when_downside": -29678.07
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 37200.07,
+      "expected_hedge_pnl": 37200.07,
+      "expected_combined_pnl": -23267.31,
+      "weighted_downside_coverage_pct": 98.3,
+      "conditional_downside_coverage_pct": 109.2,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -29678.07
+    },
+    "Calls + 2026-04-10 145/120 x20": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 41123.2
+      },
+      "combined": {
+        "expected_pnl": -19344.18,
+        "avg_pnl_when_downside": -25462.12
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 41123.2,
+      "expected_hedge_pnl": 41123.2,
+      "expected_combined_pnl": -19344.18,
+      "weighted_downside_coverage_pct": 111.8,
+      "conditional_downside_coverage_pct": 124.2,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -25462.12
+    },
+    "Calls + 2026-04-10 150/110 x12": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 35272.0
+      },
+      "combined": {
+        "expected_pnl": -25195.38,
+        "avg_pnl_when_downside": -32204.94
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 35272.0,
+      "expected_hedge_pnl": 35272.0,
+      "expected_combined_pnl": -25195.38,
+      "weighted_downside_coverage_pct": 95.7,
+      "conditional_downside_coverage_pct": 106.4,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -32204.94
+    },
+    "Calls + 2026-04-10 150/120 x14": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 37680.75
+      },
+      "combined": {
+        "expected_pnl": -22786.63,
+        "avg_pnl_when_downside": -29713.07
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 37680.75,
+      "expected_hedge_pnl": 37680.75,
+      "expected_combined_pnl": -22786.63,
+      "weighted_downside_coverage_pct": 104.8,
+      "conditional_downside_coverage_pct": 116.5,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -29713.07
+    },
+    "Calls + 2026-04-02/2026-04-10 110P cal x500": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 23695.24
+      },
+      "combined": {
+        "expected_pnl": -36772.14,
+        "avg_pnl_when_downside": -43782.22
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 23695.24,
+      "expected_hedge_pnl": 23695.24,
+      "expected_combined_pnl": -36772.14,
+      "weighted_downside_coverage_pct": 45.8,
+      "conditional_downside_coverage_pct": 50.9,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -43782.22
+    },
+    "Calls + 2026-04-02/2026-04-10 120P cal x181": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 36578.8
+      },
+      "combined": {
+        "expected_pnl": -23888.58,
+        "avg_pnl_when_downside": -29462.06
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 36578.8,
+      "expected_hedge_pnl": 36578.8,
+      "expected_combined_pnl": -23888.58,
+      "weighted_downside_coverage_pct": 61.7,
+      "conditional_downside_coverage_pct": 68.5,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -29462.06
+    },
+    "Calls + 2026-04-02/2026-04-10 135P cal x73": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 16502.77
+      },
+      "combined": {
+        "expected_pnl": -43964.61,
+        "avg_pnl_when_downside": -51977.83
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 16502.77,
+      "expected_hedge_pnl": 16502.77,
+      "expected_combined_pnl": -43964.61,
+      "weighted_downside_coverage_pct": 35.9,
+      "conditional_downside_coverage_pct": 39.9,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -51977.83
+    },
+    "Calls + 2026-04-02/2026-04-10 145P cal x254": {
+      "book": {
+        "expected_pnl": -60467.38,
+        "avg_pnl_when_downside": -69529.53
+      },
+      "overlay": {
+        "expected_pnl": 30523.39
+      },
+      "combined": {
+        "expected_pnl": -29943.99,
+        "avg_pnl_when_downside": -30633.16
+      },
+      "expected_book_pnl": -60467.38,
+      "expected_overlay_pnl": 30523.39,
+      "expected_hedge_pnl": 30523.39,
+      "expected_combined_pnl": -29943.99,
+      "weighted_downside_coverage_pct": 50.3,
+      "conditional_downside_coverage_pct": 55.9,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69529.53,
+      "avg_combined_pnl_when_downside": -30633.16
+    }
+  },
+  "candidate_count": 10,
+  "excluded_strikes": [
+    85.0,
+    90.0,
+    100.0,
+    101.0,
+    102.0,
+    105.0,
+    115.0,
+    117.0,
+    118.0,
+    122.0,
+    123.0,
+    125.0,
+    126.0,
+    127.0,
+    128.0,
+    129.0,
+    130.0,
+    131.0,
+    132.0,
+    134.0,
+    136.0,
+    138.0,
+    139.0,
+    140.0,
+    141.0,
+    142.0,
+    143.0,
+    144.0,
+    146.0,
+    147.5,
+    148.0,
+    149.0,
+    151.0,
+    152.0,
+    154.0,
+    155.0,
+    156.0
+  ],
+  "ranked_candidates": [
+    {
+      "name": "Calls + 2026-04-10 135/120 x44",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5910.0,
+      "expected_combined_pnl": -15344.88,
+      "expected_overlay_pnl": 45122.49,
+      "weighted_downside_coverage_pct": 105.9,
+      "avg_combined_pnl_when_downside": -20101.3
+    },
+    {
+      "name": "Calls + 2026-04-10 145/120 x20",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5290.0,
+      "expected_combined_pnl": -19344.18,
+      "expected_overlay_pnl": 41123.2,
+      "weighted_downside_coverage_pct": 111.8,
+      "avg_combined_pnl_when_downside": -25462.12
+    },
+    {
+      "name": "Calls + 2026-04-10 150/120 x14",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5730.0,
+      "expected_combined_pnl": -22786.63,
+      "expected_overlay_pnl": 37680.75,
+      "weighted_downside_coverage_pct": 104.8,
+      "avg_combined_pnl_when_downside": -29713.07
+    },
+    {
+      "name": "Calls + 2026-04-10 145/110 x16",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5990.0,
+      "expected_combined_pnl": -23267.31,
+      "expected_overlay_pnl": 37200.07,
+      "weighted_downside_coverage_pct": 98.3,
+      "avg_combined_pnl_when_downside": -29678.07
+    },
+    {
+      "name": "Calls + 2026-04-10 135/110 x29",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -6308.0,
+      "expected_combined_pnl": -23692.56,
+      "expected_overlay_pnl": 36774.82,
+      "weighted_downside_coverage_pct": 83.6,
+      "avg_combined_pnl_when_downside": -29380.41
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 120P cal x181",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5784.0,
+      "expected_combined_pnl": -23888.58,
+      "expected_overlay_pnl": 36578.8,
+      "weighted_downside_coverage_pct": 61.7,
+      "avg_combined_pnl_when_downside": -29462.06
+    },
+    {
+      "name": "Calls + 2026-04-10 150/110 x12",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5974.0,
+      "expected_combined_pnl": -25195.38,
+      "expected_overlay_pnl": 35272.0,
+      "weighted_downside_coverage_pct": 95.7,
+      "avg_combined_pnl_when_downside": -32204.94
+    },
+    {
+      "name": "Planned call sales only",
+      "vehicle_type": null,
+      "entry_cost": -35830.0,
+      "expected_combined_pnl": -25198.23,
+      "expected_overlay_pnl": 35269.15,
+      "weighted_downside_coverage_pct": 105.0,
+      "avg_combined_pnl_when_downside": -34255.66
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 145P cal x254",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5858.0,
+      "expected_combined_pnl": -29943.99,
+      "expected_overlay_pnl": 30523.39,
+      "weighted_downside_coverage_pct": 50.3,
+      "avg_combined_pnl_when_downside": -30633.16
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 110P cal x500",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5830.0,
+      "expected_combined_pnl": -36772.14,
+      "expected_overlay_pnl": 23695.24,
+      "weighted_downside_coverage_pct": 45.8,
+      "avg_combined_pnl_when_downside": -43782.22
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 135P cal x73",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5900.0,
+      "expected_combined_pnl": -43964.61,
+      "expected_overlay_pnl": 16502.77,
+      "weighted_downside_coverage_pct": 35.9,
+      "avg_combined_pnl_when_downside": -51977.83
+    }
+  ],
+  "candidate_metadata": [
+    {
+      "name": "Calls + 2026-04-10 135/110 x29",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -6308.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 29,
+          "mark": 12.8,
+          "iv": 0.7028623736960249
+        },
+        {
+          "label": "Short 2026-04-10 110P",
+          "right": "P",
+          "strike": 110.0,
+          "dte": 30,
+          "qty": -29,
+          "mark": 2.62,
+          "iv": 0.7071356469776332
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-10 135/120 x44",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5910.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 44,
+          "mark": 12.8,
+          "iv": 0.7028623736960249
+        },
+        {
+          "label": "Short 2026-04-10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -44,
+          "mark": 6.0,
+          "iv": 0.7399053528995057
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-10 145/110 x16",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5990.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 16,
+          "mark": 21.27,
+          "iv": 0.8333403030605214
+        },
+        {
+          "label": "Short 2026-04-10 110P",
+          "right": "P",
+          "strike": 110.0,
+          "dte": 30,
+          "qty": -16,
+          "mark": 2.62,
+          "iv": 0.7071356469776332
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-10 145/120 x20",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5290.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 20,
+          "mark": 21.27,
+          "iv": 0.8333403030605214
+        },
+        {
+          "label": "Short 2026-04-10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -20,
+          "mark": 6.0,
+          "iv": 0.7399053528995057
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-10 150/110 x12",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5974.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 150P",
+          "right": "P",
+          "strike": 150.0,
+          "dte": 30,
+          "qty": 12,
+          "mark": 27.5,
+          "iv": 1.0197849591761248
+        },
+        {
+          "label": "Short 2026-04-10 110P",
+          "right": "P",
+          "strike": 110.0,
+          "dte": 30,
+          "qty": -12,
+          "mark": 2.62,
+          "iv": 0.7071356469776332
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-10 150/120 x14",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": -5730.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 150P",
+          "right": "P",
+          "strike": 150.0,
+          "dte": 30,
+          "qty": 14,
+          "mark": 27.5,
+          "iv": 1.0197849591761248
+        },
+        {
+          "label": "Short 2026-04-10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": -14,
+          "mark": 6.0,
+          "iv": 0.7399053528995057
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 110P cal x500",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5830.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 110P",
+          "right": "P",
+          "strike": 110.0,
+          "dte": 30,
+          "qty": 500,
+          "mark": 2.62,
+          "iv": 0.7071356469776332
+        },
+        {
+          "label": "Short 2026-04-02 110P",
+          "right": "P",
+          "strike": 110.0,
+          "dte": 22,
+          "qty": -500,
+          "mark": 2.02,
+          "iv": 0.7456710461937214
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 120P cal x181",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5784.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 30,
+          "qty": 181,
+          "mark": 6.0,
+          "iv": 0.7399053528995057
+        },
+        {
+          "label": "Short 2026-04-02 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 22,
+          "qty": -181,
+          "mark": 4.34,
+          "iv": 0.7093259643170681
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 135P cal x73",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5900.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 30,
+          "qty": 73,
+          "mark": 12.8,
+          "iv": 0.7028623736960249
+        },
+        {
+          "label": "Short 2026-04-02 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 22,
+          "qty": -73,
+          "mark": 8.7,
+          "iv": 0.4908026232238775
+        }
+      ]
+    },
+    {
+      "name": "Calls + 2026-04-02/2026-04-10 145P cal x254",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": -5858.0,
+      "legs": [
+        {
+          "label": "Short Apr10 145C",
+          "right": "C",
+          "strike": 145.0,
+          "dte": 31,
+          "qty": -7,
+          "mark": 4.9,
+          "iv": 0.6762727685546877
+        },
+        {
+          "label": "Short Apr10 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 31,
+          "qty": -60,
+          "mark": 3.8,
+          "iv": 0.6630893066406252
+        },
+        {
+          "label": "Short Apr02 150C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 23,
+          "qty": -30,
+          "mark": 3.2,
+          "iv": 0.7053252124023439
+        },
+        {
+          "label": "Long 2026-04-10 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 30,
+          "qty": 254,
+          "mark": 21.27,
+          "iv": 0.8333403030605214
+        },
+        {
+          "label": "Short 2026-04-02 145P",
+          "right": "P",
+          "strike": 145.0,
+          "dte": 22,
+          "qty": -254,
+          "mark": 20.09,
+          "iv": 0.866664008623923
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "description": "EWY broader financed April overlay - sell 60 Apr 17 150C and buy 49 Apr 17 135/125 put spreads",
+  "generated": "2026-03-11",
+  "notes": "Broader one-month hedge candidate. This is a replacement-style overlay if you want better coverage for month-down and choppy scenarios than the pure March crash sleeve. Legs are independent orders, so fills can mismatch; if one side fills materially ahead of the other, reassess before chasing.",
+  "trades": [
+    {
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260417",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "action": "SELL",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 5.15,
+          "note": "Catch open vol"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 5.0,
+          "note": "Near ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 20,
+          "lmtPrice": 4.85,
+          "note": "Working lower"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260417",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 125.0,
+            "right": "P",
+            "expiry": "20260417",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 17,
+          "lmtPrice": 5.7,
+          "note": "Near ask"
+        },
+        {
+          "tranche": 2,
+          "quantity": 16,
+          "lmtPrice": 5.55,
+          "note": "Near upper mid"
+        },
+        {
+          "tranche": 3,
+          "quantity": 16,
+          "lmtPrice": 5.4,
+          "note": "Working lower"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 132.73,
+    "short_call_reference_bid": 4.2,
+    "short_call_reference_ask": 5.2,
+    "short_call_reference_mid": 4.7,
+    "put_spread_reference_bid": 4.2,
+    "put_spread_reference_ask": 5.7,
+    "put_spread_reference_mid": 4.95,
+    "covered_call_quantity_reference": 97,
+    "selected_call_quantity": 60,
+    "selected_put_spread_quantity": 49,
+    "gross_call_credit_mid_estimate": 28200.0,
+    "gross_put_spread_debit_ask_estimate": 27930.0,
+    "net_estimated_credit_at_reference": 270.0
+  }
+}

@@ -1,11 +1,13 @@
 import json
 import math
+import os
+from datetime import date
 from ib_insync import *
 
 def main():
     ib = IB()
-    # Connect to TWS Paper Trading (Change port to 7496 for Live, or 4001/4002 for Gateway)
-    ib.connect('127.0.0.1', 7497, clientId=1)
+    # Connect to IBKR Gateway by default (4001 live / 4002 paper).
+    ib.connect('127.0.0.1', 4001, clientId=1)
 
     underlying = Stock('EWY', 'SMART', 'USD')
     ib.qualifyContracts(underlying)
@@ -94,10 +96,13 @@ def main():
         "metrics": best_trade
     }
 
-    with open('trade_proposal.json', 'w') as f:
+    out_dir = f"orders/{date.today()}"
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = f"{out_dir}/trade_proposal.json"
+    with open(out_path, 'w') as f:
         json.dump(order_proposal, f, indent=4)
-        
-    print(f"Proposed Trade saved to trade_proposal.json")
+
+    print(f"Proposed Trade saved to {out_path}")
     print(f"Strike: {best_trade['strike']} | Credit: ${round(best_trade['mid_price'] * 100, 2)} | POP: {round(best_trade['prob_of_profit']*100, 1)}%")
 
     ib.disconnect()

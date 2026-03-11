@@ -1,0 +1,30 @@
+{
+  "description": "Soitec SA buy — ~EUR 20K via Paris listing (SOI); SLOIF did not qualify in IBKR",
+  "generated": "2026-03-11",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "SOI",
+        "exchange": "SMART",
+        "currency": "EUR"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 198,
+          "lmtPrice": 50.6,
+          "note": "Near market on Paris line — EUR 10,018.80"
+        },
+        {
+          "tranche": 2,
+          "quantity": 198,
+          "lmtPrice": 50.4,
+          "note": "Slight pullback add — EUR 9,979.20"
+        }
+      ]
+    }
+  ]
+}

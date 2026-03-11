@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T02:38:22",
+  "generated_at": "2026-03-11T23:00:45",
   "action": "SELL",
   "contract": {
     "symbol": "EWY",
@@ -10,31 +10,31 @@
     "strike": 150.0,
     "right": "C"
   },
-  "anchor_price": 4.3,
+  "anchor_price": 4.2,
   "probe_qty": 1,
   "probe_count": 3,
-  "total_quantity": 108,
-  "held_back_quantity": 105,
+  "total_quantity": 60,
+  "held_back_quantity": 57,
   "tif": "DAY",
   "probes": [
     {
       "probe": 1,
       "quantity": 1,
-      "lmtPrice": 4.5,
+      "lmtPrice": 4.4,
       "ticks_from_anchor": 4,
       "offset": 0.2
     },
     {
       "probe": 2,
       "quantity": 1,
-      "lmtPrice": 4.4,
+      "lmtPrice": 4.3,
       "ticks_from_anchor": 2,
       "offset": 0.1
     },
     {
       "probe": 3,
       "quantity": 1,
-      "lmtPrice": 4.3,
+      "lmtPrice": 4.2,
       "ticks_from_anchor": 0,
       "offset": 0.0
     }
@@ -53,7 +53,7 @@
       },
       "order_type": "LMT",
       "quantity": 1,
-      "lmtPrice": 4.5,
+      "lmtPrice": 4.4,
       "tif": "DAY",
       "probe": {
         "level": 1,
@@ -74,7 +74,7 @@
       },
       "order_type": "LMT",
       "quantity": 1,
-      "lmtPrice": 4.4,
+      "lmtPrice": 4.3,
       "tif": "DAY",
       "probe": {
         "level": 2,
@@ -95,7 +95,7 @@
       },
       "order_type": "LMT",
       "quantity": 1,
-      "lmtPrice": 4.3,
+      "lmtPrice": 4.2,
       "tif": "DAY",
       "probe": {
         "level": 3,
@@ -104,57 +104,33 @@
       }
     }
   ],
-  "quote_source": "yfinance",
-  "quote_warning": "Yahoo Finance quotes are public snapshots and may be delayed. Verify against your broker before transmitting orders.",
-  "spot_at_pricing": 131.275,
+  "quote_source": "ibkr",
+  "quote_warning": null,
+  "spot_at_pricing": 131.61,
   "market": {
-    "bid": 3.7,
-    "ask": 4.3,
-    "mid": 4.0,
+    "bid": 3.5,
+    "ask": 4.2,
+    "mid": 3.85,
     "last_price": 4.0,
-    "source_note": "yfinance"
+    "source_note": "ibkr"
   },
   "metrics": {
     "pricing_model": "Black-Scholes-Merton",
     "dte": 29,
     "time_to_expiry_years": 0.079452,
-    "risk_free_rate": 0.03595,
+    "risk_free_rate": 0.045,
     "dividend_yield": 0.0,
-    "implied_volatility": 0.657962,
-    "theoretical_value": 3.6818,
-    "suggested_limit": 4.0,
-    "edge_vs_mid": 0.3182,
-    "spread_pct": 0.15
+    "implied_volatility": 0.658388,
+    "theoretical_value": 3.8019,
+    "suggested_limit": 3.85,
+    "edge_vs_mid": 0.0481,
+    "spread_pct": 0.1818
   },
   "quote_status": {
-    "market_data_type": null,
-    "is_delayed": null,
-    "quote_time": "2026-03-10 18:55:20+00:00",
+    "market_data_type": 3,
+    "is_delayed": true,
+    "quote_time": null,
     "model_underlying_price": null,
     "pv_dividend": null
-  },
-  "weekly_plan": {
-    "generated_at": "2026-03-11T02:38:22",
-    "safe_cover_quantity": 108,
-    "selected_quantity": 108,
-    "estimated_credit_mid": 43200.0,
-    "estimated_credit_ask": 46440.0,
-    "theoretical_value_market_iv": 3.6818,
-    "theoretical_value_rv30": 2.4701,
-    "delta_market": 0.2707,
-    "prob_otm_estimate": 0.7293,
-    "edge_vs_rv30": 1.5299,
-    "cover_buckets": [
-      {
-        "strike": 145.0,
-        "expiry": "20280121",
-        "qty_available": 18
-      },
-      {
-        "strike": 150.0,
-        "expiry": "20280121",
-        "qty_available": 90
-      }
-    ]
   }
 }

@@ -1,7 +1,7 @@
 import json
 import math
 import os
-from datetime import datetime
+from datetime import date, datetime
 from ib_insync import *
 import numpy as np
 
@@ -42,12 +42,12 @@ def monte_carlo_short_call_metrics(S: float, K: float, T: float, sigma: float, p
 
 def main():
     # Load configuration
-    with open('pmcc_config.json', 'r') as f:
+    with open('config/pmcc_config.json', 'r') as f:
         config = json.load(f)
         
     conn_cfg = config.get('connection', {})
     host = conn_cfg.get('host', '127.0.0.1')
-    port = conn_cfg.get('port', 7497)
+    port = conn_cfg.get('port', 4001)
     client_id = conn_cfg.get('client_id_planner', 1)
     market_data_type = conn_cfg.get('market_data_type', 1)
     
@@ -76,11 +76,11 @@ def main():
     max_coverage_pct_per_run = exec_cfg.get('max_coverage_pct_per_run', 1.0)
 
     # 1. Read portfolio state
-    if not os.path.exists('portfolio_state.json'):
+    if not os.path.exists('config/portfolio_state.json'):
         print("Portfolio state not found. Run portfolio.py first.")
         return
-        
-    with open('portfolio_state.json', 'r') as f:
+
+    with open('config/portfolio_state.json', 'r') as f:
         portfolio_state = json.load(f)
         
     total_unencumbered_inventory = portfolio_state.get('total_unencumbered_inventory', 0)
@@ -430,7 +430,10 @@ def main():
             else:
                 print("Failed to retrieve WhatIf data.")
 
-        with open('trade_proposal.json', 'w') as f:
+        out_dir = f"orders/{date.today()}"
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = f"{out_dir}/trade_proposal.json"
+        with open(out_path, 'w') as f:
             json.dump(proposals, f, indent=4)
             
     except Exception as e:

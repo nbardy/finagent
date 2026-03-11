@@ -1,0 +1,82 @@
+{
+  "generated_at": "2026-03-12T01:13:00+07:00",
+  "notes": [
+    "Bulk follow-through order for the remaining uncovered EWY Jan 2027 165C bucket.",
+    "Anchored to actual Apr 10 170C probe fills around 0.91-0.92, with the current delayed book around 0.75 x 1.25.",
+    "Staggered goodAfterTime prevents immediate self-undercut while still getting the sleeve working today."
+  ],
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 8,
+      "lmtPrice": 1.00,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 14:14:00 US/Eastern",
+      "orderRef": "EWY_Apr10_170C_bulk_100"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 8,
+      "lmtPrice": 0.95,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 14:18:00 US/Eastern",
+      "orderRef": "EWY_Apr10_170C_bulk_095"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 8,
+      "lmtPrice": 0.90,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 14:22:00 US/Eastern",
+      "orderRef": "EWY_Apr10_170C_bulk_090"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 170.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 8,
+      "lmtPrice": 0.85,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 14:26:00 US/Eastern",
+      "orderRef": "EWY_Apr10_170C_bulk_085"
+    }
+  ]
+}

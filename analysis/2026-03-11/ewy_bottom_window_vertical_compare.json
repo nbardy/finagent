@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "analysis_type": "timing_specific_bottom_window",
+  "results": {
+    "spot": 130.41,
+    "risk_free_rate": 0.045,
+    "current_book_value": 565242.3,
+    "scenarios": [
+      {
+        "label": "Bottom Apr02 then rebound by earnings",
+        "probability": 0.35,
+        "days": 23,
+        "spot": 122.6,
+        "vol_shift": 0.03,
+        "book_pnl": -63163.81,
+        "hedges": {
+          "Planned call sales only": {
+            "hedge_pnl": 34805.7,
+            "combined_pnl": -28358.11,
+            "coverage_pct": 55.1
+          },
+          "Calls + Apr10 135/125 x50": {
+            "hedge_pnl": 38953.1,
+            "combined_pnl": -24210.72,
+            "coverage_pct": 61.7
+          },
+          "Calls + Apr10 135/120 x38": {
+            "hedge_pnl": 40663.3,
+            "combined_pnl": -22500.51,
+            "coverage_pct": 64.4
+          },
+          "Calls + Apr17 135/125 x52": {
+            "hedge_pnl": 39295.54,
+            "combined_pnl": -23868.27,
+            "coverage_pct": 62.2
+          },
+          "Calls + Apr17 140/125 x15": {
+            "hedge_pnl": 39320.24,
+            "combined_pnl": -23843.57,
+            "coverage_pct": 62.3
+          },
+          "Calls + Apr10/May15 130P cal x56": {
+            "hedge_pnl": 34348.63,
+            "combined_pnl": -28815.18,
+            "coverage_pct": 54.4
+          },
+          "Calls + Apr02/Apr17 130P cal x96": {
+            "hedge_pnl": 39253.95,
+            "combined_pnl": -23909.86,
+            "coverage_pct": 62.1
+          }
+        }
+      },
+      {
+        "label": "Bottom Apr10 then rebound by earnings",
+        "probability": 0.4,
+        "days": 31,
+        "spot": 121.3,
+        "vol_shift": 0.02,
+        "book_pnl": -99473.53,
+        "hedges": {
+          "Planned call sales only": {
+            "hedge_pnl": 35830.0,
+            "combined_pnl": -63643.53,
+            "coverage_pct": 36.0
+          },
+          "Calls + Apr10 135/125 x50": {
+            "hedge_pnl": 53102.31,
+            "combined_pnl": -46371.22,
+            "coverage_pct": 53.4
+          },
+          "Calls + Apr10 135/120 x38": {
+            "hedge_pnl": 53775.61,
+            "combined_pnl": -45697.92,
+            "coverage_pct": 54.1
+          },
+          "Calls + Apr17 135/125 x52": {
+            "hedge_pnl": 45758.96,
+            "combined_pnl": -53714.57,
+            "coverage_pct": 46.0
+          },
+          "Calls + Apr17 140/125 x15": {
+            "hedge_pnl": 43215.29,
+            "combined_pnl": -56258.24,
+            "coverage_pct": 43.4
+          },
+          "Calls + Apr10/May15 130P cal x56": {
+            "hedge_pnl": 38221.92,
+            "combined_pnl": -61251.61,
+            "coverage_pct": 38.4
+          },
+          "Calls + Apr02/Apr17 130P cal x96": {
+            "hedge_pnl": 42360.84,
+            "combined_pnl": -57112.69,
+            "coverage_pct": 42.6
+          }
+        }
+      },
+      {
+        "label": "Choppy hold into earnings window",
+        "probability": 0.15,
+        "days": 31,
+        "spot": 130.4,
+        "vol_shift": 0.01,
+        "book_pnl": -8496.25,
+        "hedges": {
+          "Planned call sales only": {
+            "hedge_pnl": 35828.19,
+            "combined_pnl": 27331.94,
+            "coverage_pct": 421.7
+          },
+          "Calls + Apr10 135/125 x50": {
+            "hedge_pnl": 28961.98,
+            "combined_pnl": 20465.74,
+            "coverage_pct": 340.9
+          },
+          "Calls + Apr10 135/120 x38": {
+            "hedge_pnl": 25149.56,
+            "combined_pnl": 16653.32,
+            "coverage_pct": 296.0
+          },
+          "Calls + Apr17 135/125 x52": {
+            "hedge_pnl": 31299.59,
+            "combined_pnl": 22803.35,
+            "coverage_pct": 368.4
+          },
+          "Calls + Apr17 140/125 x15": {
+            "hedge_pnl": 37172.72,
+            "combined_pnl": 28676.48,
+            "coverage_pct": 437.5
+          },
+          "Calls + Apr10/May15 130P cal x56": {
+            "hedge_pnl": 50682.28,
+            "combined_pnl": 42186.03,
+            "coverage_pct": 596.5
+          },
+          "Calls + Apr02/Apr17 130P cal x96": {
+            "hedge_pnl": 48942.51,
+            "combined_pnl": 40446.27,
+            "coverage_pct": 576.0
+          }
+        }
+      },
+      {
+        "label": "Early squeeze higher before earnings",
+        "probability": 0.1,
+        "days": 31,
+        "spot": 140.8,
+        "vol_shift": -0.05,
+        "book_pnl": 19769.95,
+        "hedges": {
+          "Planned call sales only": {
+            "hedge_pnl": 35238.13,
+            "combined_pnl": 55008.08,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr10 135/125 x50": {
+            "hedge_pnl": 5957.76,
+            "combined_pnl": 25727.71,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr10 135/120 x38": {
+            "hedge_pnl": 6525.83,
+            "combined_pnl": 26295.78,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr17 135/125 x52": {
+            "hedge_pnl": 14645.51,
+            "combined_pnl": 34415.46,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr17 140/125 x15": {
+            "hedge_pnl": 28878.14,
+            "combined_pnl": 48648.09,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr10/May15 130P cal x56": {
+            "hedge_pnl": 32631.65,
+            "combined_pnl": 52401.6,
+            "coverage_pct": 0.0
+          },
+          "Calls + Apr02/Apr17 130P cal x96": {
+            "hedge_pnl": 14808.38,
+            "combined_pnl": 34578.33,
+            "coverage_pct": 0.0
+          }
+        }
+      }
+    ],
+    "summaries": {
+      "No hedge": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 0.0,
+        "expected_combined_pnl": -61194.19,
+        "weighted_downside_coverage_pct": 0.0,
+        "conditional_downside_coverage_pct": 0.0,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -70190.2
+      },
+      "Planned call sales only": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 35412.04,
+        "expected_combined_pnl": -25782.15,
+        "weighted_downside_coverage_pct": 96.9,
+        "conditional_downside_coverage_pct": 107.7,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -34758.84
+      },
+      "Calls + Apr10 135/125 x50": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 39814.58,
+        "expected_combined_pnl": -21379.61,
+        "weighted_downside_coverage_pct": 94.1,
+        "conditional_downside_coverage_pct": 104.5,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -26613.76
+      },
+      "Calls + Apr10 135/120 x38": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 40167.42,
+        "expected_combined_pnl": -21026.77,
+        "weighted_downside_coverage_pct": 88.6,
+        "conditional_downside_coverage_pct": 98.4,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -26284.83
+      },
+      "Calls + Apr17 135/125 x52": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 38216.52,
+        "expected_combined_pnl": -22977.67,
+        "weighted_downside_coverage_pct": 95.4,
+        "conditional_downside_coverage_pct": 106.0,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -29354.69
+      },
+      "Calls + Apr17 140/125 x15": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 39511.92,
+        "expected_combined_pnl": -21682.27,
+        "weighted_downside_coverage_pct": 104.8,
+        "conditional_downside_coverage_pct": 116.4,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -29496.75
+      },
+      "Calls + Apr10/May15 130P cal x56": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 38176.29,
+        "expected_combined_pnl": -23017.89,
+        "weighted_downside_coverage_pct": 123.9,
+        "conditional_downside_coverage_pct": 137.6,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -31397.84
+      },
+      "Calls + Apr02/Apr17 130P cal x96": {
+        "expected_book_pnl": -61194.19,
+        "expected_hedge_pnl": 39505.44,
+        "expected_combined_pnl": -21688.75,
+        "weighted_downside_coverage_pct": 125.2,
+        "conditional_downside_coverage_pct": 139.1,
+        "downside_probability_pct": 90.0,
+        "avg_book_pnl_when_downside": -70190.2,
+        "avg_combined_pnl_when_downside": -27940.65
+      }
+    }
+  }
+}

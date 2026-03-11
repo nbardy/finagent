@@ -1,0 +1,641 @@
+"""
+Shared IBKR connection and market data utilities.
+
+All scripts should use this module instead of managing connections directly.
+Reads connection config from pmcc_config.json once.
+
+Usage:
+    from ibkr import connect, get_spot, get_option_quotes, get_portfolio
+
+    with connect() as ib:
+        spot = get_spot(ib, "EWY")
+        quotes = get_option_quotes(ib, "EWY", [(145, "20280121", "C")])
+        positions = get_portfolio(ib)
+"""
+
+import json
+import math
+from contextlib import contextmanager
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+
+from ib_insync import IB, Stock, Option
+
+
+# ---------------------------------------------------------------------------
+# Connection
+# ---------------------------------------------------------------------------
+
+def _ts() -> str:
+    return datetime.now().isoformat(timespec="seconds")
+
+
+def _contract_summary(contract) -> str:
+    if not contract:
+        return "n/a"
+
+    parts = [getattr(contract, "symbol", "")]
+    expiry = getattr(contract, "lastTradeDateOrContractMonth", "")
+    if expiry:
+        parts.append(str(expiry))
+    strike = getattr(contract, "strike", 0)
+    right = getattr(contract, "right", "")
+    if strike or right:
+        parts.append(f"{float(strike):.1f}{right}")
+    exchange = getattr(contract, "exchange", "")
+    if exchange:
+        parts.append(exchange)
+    return " ".join(part for part in parts if part)
+
+
+def _attach_debug_handlers(ib: IB, label: str) -> None:
+    def on_error(req_id, error_code, error_string, contract):
+        message = (
+            f"[{_ts()}] IBKR error"
+            f" label={label}"
+            f" reqId={req_id}"
+            f" code={error_code}"
+            f" msg={error_string}"
+        )
+        if contract:
+            message += f" contract={_contract_summary(contract)}"
+        print(message)
+
+    def on_disconnected():
+        print(f"[{_ts()}] IBKR disconnected label={label}")
+
+    def on_connected():
+        print(f"[{_ts()}] IBKR connected label={label}")
+
+    ib.errorEvent += on_error
+    ib.disconnectedEvent += on_disconnected
+    ib.connectedEvent += on_connected
+
+def _load_config() -> dict:
+    config_path = Path(__file__).parent / "config" / "pmcc_config.json"
+    if config_path.exists():
+        with open(config_path) as f:
+            return json.load(f)
+    return {}
+
+
+@contextmanager
+def connect(
+    client_id: int = 11,
+    market_data_type: int = 3,
+    readonly: bool = True,
+    timeout: float = 20.0,
+    debug: bool = False,
+):
+    """
+    Context manager for IBKR connections. Reads host/port from config.
+
+    market_data_type: 1=live (requires subscription), 3=delayed, 4=delayed-frozen
+    Use delayed (3) unless you have a live data subscription for the instrument.
+    readonly: use read-only API mode for pricing/portfolio helpers so the
+    gateway does not expect order/execution sync during connection.
+    timeout: seconds to allow IBKR's initial sync to complete.
+
+    Usage:
+        with connect(client_id=12) as ib:
+            ...
+    """
+    cfg = _load_config().get("connection", {})
+    host = cfg.get("host", "127.0.0.1")
+    port = cfg.get("port", 4001)
+
+    ib = IB()
+    try:
+        if debug:
+            print(
+                f"[{_ts()}] IBKR connect start"
+                f" host={host} port={port} clientId={client_id}"
+                f" readonly={readonly} marketDataType={market_data_type}"
+                f" timeout={timeout}"
+            )
+            _attach_debug_handlers(ib, label=f"{host}:{port}/cid={client_id}")
+        ib.connect(host, port, clientId=client_id, readonly=readonly, timeout=timeout)
+        if debug:
+            accounts = []
+            try:
+                accounts = list(ib.managedAccounts())
+            except Exception:
+                pass
+            print(
+                f"[{_ts()}] IBKR connect ok"
+                f" connected={ib.isConnected()} accounts={accounts or 'n/a'}"
+            )
+        ib.reqMarketDataType(market_data_type)
+        if debug:
+            print(f"[{_ts()}] IBKR requested marketDataType={market_data_type}")
+        yield ib
+    except Exception as exc:
+        print(
+            f"[{_ts()}] IBKR connect failure"
+            f" host={host} port={port} clientId={client_id}"
+            f" type={type(exc).__name__} msg={exc}"
+        )
+        raise
+    finally:
+        if ib.isConnected():
+            if debug:
+                print(f"[{_ts()}] IBKR disconnect host={host} port={port} clientId={client_id}")
+            ib.disconnect()
+
+
+# ---------------------------------------------------------------------------
+# Market Data
+# ---------------------------------------------------------------------------
+
+def get_spot(ib: IB, symbol: str, debug: bool = False, allow_close_fallback: bool = False) -> float:
+    """Get current price for a stock. Raises if IBKR cannot provide a usable spot."""
+    underlying = Stock(symbol, "SMART", "USD")
+    ib.qualifyContracts(underlying)
+    [ticker] = ib.reqTickers(underlying)
+    ib.sleep(1)
+    price = ticker.marketPrice()
+    if math.isnan(price) or price <= 0:
+        if allow_close_fallback and not math.isnan(ticker.close) and ticker.close > 0:
+            price = ticker.close
+        else:
+            raise ValueError(
+                f"Missing IBKR spot for {symbol}; "
+                "get_spot is strict and will not fall back to close."
+            )
+    if debug:
+        print(
+            f"[{_ts()}] spot"
+            f" symbol={symbol}"
+            f" bid={ticker.bid} ask={ticker.ask} last={ticker.last}"
+            f" close={ticker.close} marketPrice={ticker.marketPrice()}"
+            f" marketDataType={getattr(ticker, 'marketDataType', 'n/a')}"
+        )
+    return price
+
+
+@dataclass
+class OptionQuote:
+    symbol: str
+    strike: float
+    expiry: str
+    right: str
+    bid: float
+    ask: float
+    mid: float
+    last: float
+    iv: float
+    delta: float
+    gamma: float
+    theta: float
+    vega: float
+
+    @property
+    def has_market(self) -> bool:
+        """True if we have a live two-sided quote."""
+        return self.bid > 0 and self.ask > 0
+
+    @property
+    def spread(self) -> float:
+        return self.ask - self.bid if self.has_market else float("inf")
+
+    @property
+    def spread_pct(self) -> float:
+        return self.spread / self.mid if self.mid > 0 else float("inf")
+
+
+def _safe_float(val, default: float = 0.0) -> float:
+    if val is None or (isinstance(val, float) and math.isnan(val)):
+        return default
+    return float(val)
+
+
+def get_option_quotes(
+    ib: IB,
+    symbol: str,
+    specs: list[tuple[float, str, str]],
+    settle_secs: float = 2.0,
+    debug: bool = False,
+) -> list[OptionQuote]:
+    """
+    Fetch quotes for a list of option specs.
+
+    specs: list of (strike, expiry_YYYYMMDD, right) tuples
+        e.g. [(145, "20280121", "C"), (150, "20280121", "C")]
+
+    Returns quotes in same order as specs. Quotes with no data
+    will have bid/ask = 0 — use quote.has_market to check.
+    """
+    contracts = []
+    for strike, expiry, right in specs:
+        contracts.append(Option(symbol, expiry, strike, right, "SMART"))
+
+    contracts = ib.qualifyContracts(*contracts)
+    tickers = ib.reqTickers(*contracts)
+    ib.sleep(settle_secs)
+
+    quotes = []
+    for t in tickers:
+        bid = _safe_float(t.bid)
+        ask = _safe_float(t.ask)
+        last = _safe_float(t.last)
+        mid = (bid + ask) / 2 if bid > 0 and ask > 0 else last
+
+        greeks = t.modelGreeks
+        iv = _safe_float(greeks.impliedVol if greeks else None)
+        delta = _safe_float(greeks.delta if greeks else None)
+        gamma = _safe_float(greeks.gamma if greeks else None)
+        theta = _safe_float(greeks.theta if greeks else None)
+        vega = _safe_float(greeks.vega if greeks else None)
+
+        quotes.append(OptionQuote(
+            symbol=symbol,
+            strike=t.contract.strike,
+            expiry=t.contract.lastTradeDateOrContractMonth,
+            right=t.contract.right,
+            bid=bid, ask=ask, mid=mid, last=last,
+            iv=iv, delta=delta, gamma=gamma, theta=theta, vega=vega,
+        ))
+        if debug:
+            print(
+                f"[{_ts()}] option"
+                f" contract={symbol} {t.contract.lastTradeDateOrContractMonth}"
+                f" {t.contract.strike:.1f}{t.contract.right}"
+                f" bid={bid} ask={ask} last={last} mid={mid}"
+                f" iv={iv} delta={delta} gamma={gamma}"
+                f" theta={theta} vega={vega}"
+                f" marketDataType={getattr(t, 'marketDataType', 'n/a')}"
+            )
+
+    return quotes
+
+
+# ---------------------------------------------------------------------------
+# Portfolio
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Position:
+    symbol: str
+    sec_type: str
+    right: str
+    strike: float
+    expiry: str
+    dte: int | None
+    qty: int
+    avg_cost: float
+    market_price: float
+    market_value: float
+    unrealized_pnl: float
+    realized_pnl: float
+    cost_basis: float
+    pct_return: float
+    con_id: int
+
+
+@dataclass
+class OpenOrder:
+    order_id: int
+    perm_id: int
+    symbol: str
+    sec_type: str
+    expiry: str
+    strike: float
+    right: str
+    action: str
+    order_type: str
+    tif: str
+    quantity: int
+    limit_price: float
+    status: str
+    filled: float
+    remaining: float
+
+
+@dataclass
+class AccountMetric:
+    account: str
+    tag: str
+    value: str
+    currency: str
+
+
+@dataclass
+class FillEvent:
+    order_id: int
+    perm_id: int
+    client_id: int
+    exec_id: str
+    symbol: str
+    sec_type: str
+    expiry: str
+    strike: float
+    right: str
+    side: str
+    shares: float
+    price: float
+    time: str
+
+
+def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
+    """
+    Fetch all positions with P&L from IBKR.
+
+    Optionally filter by symbol list.
+    Returns Position dataclass instances sorted by symbol/expiry/strike.
+    """
+    portfolio_items = ib.portfolio()
+    today = datetime.now()
+
+    positions = []
+    for item in portfolio_items:
+        c = item.contract
+        sym = c.symbol
+
+        if symbols and sym not in symbols:
+            continue
+
+        dte = None
+        expiry = ""
+        if c.secType == "OPT":
+            expiry = c.lastTradeDateOrContractMonth
+            try:
+                dte = (datetime.strptime(expiry, "%Y%m%d") - today).days
+            except ValueError:
+                pass
+
+        qty = int(item.position)
+        avg_cost = item.averageCost
+        market_price = _safe_float(item.marketPrice)
+        market_value = item.marketValue
+        unrealized_pnl = item.unrealizedPNL
+        realized_pnl = item.realizedPNL
+        # IBKR averageCost: for stocks it's per-share, for options it's
+        # already total cost per contract (avg_cost_per_share * multiplier).
+        # So cost_basis = averageCost * abs(qty) for both.
+        cost_basis = avg_cost * abs(qty)
+
+        pct_return = (unrealized_pnl / cost_basis * 100) if cost_basis > 0 else 0.0
+
+        positions.append(Position(
+            symbol=sym,
+            sec_type=c.secType,
+            right=getattr(c, "right", ""),
+            strike=float(getattr(c, "strike", 0)),
+            expiry=expiry,
+            dte=dte,
+            qty=qty,
+            avg_cost=round(avg_cost, 4),
+            market_price=round(market_price, 4),
+            market_value=round(market_value, 2),
+            unrealized_pnl=round(unrealized_pnl, 2),
+            realized_pnl=round(realized_pnl, 2),
+            cost_basis=round(cost_basis, 2),
+            pct_return=round(pct_return, 2),
+            con_id=c.conId,
+        ))
+
+    positions.sort(key=lambda p: (p.symbol, p.sec_type, p.expiry, p.strike))
+    return positions
+
+
+def get_open_orders(ib: IB, symbols: list[str] | None = None) -> list[OpenOrder]:
+    """
+    Fetch currently open orders from IBKR.
+
+    Optionally filter by symbol list.
+    """
+    # Pull account-wide open orders so reads from a different clientId still
+    # see working orders placed earlier by the executor or the phone.
+    ib.reqAllOpenOrders()
+    ib.sleep(1.0)
+
+    orders = []
+    for trade in ib.openTrades():
+        contract = trade.contract
+        symbol = getattr(contract, "symbol", "")
+
+        if symbols and symbol not in symbols:
+            continue
+
+        expiry = ""
+        if getattr(contract, "secType", "") == "OPT":
+            expiry = getattr(contract, "lastTradeDateOrContractMonth", "")
+
+        orders.append(OpenOrder(
+            order_id=trade.order.orderId,
+            perm_id=trade.order.permId,
+            symbol=symbol,
+            sec_type=getattr(contract, "secType", ""),
+            expiry=expiry,
+            strike=float(getattr(contract, "strike", 0.0)),
+            right=getattr(contract, "right", ""),
+            action=trade.order.action,
+            order_type=trade.order.orderType,
+            tif=trade.order.tif,
+            quantity=int(trade.order.totalQuantity),
+            limit_price=_safe_float(getattr(trade.order, "lmtPrice", None)),
+            status=trade.orderStatus.status,
+            filled=_safe_float(trade.orderStatus.filled),
+            remaining=_safe_float(trade.orderStatus.remaining),
+        ))
+
+    orders.sort(key=lambda o: (o.symbol, o.expiry, o.strike, o.order_id))
+    return orders
+
+
+def get_account_summary(
+    ib: IB,
+    tags: set[str] | None = None,
+    currencies: set[str] | None = None,
+) -> list[AccountMetric]:
+    """
+    Fetch account summary metrics from IBKR.
+
+    tags: optional set of summary tag names to keep.
+    currencies: optional set of currencies to keep, e.g. {"USD", "BASE"}.
+    """
+    metrics = []
+    for row in ib.accountSummary():
+        if tags and row.tag not in tags:
+            continue
+        if currencies and row.currency not in currencies:
+            continue
+        metrics.append(AccountMetric(
+            account=row.account,
+            tag=row.tag,
+            value=row.value,
+            currency=row.currency,
+        ))
+
+    metrics.sort(key=lambda m: (m.currency, m.tag))
+    return metrics
+
+
+def get_recent_fills(ib: IB, symbols: list[str] | None = None) -> list[FillEvent]:
+    """
+    Fetch recent execution fills from IBKR.
+
+    Optionally filter by symbol list.
+    """
+    fills = []
+    for fill in ib.fills():
+        contract = fill.contract
+        symbol = getattr(contract, "symbol", "")
+        if symbols and symbol not in symbols:
+            continue
+
+        expiry = ""
+        if getattr(contract, "secType", "") == "OPT":
+            expiry = getattr(contract, "lastTradeDateOrContractMonth", "")
+
+        execution = fill.execution
+        fills.append(FillEvent(
+            order_id=execution.orderId,
+            perm_id=execution.permId,
+            client_id=execution.clientId,
+            exec_id=execution.execId,
+            symbol=symbol,
+            sec_type=getattr(contract, "secType", ""),
+            expiry=expiry,
+            strike=float(getattr(contract, "strike", 0.0)),
+            right=getattr(contract, "right", ""),
+            side=execution.side,
+            shares=_safe_float(execution.shares),
+            price=_safe_float(execution.price),
+            time=str(execution.time),
+        ))
+
+    fills.sort(key=lambda f: (f.time, f.order_id, f.exec_id))
+    return fills
+
+
+def print_portfolio(positions: list[Position]) -> None:
+    """Pretty-print a list of positions with P&L."""
+    total_market_value = sum(p.market_value for p in positions)
+    total_cost = sum(p.cost_basis for p in positions)
+    total_unrealized = sum(p.unrealized_pnl for p in positions)
+    total_pct = (total_unrealized / total_cost * 100) if total_cost > 0 else 0.0
+
+    print(f"\n{'='*95}")
+    print(f"  PORTFOLIO — {len(positions)} positions")
+    print(f"{'='*95}")
+
+    current_sym = None
+    sym_pnl = 0.0
+    sym_cost = 0.0
+
+    def print_sym_subtotal():
+        if current_sym and sym_cost > 0:
+            sym_pct = sym_pnl / sym_cost * 100
+            print(f"  {'':>8}  subtotal: ${sym_pnl:+,.0f}  ({sym_pct:+.1f}%)  cost=${sym_cost:,.0f}")
+
+    for pos in positions:
+        if pos.symbol != current_sym:
+            print_sym_subtotal()
+            current_sym = pos.symbol
+            sym_pnl = 0.0
+            sym_cost = 0.0
+            print(f"\n  {current_sym}")
+            print(f"  {'─'*85}")
+
+        sym_pnl += pos.unrealized_pnl
+        sym_cost += pos.cost_basis
+        pnl_str = f"${pos.unrealized_pnl:+,.0f}"
+        pct_str = f"{pos.pct_return:+.1f}%"
+        mkt_str = f"${pos.market_price:.2f}" if pos.market_price else "N/A"
+
+        if pos.sec_type == "STK":
+            print(
+                f"    STOCK  {pos.qty:+d} shares  "
+                f"avg=${pos.avg_cost:.2f}  mkt={mkt_str}  "
+                f"P&L={pnl_str} ({pct_str})"
+            )
+        else:
+            dte_str = f"DTE={pos.dte}" if pos.dte is not None else ""
+            print(
+                f"    {pos.strike:>8.1f}{pos.right}  "
+                f"{pos.expiry}  {pos.qty:+4d}  "
+                f"avg=${pos.avg_cost:.2f}  mkt={mkt_str}  "
+                f"P&L={pnl_str} ({pct_str})  {dte_str}"
+            )
+
+    print_sym_subtotal()
+
+    print(f"\n{'='*95}")
+    print(f"  Cost Basis:     ${total_cost:>14,.2f}")
+    print(f"  Market Value:   ${total_market_value:>14,.2f}")
+    print(f"  Unrealized P&L: ${total_unrealized:>+14,.2f}  ({total_pct:+.1f}%)")
+    print(f"{'='*95}")
+
+
+def print_open_orders(orders: list[OpenOrder]) -> None:
+    """Pretty-print current open orders."""
+    print(f"\n{'='*95}")
+    print(f"  OPEN ORDERS — {len(orders)}")
+    print(f"{'='*95}")
+
+    if not orders:
+        print("  none")
+        print(f"{'='*95}")
+        return
+
+    for order in orders:
+        contract_bits = [order.symbol]
+        if order.sec_type == "OPT":
+            contract_bits.append(order.expiry)
+            contract_bits.append(f"{order.strike:.1f}{order.right}")
+        contract_label = " ".join(contract_bits)
+        limit_str = f"${order.limit_price:.2f}" if order.limit_price else "MKT"
+        print(
+            f"  id={order.order_id:<4d} {contract_label:<28}"
+            f" {order.action:<4} {order.quantity:>4d}"
+            f" {order.order_type:<3} {limit_str:<8}"
+            f" tif={order.tif:<3} status={order.status:<12}"
+            f" filled={order.filled:g} remaining={order.remaining:g}"
+        )
+
+    print(f"{'='*95}")
+
+
+def print_account_summary(metrics: list[AccountMetric]) -> None:
+    """Pretty-print selected account summary metrics."""
+    print(f"\n{'='*95}")
+    print(f"  ACCOUNT SUMMARY — {len(metrics)} metrics")
+    print(f"{'='*95}")
+
+    if not metrics:
+        print("  none")
+        print(f"{'='*95}")
+        return
+
+    for metric in metrics:
+        print(f"  {metric.tag:<20} {metric.value:>16} {metric.currency}")
+
+    print(f"{'='*95}")
+
+
+def print_recent_fills(fills: list[FillEvent]) -> None:
+    """Pretty-print execution fills."""
+    print(f"\n{'='*95}")
+    print(f"  FILLS — {len(fills)}")
+    print(f"{'='*95}")
+
+    if not fills:
+        print("  none")
+        print(f"{'='*95}")
+        return
+
+    for fill in fills:
+        contract_bits = [fill.symbol]
+        if fill.sec_type == "OPT":
+            contract_bits.append(fill.expiry)
+            contract_bits.append(f"{fill.strike:.1f}{fill.right}")
+        contract_label = " ".join(contract_bits)
+        print(
+            f"  orderId={fill.order_id:<4d} {contract_label:<28}"
+            f" side={fill.side:<3} shares={fill.shares:g}"
+            f" price=${fill.price:.2f} time={fill.time}"
+        )
+
+    print(f"{'='*95}")

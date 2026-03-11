@@ -1,0 +1,161 @@
+{
+  "description": "Incremental photonics stock buys — ~USD 100K across AAOI, AXTI, IQE, SOI, and 5210",
+  "generated": "2026-03-12",
+  "notes": [
+    "Additive to current open photonics bids unless those are cancelled separately.",
+    "Pricing is set as near-market-to-pullback ladders based on March 12, 2026 live checks.",
+    "IQE prices are in pence and 5210 prices are in yen."
+  ],
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AAOI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 53,
+          "lmtPrice": 126.0,
+          "note": "AAOI near tape add"
+        },
+        {
+          "tranche": 2,
+          "quantity": 54,
+          "lmtPrice": 123.0,
+          "note": "AAOI modest pullback"
+        },
+        {
+          "tranche": 3,
+          "quantity": 55,
+          "lmtPrice": 120.0,
+          "note": "AAOI deeper pullback"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AXTI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 175,
+          "lmtPrice": 47.0,
+          "note": "AXTI near tape add"
+        },
+        {
+          "tranche": 2,
+          "quantity": 180,
+          "lmtPrice": 45.0,
+          "note": "AXTI modest pullback"
+        },
+        {
+          "tranche": 3,
+          "quantity": 195,
+          "lmtPrice": 44.0,
+          "note": "AXTI deeper pullback"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 16000,
+          "lmtPrice": 23.0,
+          "note": "IQE near tape add"
+        },
+        {
+          "tranche": 2,
+          "quantity": 17000,
+          "lmtPrice": 22.0,
+          "note": "IQE pullback add"
+        },
+        {
+          "tranche": 3,
+          "quantity": 18000,
+          "lmtPrice": 21.0,
+          "note": "IQE deeper pullback"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "SOI",
+        "exchange": "SMART",
+        "currency": "EUR"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 134,
+          "lmtPrice": 54.0,
+          "note": "SOI near ask add"
+        },
+        {
+          "tranche": 2,
+          "quantity": 136,
+          "lmtPrice": 53.0,
+          "note": "SOI pullback add"
+        },
+        {
+          "tranche": 3,
+          "quantity": 138,
+          "lmtPrice": 52.0,
+          "note": "SOI deeper pullback"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "5210",
+        "exchange": "SMART",
+        "currency": "JPY"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 200,
+          "lmtPrice": 3100.0,
+          "note": "5210 near tape add"
+        },
+        {
+          "tranche": 2,
+          "quantity": 300,
+          "lmtPrice": 3000.0,
+          "note": "5210 round-number pullback"
+        },
+        {
+          "tranche": 3,
+          "quantity": 300,
+          "lmtPrice": 2850.0,
+          "note": "5210 deeper pullback"
+        }
+      ]
+    }
+  ]
+}

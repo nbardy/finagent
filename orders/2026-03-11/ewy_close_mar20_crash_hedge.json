@@ -1,0 +1,56 @@
+{
+  "description": "EWY close Mar 20 2026 135/121 crash hedge",
+  "generated": "2026-03-11",
+  "notes": "Close the full 42-lot Mar 20 2026 135/121 put spread as a paired BAG. Aggressive staged exit based on current combo value around 5.6.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 121.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "SELL",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 14,
+          "lmtPrice": 5.55,
+          "note": "Close Mar20 crash hedge 1",
+          "tif": "DAY"
+        },
+        {
+          "tranche": 2,
+          "quantity": 14,
+          "lmtPrice": 5.4,
+          "note": "Close Mar20 crash hedge 2",
+          "tif": "DAY"
+        },
+        {
+          "tranche": 3,
+          "quantity": 14,
+          "lmtPrice": 5.2,
+          "note": "Close Mar20 crash hedge 3",
+          "tif": "DAY"
+        }
+      ]
+    }
+  ]
+}

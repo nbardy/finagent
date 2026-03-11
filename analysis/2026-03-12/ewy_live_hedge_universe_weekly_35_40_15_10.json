@@ -1,0 +1,813 @@
+{
+  "schema_version": "1.0",
+  "analysis_type": "ewy_live_hedge_universe_weekly_35_40_15_10",
+  "as_of": "2026-03-12",
+  "symbol": "EWY",
+  "quote_source": "IBKR historical close + delayed-frozen options",
+  "target_budget": 25000.0,
+  "base_book_definition": "Current live EWY option book excluding existing Apr10 135/120 put hedge; includes current short-call sleeve.",
+  "market_refresh": {
+    "source": "IBKR historical close + delayed-frozen options",
+    "succeeded": true,
+    "fallback_to_disk": false,
+    "refreshed_spot": 131.71
+  },
+  "scenarios": [
+    {
+      "label": "Bottom Apr02 then rebound by earnings",
+      "probability": 0.35,
+      "days": 21,
+      "spot": 123.81,
+      "vol_shift": 0.03
+    },
+    {
+      "label": "Bottom Apr10 then rebound by earnings",
+      "probability": 0.4,
+      "days": 29,
+      "spot": 122.49,
+      "vol_shift": 0.02
+    },
+    {
+      "label": "Choppy hold into earnings window",
+      "probability": 0.15,
+      "days": 29,
+      "spot": 131.71,
+      "vol_shift": 0.01
+    },
+    {
+      "label": "Early squeeze higher before earnings",
+      "probability": 0.1,
+      "days": 29,
+      "spot": 142.25,
+      "vol_shift": -0.05
+    }
+  ],
+  "candidate_count": 54,
+  "excluded_strikes_by_expiry": {
+    "2026-04-02": [
+      115.0,
+      120.0,
+      125.0,
+      135.0,
+      140.0,
+      145.0
+    ],
+    "2026-04-10": [
+      115.0,
+      150.0
+    ],
+    "2026-04-17": [
+      115.0
+    ],
+    "2026-05-15": [
+      115.0,
+      120.0,
+      125.0,
+      130.0
+    ]
+  },
+  "top_ranked": [
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130P cal x156",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 35663.18,
+      "expected_combined_pnl": 57520.18,
+      "weighted_downside_coverage_pct": 92.9,
+      "avg_combined_pnl_when_downside": 24943.11
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130P cal x263",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24985.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 30207.23,
+      "expected_combined_pnl": 52064.22,
+      "weighted_downside_coverage_pct": 93.9,
+      "avg_combined_pnl_when_downside": 25402.09
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135P cal x88",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25080.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 22089.71,
+      "expected_combined_pnl": 43946.71,
+      "weighted_downside_coverage_pct": 34.5,
+      "avg_combined_pnl_when_downside": -2601.35
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 110P cal x99",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24997.5,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 14983.15,
+      "expected_combined_pnl": 36840.15,
+      "weighted_downside_coverage_pct": 49.3,
+      "avg_combined_pnl_when_downside": 4395.18
+    },
+    {
+      "name": "Add + 2026-04-02 150/130 x19",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24510.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 11055.28,
+      "expected_combined_pnl": 32912.27,
+      "weighted_downside_coverage_pct": 28.6,
+      "avg_combined_pnl_when_downside": -5374.2
+    },
+    {
+      "name": "Add + 2026-04-10 145/130 x29",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25375.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10873.28,
+      "expected_combined_pnl": 32730.28,
+      "weighted_downside_coverage_pct": 37.8,
+      "avg_combined_pnl_when_downside": -1051.11
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 140P cal x81",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25110.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10838.47,
+      "expected_combined_pnl": 32695.46,
+      "weighted_downside_coverage_pct": 3.7,
+      "avg_combined_pnl_when_downside": -17138.55
+    },
+    {
+      "name": "Add + 2026-04-10 145/120 x21",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25515.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10565.18,
+      "expected_combined_pnl": 32422.18,
+      "weighted_downside_coverage_pct": 42.1,
+      "avg_combined_pnl_when_downside": 975.23
+    },
+    {
+      "name": "Add + 2026-04-10 145/125 x23",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24955.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10458.45,
+      "expected_combined_pnl": 32315.45,
+      "weighted_downside_coverage_pct": 40.4,
+      "avg_combined_pnl_when_downside": 171.03
+    },
+    {
+      "name": "Add + 2026-04-10 140/130 x44",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24860.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9890.31,
+      "expected_combined_pnl": 31747.31,
+      "weighted_downside_coverage_pct": 39.6,
+      "avg_combined_pnl_when_downside": -194.24
+    },
+    {
+      "name": "Add + 2026-04-10 140/120 x28",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25340.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9882.41,
+      "expected_combined_pnl": 31739.4,
+      "weighted_downside_coverage_pct": 44.8,
+      "avg_combined_pnl_when_downside": 2270.4
+    },
+    {
+      "name": "Add + 2026-04-10 140/125 x32",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24800.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9745.74,
+      "expected_combined_pnl": 31602.74,
+      "weighted_downside_coverage_pct": 43.3,
+      "avg_combined_pnl_when_downside": 1541.92
+    },
+    {
+      "name": "Add + 2026-04-10 130/125 x119",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24990.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9493.16,
+      "expected_combined_pnl": 31350.16,
+      "weighted_downside_coverage_pct": 53.8,
+      "avg_combined_pnl_when_downside": 6527.31
+    },
+    {
+      "name": "Add + 2026-04-10 130/120 x74",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25160.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9484.08,
+      "expected_combined_pnl": 31341.08,
+      "weighted_downside_coverage_pct": 51.9,
+      "avg_combined_pnl_when_downside": 5592.06
+    },
+    {
+      "name": "Add + 2026-04-10 125/120 x192",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9290.64,
+      "expected_combined_pnl": 31147.64,
+      "weighted_downside_coverage_pct": 47.7,
+      "avg_combined_pnl_when_downside": 3622.06
+    },
+    {
+      "name": "Add + 2026-04-10 135/120 x41",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25215.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9086.46,
+      "expected_combined_pnl": 30943.46,
+      "weighted_downside_coverage_pct": 47.4,
+      "avg_combined_pnl_when_downside": 3496.96
+    },
+    {
+      "name": "Add + 2026-04-10 135/125 x52",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25220.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9008.08,
+      "expected_combined_pnl": 30865.08,
+      "weighted_downside_coverage_pct": 47.2,
+      "avg_combined_pnl_when_downside": 3406.27
+    },
+    {
+      "name": "Add + 2026-04-10 135/130 x91",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25025.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8504.66,
+      "expected_combined_pnl": 30361.66,
+      "weighted_downside_coverage_pct": 41.5,
+      "avg_combined_pnl_when_downside": 692.09
+    },
+    {
+      "name": "Add + 2026-04-17 140/130 x47",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24910.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8314.52,
+      "expected_combined_pnl": 30171.52,
+      "weighted_downside_coverage_pct": 31.0,
+      "avg_combined_pnl_when_downside": -4237.01
+    },
+    {
+      "name": "Add + 2026-04-17 140/125 x34",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24820.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8140.21,
+      "expected_combined_pnl": 29997.21,
+      "weighted_downside_coverage_pct": 31.6,
+      "avg_combined_pnl_when_downside": -3976.23
+    }
+  ],
+  "all_ranked": [
+    {
+      "name": "Add + 2026-04-02/2026-04-17 130P cal x156",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 35663.18,
+      "expected_combined_pnl": 57520.18,
+      "weighted_downside_coverage_pct": 92.9,
+      "avg_combined_pnl_when_downside": 24943.11
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 130P cal x263",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24985.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 30207.23,
+      "expected_combined_pnl": 52064.22,
+      "weighted_downside_coverage_pct": 93.9,
+      "avg_combined_pnl_when_downside": 25402.09
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 135P cal x88",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25080.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 22089.71,
+      "expected_combined_pnl": 43946.71,
+      "weighted_downside_coverage_pct": 34.5,
+      "avg_combined_pnl_when_downside": -2601.35
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 110P cal x99",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24997.5,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 14983.15,
+      "expected_combined_pnl": 36840.15,
+      "weighted_downside_coverage_pct": 49.3,
+      "avg_combined_pnl_when_downside": 4395.18
+    },
+    {
+      "name": "Add + 2026-04-02 150/130 x19",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24510.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 11055.28,
+      "expected_combined_pnl": 32912.27,
+      "weighted_downside_coverage_pct": 28.6,
+      "avg_combined_pnl_when_downside": -5374.2
+    },
+    {
+      "name": "Add + 2026-04-10 145/130 x29",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25375.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10873.28,
+      "expected_combined_pnl": 32730.28,
+      "weighted_downside_coverage_pct": 37.8,
+      "avg_combined_pnl_when_downside": -1051.11
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 140P cal x81",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25110.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10838.47,
+      "expected_combined_pnl": 32695.46,
+      "weighted_downside_coverage_pct": 3.7,
+      "avg_combined_pnl_when_downside": -17138.55
+    },
+    {
+      "name": "Add + 2026-04-10 145/120 x21",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25515.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10565.18,
+      "expected_combined_pnl": 32422.18,
+      "weighted_downside_coverage_pct": 42.1,
+      "avg_combined_pnl_when_downside": 975.23
+    },
+    {
+      "name": "Add + 2026-04-10 145/125 x23",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24955.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 10458.45,
+      "expected_combined_pnl": 32315.45,
+      "weighted_downside_coverage_pct": 40.4,
+      "avg_combined_pnl_when_downside": 171.03
+    },
+    {
+      "name": "Add + 2026-04-10 140/130 x44",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24860.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9890.31,
+      "expected_combined_pnl": 31747.31,
+      "weighted_downside_coverage_pct": 39.6,
+      "avg_combined_pnl_when_downside": -194.24
+    },
+    {
+      "name": "Add + 2026-04-10 140/120 x28",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25340.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9882.41,
+      "expected_combined_pnl": 31739.4,
+      "weighted_downside_coverage_pct": 44.8,
+      "avg_combined_pnl_when_downside": 2270.4
+    },
+    {
+      "name": "Add + 2026-04-10 140/125 x32",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24800.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9745.74,
+      "expected_combined_pnl": 31602.74,
+      "weighted_downside_coverage_pct": 43.3,
+      "avg_combined_pnl_when_downside": 1541.92
+    },
+    {
+      "name": "Add + 2026-04-10 130/125 x119",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24990.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9493.16,
+      "expected_combined_pnl": 31350.16,
+      "weighted_downside_coverage_pct": 53.8,
+      "avg_combined_pnl_when_downside": 6527.31
+    },
+    {
+      "name": "Add + 2026-04-10 130/120 x74",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25160.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9484.08,
+      "expected_combined_pnl": 31341.08,
+      "weighted_downside_coverage_pct": 51.9,
+      "avg_combined_pnl_when_downside": 5592.06
+    },
+    {
+      "name": "Add + 2026-04-10 125/120 x192",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9290.64,
+      "expected_combined_pnl": 31147.64,
+      "weighted_downside_coverage_pct": 47.7,
+      "avg_combined_pnl_when_downside": 3622.06
+    },
+    {
+      "name": "Add + 2026-04-10 135/120 x41",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25215.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9086.46,
+      "expected_combined_pnl": 30943.46,
+      "weighted_downside_coverage_pct": 47.4,
+      "avg_combined_pnl_when_downside": 3496.96
+    },
+    {
+      "name": "Add + 2026-04-10 135/125 x52",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25220.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 9008.08,
+      "expected_combined_pnl": 30865.08,
+      "weighted_downside_coverage_pct": 47.2,
+      "avg_combined_pnl_when_downside": 3406.27
+    },
+    {
+      "name": "Add + 2026-04-10 135/130 x91",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25025.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8504.66,
+      "expected_combined_pnl": 30361.66,
+      "weighted_downside_coverage_pct": 41.5,
+      "avg_combined_pnl_when_downside": 692.09
+    },
+    {
+      "name": "Add + 2026-04-17 140/130 x47",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24910.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8314.52,
+      "expected_combined_pnl": 30171.52,
+      "weighted_downside_coverage_pct": 31.0,
+      "avg_combined_pnl_when_downside": -4237.01
+    },
+    {
+      "name": "Add + 2026-04-17 140/125 x34",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24820.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 8140.21,
+      "expected_combined_pnl": 29997.21,
+      "weighted_downside_coverage_pct": 31.6,
+      "avg_combined_pnl_when_downside": -3976.23
+    },
+    {
+      "name": "Add + 2026-04-17 130/125 x125",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25000.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 7814.15,
+      "expected_combined_pnl": 29671.15,
+      "weighted_downside_coverage_pct": 33.6,
+      "avg_combined_pnl_when_downside": -3031.12
+    },
+    {
+      "name": "Add + 2026-04-17 145/125 x23",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24840.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 7213.45,
+      "expected_combined_pnl": 29070.45,
+      "weighted_downside_coverage_pct": 27.4,
+      "avg_combined_pnl_when_downside": -5922.61
+    },
+    {
+      "name": "Add + 2026-04-17 145/130 x28",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24640.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 7031.22,
+      "expected_combined_pnl": 28888.22,
+      "weighted_downside_coverage_pct": 25.9,
+      "avg_combined_pnl_when_downside": -6655.83
+    },
+    {
+      "name": "Add + 2026-04-17 135/125 x54",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24840.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6935.25,
+      "expected_combined_pnl": 28792.24,
+      "weighted_downside_coverage_pct": 30.1,
+      "avg_combined_pnl_when_downside": -4684.79
+    },
+    {
+      "name": "Add + 2026-04-17 140/120 x27",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24570.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6929.24,
+      "expected_combined_pnl": 28786.23,
+      "weighted_downside_coverage_pct": 28.8,
+      "avg_combined_pnl_when_downside": -5272.37
+    },
+    {
+      "name": "Add + 2026-04-17 145/120 x20",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25200.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6616.97,
+      "expected_combined_pnl": 28473.97,
+      "weighted_downside_coverage_pct": 26.6,
+      "avg_combined_pnl_when_downside": -6300.25
+    },
+    {
+      "name": "Add + 2026-04-17 150/125 x17",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24990.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6438.02,
+      "expected_combined_pnl": 28295.02,
+      "weighted_downside_coverage_pct": 23.9,
+      "avg_combined_pnl_when_downside": -7604.43
+    },
+    {
+      "name": "Add + 2026-04-17 135/130 x96",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6328.06,
+      "expected_combined_pnl": 28185.06,
+      "weighted_downside_coverage_pct": 27.7,
+      "avg_combined_pnl_when_downside": -5816.17
+    },
+    {
+      "name": "Add + 2026-04-17 150/130 x20",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25400.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 6323.88,
+      "expected_combined_pnl": 28180.88,
+      "weighted_downside_coverage_pct": 22.7,
+      "avg_combined_pnl_when_downside": -8150.7
+    },
+    {
+      "name": "Add + 2026-04-17 150/120 x15",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24750.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5938.92,
+      "expected_combined_pnl": 27795.91,
+      "weighted_downside_coverage_pct": 23.2,
+      "avg_combined_pnl_when_downside": -7946.31
+    },
+    {
+      "name": "Add + 2026-04-10 145/110 x17",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25542.5,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5811.53,
+      "expected_combined_pnl": 27668.53,
+      "weighted_downside_coverage_pct": 26.9,
+      "avg_combined_pnl_when_downside": -6181.13
+    },
+    {
+      "name": "Add + 2026-04-17 135/120 x39",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24960.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5680.39,
+      "expected_combined_pnl": 27537.39,
+      "weighted_downside_coverage_pct": 27.1,
+      "avg_combined_pnl_when_downside": -6068.25
+    },
+    {
+      "name": "Add + 2026-04-17 130/120 x66",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25080.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5262.43,
+      "expected_combined_pnl": 27119.42,
+      "weighted_downside_coverage_pct": 26.9,
+      "avg_combined_pnl_when_downside": -6180.04
+    },
+    {
+      "name": "Add + 2026-04-17 145/110 x17",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25755.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5145.62,
+      "expected_combined_pnl": 27002.62,
+      "weighted_downside_coverage_pct": 23.0,
+      "avg_combined_pnl_when_downside": -7995.66
+    },
+    {
+      "name": "Add + 2026-04-02 150/110 x13",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24765.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 5075.36,
+      "expected_combined_pnl": 26932.35,
+      "weighted_downside_coverage_pct": 16.3,
+      "avg_combined_pnl_when_downside": -11172.68
+    },
+    {
+      "name": "Add + 2026-04-17 140/110 x21",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24465.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 4797.94,
+      "expected_combined_pnl": 26654.94,
+      "weighted_downside_coverage_pct": 22.9,
+      "avg_combined_pnl_when_downside": -8059.08
+    },
+    {
+      "name": "Add + 2026-04-17 150/110 x13",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24765.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 4780.92,
+      "expected_combined_pnl": 26637.91,
+      "weighted_downside_coverage_pct": 20.4,
+      "avg_combined_pnl_when_downside": -9257.36
+    },
+    {
+      "name": "Add + 2026-05-15 135/110 x27",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25245.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 4321.26,
+      "expected_combined_pnl": 26178.25,
+      "weighted_downside_coverage_pct": 17.0,
+      "avg_combined_pnl_when_downside": -10856.42
+    },
+    {
+      "name": "Add + 2026-04-10 140/110 x21",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25042.5,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 4025.57,
+      "expected_combined_pnl": 25882.57,
+      "weighted_downside_coverage_pct": 24.8,
+      "avg_combined_pnl_when_downside": -7185.35
+    },
+    {
+      "name": "Add + 2026-05-15 150/110 x13",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24635.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 3653.98,
+      "expected_combined_pnl": 25510.98,
+      "weighted_downside_coverage_pct": 14.0,
+      "avg_combined_pnl_when_downside": -12273.92
+    },
+    {
+      "name": "Add + 2026-05-15 145/110 x16",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25040.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 3533.0,
+      "expected_combined_pnl": 25390.0,
+      "weighted_downside_coverage_pct": 14.2,
+      "avg_combined_pnl_when_downside": -12155.66
+    },
+    {
+      "name": "Add + 2026-05-15 140/110 x20",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25000.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 3483.15,
+      "expected_combined_pnl": 25340.14,
+      "weighted_downside_coverage_pct": 14.5,
+      "avg_combined_pnl_when_downside": -12014.27
+    },
+    {
+      "name": "Add + 2026-04-17 135/110 x28",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25060.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 3289.61,
+      "expected_combined_pnl": 25146.61,
+      "weighted_downside_coverage_pct": 20.1,
+      "avg_combined_pnl_when_downside": -9365.77
+    },
+    {
+      "name": "Add + 2026-04-10/2026-05-15 145P cal x79",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24885.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 2393.92,
+      "expected_combined_pnl": 24250.92,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -26119.23
+    },
+    {
+      "name": "Add + 2026-04-17 125/120 x139",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25020.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 2393.65,
+      "expected_combined_pnl": 24250.65,
+      "weighted_downside_coverage_pct": 19.3,
+      "avg_combined_pnl_when_downside": -9756.98
+    },
+    {
+      "name": "Add + 2026-04-17 130/110 x39",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24765.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 2011.18,
+      "expected_combined_pnl": 23868.18,
+      "weighted_downside_coverage_pct": 16.8,
+      "avg_combined_pnl_when_downside": -10935.0
+    },
+    {
+      "name": "Add + 2026-04-10 135/110 x28",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25270.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": 1690.42,
+      "expected_combined_pnl": 23547.41,
+      "weighted_downside_coverage_pct": 20.6,
+      "avg_combined_pnl_when_downside": -9155.97
+    },
+    {
+      "name": "Add + 2026-04-17 125/110 x57",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 24795.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -623.83,
+      "expected_combined_pnl": 21233.16,
+      "weighted_downside_coverage_pct": 9.3,
+      "avg_combined_pnl_when_downside": -14495.26
+    },
+    {
+      "name": "Add + 2026-04-10 130/110 x40",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25100.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -1323.43,
+      "expected_combined_pnl": 20533.56,
+      "weighted_downside_coverage_pct": 11.2,
+      "avg_combined_pnl_when_downside": -13591.47
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 110P cal x179",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25060.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -2578.16,
+      "expected_combined_pnl": 19278.84,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -26174.82
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-17 150P cal x179",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 25060.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -6632.38,
+      "expected_combined_pnl": 15224.62,
+      "weighted_downside_coverage_pct": 40.4,
+      "avg_combined_pnl_when_downside": 197.69
+    },
+    {
+      "name": "Add + 2026-04-10 125/110 x60",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25050.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -6771.62,
+      "expected_combined_pnl": 15085.38,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -23757.55
+    },
+    {
+      "name": "Add + 2026-04-02 130/110 x41",
+      "vehicle_type": "put_spread_overlay",
+      "entry_cost": 25215.0,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -7849.23,
+      "expected_combined_pnl": 14007.77,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -23716.34
+    },
+    {
+      "name": "Add + 2026-04-02/2026-04-10 110P cal x303",
+      "vehicle_type": "put_calendar_overlay",
+      "entry_cost": 24997.5,
+      "expected_book_pnl": 21857.0,
+      "expected_overlay_pnl": -13181.2,
+      "expected_combined_pnl": 8675.79,
+      "weighted_downside_coverage_pct": 0.0,
+      "avg_combined_pnl_when_downside": -43664.82
+    }
+  ]
+}

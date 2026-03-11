@@ -1,0 +1,50 @@
+{
+  "description": "EWY broader coverage overwrite - sell 60 Apr 17 150C",
+  "generated": "2026-03-11",
+  "notes": "Additive broader-coverage overlay on top of the existing Mar 20 135/121 crash sleeve. Refreshed public close quote for EWY Apr 17 150C was 4.2 x 5.2, mid 4.7. Quantity intentionally capped at 60 even though current safe-cover inventory is higher.",
+  "trades": [
+    {
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260417",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "action": "SELL",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 5.15,
+          "note": "Catch hostile open vol"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 5.0,
+          "note": "Near current ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 20,
+          "lmtPrice": 4.85,
+          "note": "Working lower level"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 132.73,
+    "reference_bid": 4.2,
+    "reference_ask": 5.2,
+    "reference_mid": 4.7,
+    "safe_cover_quantity_reference": 97,
+    "selected_quantity": 60,
+    "gross_credit_mid_estimate": 28200.0,
+    "gross_credit_ladder_estimate": 30000.0
+  }
+}

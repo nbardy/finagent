@@ -1,0 +1,377 @@
+{
+  "generated": "2026-03-11",
+  "as_of": "2026-03-10T16:00:00-04:00",
+  "spot": 130.300003,
+  "risk_free_rate": 0.045,
+  "entry_assumptions": {
+    "mar20_135_121_spread": 7.2333333333,
+    "apr10_150C_short": 3.8,
+    "apr10_135_125_spread": 6.0,
+    "may15_130_120_spread": 6.2,
+    "may15_130P": 14.2
+  },
+  "quotes": {
+    "mar20_135P": {
+      "strike": 135.0,
+      "right": "P",
+      "expiry": "20260320",
+      "bid": 8.8,
+      "ask": 9.8,
+      "mid": 9.3,
+      "iv": 0.7287624780273438,
+      "last": 7.94,
+      "volume": 30,
+      "open_interest": 6077
+    },
+    "mar20_121P": {
+      "strike": 121.0,
+      "right": "P",
+      "expiry": "20260320",
+      "bid": 2.9,
+      "ask": 3.4,
+      "mid": 3.15,
+      "iv": 0.7839377075195313,
+      "last": 3.2,
+      "volume": 32,
+      "open_interest": 676
+    },
+    "apr10_150C": {
+      "strike": 150.0,
+      "right": "C",
+      "expiry": "20260410",
+      "bid": 3.3,
+      "ask": 4.3,
+      "mid": 3.8,
+      "iv": 0.6630893066406252,
+      "last": 3.5,
+      "volume": 46,
+      "open_interest": 150
+    },
+    "apr10_135P": {
+      "strike": 135.0,
+      "right": "P",
+      "expiry": "20260410",
+      "bid": 11.2,
+      "ask": 13.2,
+      "mid": 12.2,
+      "iv": 0.6180458117675782,
+      "last": 12.8,
+      "volume": 16,
+      "open_interest": 75
+    },
+    "apr10_125P": {
+      "strike": 125.0,
+      "right": "P",
+      "expiry": "20260410",
+      "bid": 7.2,
+      "ask": 8.7,
+      "mid": 7.949999999999999,
+      "iv": 0.6900665759277345,
+      "last": 5.8,
+      "volume": 1,
+      "open_interest": 35
+    },
+    "may15_130P": {
+      "strike": 130.0,
+      "right": "P",
+      "expiry": "20260515",
+      "bid": 12.4,
+      "ask": 14.7,
+      "mid": 13.55,
+      "iv": 0.6176796044921876,
+      "last": 13.1,
+      "volume": 769,
+      "open_interest": 1710
+    },
+    "may15_120P": {
+      "strike": 120.0,
+      "right": "P",
+      "expiry": "20260515",
+      "bid": 8.5,
+      "ask": 9.4,
+      "mid": 8.95,
+      "iv": 0.6324499645996093,
+      "last": 8.8,
+      "volume": 732,
+      "open_interest": 674
+    }
+  },
+  "scenarios": [
+    {
+      "label": "Crash -8% in 1 week",
+      "days": 7,
+      "spot_pct": -0.08,
+      "vol_shift": 0.03,
+      "prob": 0.35
+    },
+    {
+      "label": "Orderly -8% over 1 month",
+      "days": 31,
+      "spot_pct": -0.08,
+      "vol_shift": 0.01,
+      "prob": 0.3
+    },
+    {
+      "label": "Choppy flat over 1 month",
+      "days": 31,
+      "spot_pct": 0.0,
+      "vol_shift": 0.0,
+      "prob": 0.2
+    },
+    {
+      "label": "Relief bounce +4% in 1 week",
+      "days": 7,
+      "spot_pct": 0.04,
+      "vol_shift": -0.03,
+      "prob": 0.15
+    }
+  ],
+  "results": [
+    {
+      "name": "mar20 crash sleeve x42 + short 60x apr10 150C",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 31823.64,
+          "combined_pnl": -48560.32,
+          "coverage_pct": 39.6
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 26282.83,
+          "combined_pnl": -101988.49,
+          "coverage_pct": 20.5
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": 12159.99,
+          "combined_pnl": -12431.13,
+          "coverage_pct": 49.4
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -18178.16,
+          "combined_pnl": -10070.82,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": 7580.0,
+      "expected_overlay_pnl": 18728.4,
+      "expected_combined_pnl": -51589.51,
+      "conditional_downside_coverage_pct": 35.2
+    },
+    {
+      "name": "mar20 crash sleeve x42 + short 60x apr10 150C + may15 130P x10",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 35619.49,
+          "combined_pnl": -44764.47,
+          "coverage_pct": 44.3
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 27256.17,
+          "combined_pnl": -101015.15,
+          "coverage_pct": 21.2
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": 7430.85,
+          "combined_pnl": -17160.27,
+          "coverage_pct": 30.2
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -22901.84,
+          "combined_pnl": -14794.5,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": 21780.0,
+      "expected_overlay_pnl": 18694.57,
+      "expected_combined_pnl": -51623.34,
+      "conditional_downside_coverage_pct": 32.8
+    },
+    {
+      "name": "short 60x apr10 150C + apr10 135/125 x30",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 16060.84,
+          "combined_pnl": -64323.12,
+          "coverage_pct": 20.0
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 34800.0,
+          "combined_pnl": -93471.32,
+          "coverage_pct": 27.1
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": 18899.99,
+          "combined_pnl": -5691.13,
+          "coverage_pct": 76.9
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -8396.57,
+          "combined_pnl": -289.23,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": -4800.0,
+      "expected_overlay_pnl": 18581.81,
+      "expected_combined_pnl": -51736.1,
+      "conditional_downside_coverage_pct": 35.9
+    },
+    {
+      "name": "mar20 crash sleeve x42 + short 60x apr10 150C + may15 130/120 x20",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 30833.79,
+          "combined_pnl": -49550.17,
+          "coverage_pct": 38.4
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 25653.82,
+          "combined_pnl": -102617.5,
+          "coverage_pct": 20.0
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": 8164.04,
+          "combined_pnl": -16427.08,
+          "coverage_pct": 33.2
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -23160.5,
+          "combined_pnl": -15053.16,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": 19980.0,
+      "expected_overlay_pnl": 16646.71,
+      "expected_combined_pnl": -53671.2,
+      "conditional_downside_coverage_pct": 30.7
+    },
+    {
+      "name": "apr10 135/125 put spread x49",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 888.5,
+          "combined_pnl": -79495.46,
+          "coverage_pct": 1.1
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 19600.0,
+          "combined_pnl": -108671.32,
+          "coverage_pct": 15.3
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": -6370.01,
+          "combined_pnl": -30961.13,
+          "coverage_pct": 0.0
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -13281.26,
+          "combined_pnl": -5173.92,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": 29400.0,
+      "expected_overlay_pnl": 2924.78,
+      "expected_combined_pnl": -67393.12,
+      "conditional_downside_coverage_pct": 5.9
+    },
+    {
+      "name": "mar20 crash sleeve x42",
+      "scenarios": [
+        {
+          "label": "Crash -8% in 1 week",
+          "spot": 119.88,
+          "book_pnl": -80383.96,
+          "overlay_pnl": 16306.78,
+          "combined_pnl": -64077.18,
+          "coverage_pct": 20.3
+        },
+        {
+          "label": "Orderly -8% over 1 month",
+          "spot": 119.88,
+          "book_pnl": -128271.32,
+          "overlay_pnl": 3482.83,
+          "combined_pnl": -124788.49,
+          "coverage_pct": 2.7
+        },
+        {
+          "label": "Choppy flat over 1 month",
+          "spot": 130.3,
+          "book_pnl": -24591.12,
+          "overlay_pnl": -10640.01,
+          "combined_pnl": -35231.13,
+          "coverage_pct": 0.0
+        },
+        {
+          "label": "Relief bounce +4% in 1 week",
+          "spot": 135.51,
+          "book_pnl": 8107.34,
+          "overlay_pnl": -17912.98,
+          "combined_pnl": -9805.64,
+          "coverage_pct": 0.0
+        }
+      ],
+      "net_entry_cash": 30380.0,
+      "expected_overlay_pnl": 1937.27,
+      "expected_combined_pnl": -68380.63,
+      "conditional_downside_coverage_pct": 9.3
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "schema_version": "2.0",
+  "analysis_type": "put_overlay_batch_scan",
+  "macro": {
+    "notes": "Bottom-window overlay scan for current EWY book plus planned call sales."
+  },
+  "market_refresh": {
+    "attempted": true,
+    "succeeded": true,
+    "fallback_to_disk": false,
+    "source": "ibkr",
+    "market_data_type": 3,
+    "old_spot": 130.3,
+    "refreshed_spot": 130.98
+  },
+  "spot": 130.98,
+  "risk_free_rate": 0.045,
+  "current_book_value": 559013.68,
+  "scenarios": [
+    {
+      "label": "Bottom Apr02 then rebound by earnings",
+      "probability": 0.35,
+      "days": 22,
+      "spot": 123.12,
+      "vol_shift": 0.03,
+      "book": {
+        "pnl": -62479.23
+      },
+      "book_pnl": -62479.23,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -62479.23
+          },
+          "overlay": {
+            "pnl": 34689.54
+          },
+          "combined": {
+            "pnl": -27789.69
+          },
+          "overlay_pnl": 34689.54,
+          "hedge_pnl": 34689.54,
+          "combined_pnl": -27789.69,
+          "coverage_pct": 55.5
+        }
+      }
+    },
+    {
+      "label": "Bottom Apr10 then rebound by earnings",
+      "probability": 0.4,
+      "days": 30,
+      "spot": 121.81,
+      "vol_shift": 0.02,
+      "book": {
+        "pnl": -98830.93
+      },
+      "book_pnl": -98830.93,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -98830.93
+          },
+          "overlay": {
+            "pnl": 35830.0
+          },
+          "combined": {
+            "pnl": -63000.93
+          },
+          "overlay_pnl": 35830.0,
+          "hedge_pnl": 35830.0,
+          "combined_pnl": -63000.93,
+          "coverage_pct": 36.3
+        }
+      }
+    },
+    {
+      "label": "Choppy hold into earnings window",
+      "probability": 0.15,
+      "days": 30,
+      "spot": 130.98,
+      "vol_shift": 0.01,
+      "book": {
+        "pnl": -7401.81
+      },
+      "book_pnl": -7401.81,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": -7401.81
+          },
+          "overlay": {
+            "pnl": 35827.18
+          },
+          "combined": {
+            "pnl": 28425.37
+          },
+          "overlay_pnl": 35827.18,
+          "hedge_pnl": 35827.18,
+          "combined_pnl": 28425.37,
+          "coverage_pct": 484.0
+        }
+      }
+    },
+    {
+      "label": "Early squeeze higher before earnings",
+      "probability": 0.1,
+      "days": 30,
+      "spot": 141.46,
+      "vol_shift": -0.05,
+      "book": {
+        "pnl": 21434.99
+      },
+      "book_pnl": 21434.99,
+      "hedges": {
+        "Planned call sales only": {
+          "book": {
+            "pnl": 21434.99
+          },
+          "overlay": {
+            "pnl": 35021.27
+          },
+          "combined": {
+            "pnl": 56456.26
+          },
+          "overlay_pnl": 35021.27,
+          "hedge_pnl": 35021.27,
+          "combined_pnl": 56456.26,
+          "coverage_pct": 0.0
+        }
+      }
+    }
+  ],
+  "summaries": {
+    "No hedge": {
+      "book": {
+        "expected_pnl": -60366.88,
+        "avg_pnl_when_downside": -69455.97
+      },
+      "overlay": {
+        "expected_pnl": 0.0
+      },
+      "combined": {
+        "expected_pnl": -60366.88,
+        "avg_pnl_when_downside": -69455.97
+      },
+      "expected_book_pnl": -60366.88,
+      "expected_overlay_pnl": 0.0,
+      "expected_hedge_pnl": 0.0,
+      "expected_combined_pnl": -60366.88,
+      "weighted_downside_coverage_pct": 0.0,
+      "conditional_downside_coverage_pct": 0.0,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69455.97,
+      "avg_combined_pnl_when_downside": -69455.97
+    },
+    "Planned call sales only": {
+      "book": {
+        "expected_pnl": -60366.88,
+        "avg_pnl_when_downside": -69455.97
+      },
+      "overlay": {
+        "expected_pnl": 35349.54
+      },
+      "combined": {
+        "expected_pnl": -25017.34,
+        "avg_pnl_when_downside": -34069.96
+      },
+      "expected_book_pnl": -60366.88,
+      "expected_overlay_pnl": 35349.54,
+      "expected_hedge_pnl": 35349.54,
+      "expected_combined_pnl": -25017.34,
+      "weighted_downside_coverage_pct": 106.5,
+      "conditional_downside_coverage_pct": 118.4,
+      "downside_probability_pct": 90.0,
+      "avg_book_pnl_when_downside": -69455.97,
+      "avg_combined_pnl_when_downside": -34069.96
+    }
+  },
+  "candidate_count": 0,
+  "excluded_strikes": [
+    120.0,
+    125.0,
+    130.0
+  ],
+  "ranked_candidates": [
+    {
+      "name": "Planned call sales only",
+      "vehicle_type": null,
+      "entry_cost": -35830.0,
+      "expected_combined_pnl": -25017.34,
+      "expected_overlay_pnl": 35349.54,
+      "weighted_downside_coverage_pct": 106.5,
+      "avg_combined_pnl_when_downside": -34069.96
+    }
+  ],
+  "candidate_metadata": []
+}

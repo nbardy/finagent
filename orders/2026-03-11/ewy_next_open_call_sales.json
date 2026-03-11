@@ -1,0 +1,137 @@
+{
+  "generated_at": "2026-03-10T17:10:00-04:00",
+  "notes": [
+    "Open-ready EWY short call sales staged after the March 10, 2026 close.",
+    "Low bucket uses 145C/150C cover.",
+    "Apr 17 175C ladder removed because it is too close to the late-April Samsung earnings window.",
+    "Apr 2 150C ladder added as the shorter-dated alternative."
+  ],
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 145.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 7,
+      "lmtPrice": 4.90,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260410_145C_open_490"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 20,
+      "lmtPrice": 4.00,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260410_150C_open_400"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 20,
+      "lmtPrice": 3.80,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260410_150C_open_380"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260410",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 20,
+      "lmtPrice": 3.60,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260410_150C_open_360"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260402",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 10,
+      "lmtPrice": 3.30,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260402_150C_open_330"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260402",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 10,
+      "lmtPrice": 3.20,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260402_150C_open_320"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260402",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 10,
+      "lmtPrice": 3.10,
+      "tif": "DAY",
+      "goodAfterTime": "20260311 09:30:00 US/Eastern",
+      "orderRef": "EWY_20260402_150C_open_310"
+    }
+  ]
+}

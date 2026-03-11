@@ -1,0 +1,496 @@
+{
+  "spot": 132.73,
+  "risk_free_rate": 0.045,
+  "book": {
+    "positions": [
+      {
+        "label": "EWY 151C 20260313",
+        "right": "C",
+        "strike": 151.0,
+        "dte": 1,
+        "qty": -1,
+        "mark": 0.2458
+      },
+      {
+        "label": "EWY 165C 20270115",
+        "right": "C",
+        "strike": 165.0,
+        "dte": 309,
+        "qty": 40,
+        "mark": 15.4346
+      },
+      {
+        "label": "EWY 145C 20280121",
+        "right": "C",
+        "strike": 145.0,
+        "dte": 680,
+        "qty": 18,
+        "mark": 32.5307
+      },
+      {
+        "label": "EWY 150C 20280121",
+        "right": "C",
+        "strike": 150.0,
+        "dte": 680,
+        "qty": 90,
+        "mark": 30.7995
+      },
+      {
+        "label": "EWY 210C 20280121",
+        "right": "C",
+        "strike": 210.0,
+        "dte": 680,
+        "qty": 110,
+        "mark": 16.3701
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "label": "Crash -8% next week",
+      "days": 7,
+      "spot": 122.11,
+      "vol_shift": 0.03,
+      "probability": 0.3
+    },
+    {
+      "label": "-8% over 1 month",
+      "days": 31,
+      "spot": 122.11,
+      "vol_shift": 0.01,
+      "probability": 0.3
+    },
+    {
+      "label": "Choppy 1 month flat",
+      "days": 31,
+      "spot": 132.73,
+      "vol_shift": 0.0,
+      "probability": 0.2
+    },
+    {
+      "label": "Relief +4% next week",
+      "days": 7,
+      "spot": 138.04,
+      "vol_shift": -0.03,
+      "probability": 0.1
+    },
+    {
+      "label": "Recover +8% by month",
+      "days": 31,
+      "spot": 143.35,
+      "vol_shift": -0.05,
+      "probability": 0.1
+    }
+  ],
+  "hedges": [
+    {
+      "name": "Current Mar20 135/121 x42",
+      "entry_cost": 30380.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 40 Apr17 150C",
+      "entry_cost": 11580.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -40,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 60 Apr17 150C",
+      "entry_cost": 2180.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -60,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 40 Apr17 150C + long 30 Apr17 135/125",
+      "entry_cost": 28680.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -40,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 135.0P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 38,
+          "qty": 30,
+          "mark": 4.95,
+          "iv": 0.6424596301269532
+        },
+        {
+          "label": "Short 125.0P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 38,
+          "qty": -30,
+          "mark": 0.0,
+          "iv": 0.6682162084960939
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 60 Apr17 150C + long 40 Apr17 135/125",
+      "entry_cost": 24980.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -60,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 135.0P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 38,
+          "qty": 40,
+          "mark": 4.95,
+          "iv": 0.6424596301269532
+        },
+        {
+          "label": "Short 125.0P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 38,
+          "qty": -40,
+          "mark": 0.0,
+          "iv": 0.6682162084960939
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 60 Apr17 150C + long 49 Apr17 135/125",
+      "entry_cost": 30110.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -60,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 135.0P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 38,
+          "qty": 49,
+          "mark": 4.95,
+          "iv": 0.6424596301269532
+        },
+        {
+          "label": "Short 125.0P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 38,
+          "qty": -49,
+          "mark": 0.0,
+          "iv": 0.6682162084960939
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 40 Apr17 150C + long 30 May15 130/120",
+      "entry_cost": 30180.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -40,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 130.0P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 66,
+          "qty": 30,
+          "mark": 4.6,
+          "iv": 0.6176796044921876
+        },
+        {
+          "label": "Short 120.0P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 66,
+          "qty": -30,
+          "mark": 0.0,
+          "iv": 0.6324499645996093
+        }
+      ]
+    },
+    {
+      "name": "Mar + short 60 Apr17 150C + long 45 May15 130/120",
+      "entry_cost": 30080.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 10,
+          "qty": 42,
+          "mark": 8.8,
+          "iv": 0.728762478
+        },
+        {
+          "label": "Short 121P",
+          "right": "P",
+          "strike": 121.0,
+          "dte": 10,
+          "qty": -42,
+          "mark": 3.4,
+          "iv": 0.783937708
+        },
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -60,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 130.0P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 66,
+          "qty": 45,
+          "mark": 4.6,
+          "iv": 0.6176796044921876
+        },
+        {
+          "label": "Short 120.0P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 66,
+          "qty": -45,
+          "mark": 0.0,
+          "iv": 0.6324499645996093
+        }
+      ]
+    },
+    {
+      "name": "Short 60 Apr17 150C + long 49 Apr17 135/125",
+      "entry_cost": -270.0,
+      "legs": [
+        {
+          "label": "Short 150.0C",
+          "right": "C",
+          "strike": 150.0,
+          "dte": 38,
+          "qty": -60,
+          "mark": 4.7,
+          "iv": 0.663333444824219
+        },
+        {
+          "label": "Long 135.0P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 38,
+          "qty": 49,
+          "mark": 4.95,
+          "iv": 0.6424596301269532
+        },
+        {
+          "label": "Short 125.0P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 38,
+          "qty": -49,
+          "mark": 0.0,
+          "iv": 0.6682162084960939
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "apr17_put": {
+      "expiry": "20260417",
+      "long_strike": 135.0,
+      "short_strike": 125.0,
+      "bid": 4.2,
+      "ask": 5.7,
+      "mid": 4.95,
+      "long_iv": 0.6424596301269532,
+      "short_iv": 0.6682162084960939
+    },
+    "may15_put": {
+      "expiry": "20260515",
+      "long_strike": 130.0,
+      "short_strike": 120.0,
+      "bid": 3.0,
+      "ask": 6.2,
+      "mid": 4.6,
+      "long_iv": 0.6176796044921876,
+      "short_iv": 0.6324499645996093
+    },
+    "apr17_call": {
+      "expiry": "20260417",
+      "strike": 150.0,
+      "bid": 4.2,
+      "ask": 5.2,
+      "mid": 4.7,
+      "iv": 0.663333444824219
+    },
+    "mar20_live_order_entry_unit": 7.2333
+  }
+}

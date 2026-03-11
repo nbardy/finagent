@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-03-11T23:50:55",
+  "symbol": "EWY",
+  "expiry": "20260410",
+  "strike": 170.0,
+  "right": "C",
+  "dte": 29,
+  "spot": 131.596,
+  "risk_free_rate": 0.045,
+  "dividend_yield": 0.0,
+  "target_market": {
+    "symbol": "EWY",
+    "expiry": "20260410",
+    "strike": 170.0,
+    "right": "C",
+    "bid": 0.75,
+    "ask": 1.1,
+    "mid": 0.925,
+    "last": -1.0,
+    "iv": 0.6361783830322553,
+    "delta": 0.09480812479843423,
+    "und_price": 131.59597778320312,
+    "market_data_type": 3,
+    "spot_used": 131.596
+  },
+  "chain_quotes_used": 6,
+  "model_prices": {
+    "BSM": {
+      "price": 0.9618,
+      "source_iv": 0.636178
+    },
+    "Heston": {
+      "price": 1.2378,
+      "rmse": 0.2341,
+      "max_error": 0.4309,
+      "params": {
+        "v0": 0.5098216994162276,
+        "theta": 0.01,
+        "kappa": 0.1,
+        "xi": 3.0,
+        "rho": -0.23797458464533486
+      }
+    },
+    "VG": {
+      "price": 1.2589,
+      "rmse": 0.23,
+      "max_error": 0.3979,
+      "params": {
+        "sigma": 0.7262260279866822,
+        "theta": -1.2019535550616107,
+        "nu": 0.06502641615789537
+      }
+    },
+    "MJD": {
+      "price": 1.279,
+      "rmse": 0.2123,
+      "max_error": 0.354,
+      "params": {
+        "sigma": 0.4661600013100129,
+        "lam": 1.6829240336738707,
+        "mu_j": -0.5,
+        "sigma_j": 0.581275909910745
+      }
+    }
+  }
+}

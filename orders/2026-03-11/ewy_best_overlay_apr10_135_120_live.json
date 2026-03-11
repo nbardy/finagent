@@ -1,0 +1,81 @@
+{
+  "description": "EWY broader hedge overlay - Apr 10 2026 135/120 put spread",
+  "generated": "2026-03-11 23:08",
+  "notes": "Best currently-ranked broader EWY hedge overlay from the Apr 2/Apr 10 batch and timing runs. Additive to the already-filled Mar 20 135/121 crash hedge.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260410",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 15,
+          "lmtPrice": 6.15,
+          "note": "Apr10 135/120 broad hedge 1",
+          "tif": "DAY"
+        },
+        {
+          "tranche": 2,
+          "quantity": 15,
+          "lmtPrice": 6.35,
+          "note": "Apr10 135/120 broad hedge 2",
+          "tif": "DAY"
+        },
+        {
+          "tranche": 3,
+          "quantity": 14,
+          "lmtPrice": 6.55,
+          "note": "Apr10 135/120 broad hedge 3",
+          "tif": "DAY"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "combo_bid_estimate": 4.4,
+    "combo_ask_estimate": 7.7,
+    "combo_mid_estimate": 6.05,
+    "long_leg": {
+      "expiry": "20260410",
+      "strike": 135.0,
+      "right": "P",
+      "bid": 10.4,
+      "ask": 12.8,
+      "mid": 11.6,
+      "iv": 0.6783973943519113
+    },
+    "short_leg": {
+      "expiry": "20260410",
+      "strike": 120.0,
+      "right": "P",
+      "bid": 5.1,
+      "ask": 6.0,
+      "mid": 5.55,
+      "iv": 0.7249110781383996
+    },
+    "target_quantity": 44,
+    "entry_debit_estimate": 27910.0
+  }
+}
