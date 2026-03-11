@@ -1,0 +1,58 @@
+{
+  "description": "EWY urgent big crash hedge after probe - Mar 20 2026 135/120 put spread",
+  "generated": "2026-03-11 03:33",
+  "notes": "Remainder ticket after a 5-lot urgent probe fill check. Keeps the original urgent hedge thesis while avoiding accidental oversizing.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 5.4,
+          "note": "Inside current combo market"
+        },
+        {
+          "tranche": 2,
+          "quantity": 15,
+          "lmtPrice": 5.55,
+          "note": "Near current ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 15,
+          "lmtPrice": 5.7,
+          "note": "At natural ask if needed"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 131.22,
+    "combo_market_reference": "4.75 x 5.70",
+    "remaining_quantity": 50
+  }
+}

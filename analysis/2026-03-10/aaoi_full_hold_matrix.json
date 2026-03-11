@@ -1,0 +1,118 @@
+{
+  "symbol": "AAOI",
+  "spot": 113.0,
+  "iv": 1.18,
+  "budget": 25000,
+  "hold_period_days": 780,
+  "pricing_model": "bs",
+  "scenarios": [
+    {
+      "label": "2x@exp",
+      "move": 1.0,
+      "probability": 0.5,
+      "terminal_spot": 226.0
+    },
+    {
+      "label": "3x@exp",
+      "move": 2.0,
+      "probability": 0.5,
+      "terminal_spot": 339.0
+    }
+  ],
+  "matrix": {
+    "Stock": {
+      "2x@exp": {
+        "pct_return": 100.0,
+        "dollar_pnl": 25000.0,
+        "entry_cost": 113.0,
+        "exit_value": 226.0,
+        "quantity": 221.23893805309734
+      },
+      "3x@exp": {
+        "pct_return": 200.0,
+        "dollar_pnl": 50000.0,
+        "entry_cost": 113.0,
+        "exit_value": 339.0,
+        "quantity": 221.23893805309734
+      }
+    },
+    "OTM 1.5x LEAP": {
+      "2x@exp": {
+        "pct_return": 2.2,
+        "dollar_pnl": 549.05,
+        "entry_cost": 64.0712,
+        "exit_value": 65.4784,
+        "quantity": 3.9
+      },
+      "3x@exp": {
+        "pct_return": 165.7,
+        "dollar_pnl": 41428.21,
+        "entry_cost": 64.0712,
+        "exit_value": 170.2455,
+        "quantity": 3.9
+      }
+    },
+    "1.4x/1.6x spread": {
+      "2x@exp": {
+        "pct_return": 457.2,
+        "dollar_pnl": 114288.34,
+        "entry_cost": 2.6089,
+        "exit_value": 14.5356,
+        "quantity": 95.83
+      },
+      "3x@exp": {
+        "pct_return": 650.4,
+        "dollar_pnl": 162605.5,
+        "entry_cost": 2.6089,
+        "exit_value": 19.5779,
+        "quantity": 95.83
+      }
+    },
+    "1.5x/1.6x spread": {
+      "2x@exp": {
+        "pct_return": 451.2,
+        "dollar_pnl": 112810.84,
+        "entry_cost": 1.2705,
+        "exit_value": 7.0033,
+        "quantity": 196.78
+      },
+      "3x@exp": {
+        "pct_return": 667.6,
+        "dollar_pnl": 166899.63,
+        "entry_cost": 1.2705,
+        "exit_value": 9.7521,
+        "quantity": 196.78
+      }
+    }
+  },
+  "summaries": {
+    "Stock": {
+      "expected_return_pct": 150.0,
+      "prob_loss": 0,
+      "worst_return_pct": 100.0,
+      "best_return_pct": 200.0,
+      "budget_becomes": 62500.0
+    },
+    "OTM 1.5x LEAP": {
+      "expected_return_pct": 83.9,
+      "prob_loss": 0,
+      "worst_return_pct": 2.2,
+      "best_return_pct": 165.7,
+      "budget_becomes": 45988.0
+    },
+    "1.4x/1.6x spread": {
+      "expected_return_pct": 553.8,
+      "prob_loss": 0,
+      "worst_return_pct": 457.2,
+      "best_return_pct": 650.4,
+      "budget_becomes": 163450.0
+    },
+    "1.5x/1.6x spread": {
+      "expected_return_pct": 559.4,
+      "prob_loss": 0,
+      "worst_return_pct": 451.2,
+      "best_return_pct": 667.6,
+      "budget_becomes": 164850.0
+    }
+  }
+}

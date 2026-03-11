@@ -1,7 +1,7 @@
 {
   "connection": {
     "host": "127.0.0.1",
-    "port": 7497,
+    "port": 4001,
     "client_id_portfolio": 4,
     "client_id_planner": 1,
     "client_id_executor": 2,
@@ -10,6 +10,7 @@
   },
   "strategy": {
     "underlyings": ["EWY"],
+    "min_long_dte_for_cover": 180,
     "min_short_dte": 10,
     "max_short_dte": 45,
     "min_upside_headroom_pct": 0.05,
@@ -36,6 +37,7 @@
     "pricing_strategy": "theoretical_edge_discovery",
     "tranche_aggressiveness": "patient",
     "what_if_margin_check": true,
-    "max_coverage_pct_per_run": 0.30
+    "max_coverage_pct_per_run": 0.30,
+    "outside_rth": false
   }
 }

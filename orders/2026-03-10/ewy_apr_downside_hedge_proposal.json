@@ -1,0 +1,63 @@
+{
+  "description": "EWY Apr 17 2026 130/120 put spread downside hedge",
+  "generated": "2026-03-10 22:48",
+  "notes": "Protective EWY hedge sized for a moderate spend. Uses Apr 17 2026 130P/120P debit spreads. Based on delayed EWY spot around 134.87 and public option mid estimates from 2026-03-10. GTC combo limits.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 130.0,
+            "right": "P",
+            "expiry": "20260417",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260417",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 18,
+          "lmtPrice": 3.5,
+          "note": "At current leg-mid debit estimate"
+        },
+        {
+          "tranche": 2,
+          "quantity": 10,
+          "lmtPrice": 3.25,
+          "note": "Bid for mild IV easing / intraday softness"
+        },
+        {
+          "tranche": 3,
+          "quantity": 7,
+          "lmtPrice": 3.0,
+          "note": "Patient lower bid"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 134.87,
+    "estimated_mid_debit": 3.5,
+    "spread_width": 10.0,
+    "breakeven_at_expiry": 126.5,
+    "max_value_at_expiry": 10.0,
+    "all_in_estimated_cost": 11650.0,
+    "all_in_max_value_at_expiry": 35000.0,
+    "all_in_max_profit_at_expiry": 23350.0
+  }
+}

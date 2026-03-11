@@ -1,0 +1,18 @@
+{
+  "description": "IQE PLC — $8K market buy",
+  "generated": "2026-03-10",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "order_type": "MKT",
+      "quantity": 28000,
+      "tif": "GTC"
+    }
+  ]
+}

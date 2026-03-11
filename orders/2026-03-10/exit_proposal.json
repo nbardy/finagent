@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-03-10T01:02:00",
+  "strategy": "EWY bounce-friendly exit - target about $200k cash",
+  "quote_source": "ibkr_delayed_plus_live_underlying_adjustment",
+  "quote_warning": "Desktop IBKR API options quotes are delayed. Final check should be the phone's live option book.",
+  "spot_at_pricing": 127.55,
+  "target_cash": 200000.0,
+  "estimated_cash_if_all_fill": 203935.0,
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20270115",
+        "strike": 165.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "tif": "DAY",
+      "quantity": 60,
+      "lmtPrice": 12.15
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20280121",
+        "strike": 210.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "tif": "DAY",
+      "quantity": 45,
+      "lmtPrice": 14.55
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20280121",
+        "strike": 145.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "tif": "DAY",
+      "quantity": 22,
+      "lmtPrice": 29.8
+    }
+  ]
+}

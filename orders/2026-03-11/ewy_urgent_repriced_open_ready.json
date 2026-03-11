@@ -1,0 +1,67 @@
+{
+  "description": "EWY urgent hedge open-ready - 20260320 crash 102/91 put spread",
+  "generated": "2026-03-11 04:06",
+  "notes": "Aggressive GTC ladder for the next regular options session.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 121.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 14,
+          "lmtPrice": 7.2,
+          "note": "Open-ready 1",
+          "tif": "GTC"
+        },
+        {
+          "tranche": 2,
+          "quantity": 14,
+          "lmtPrice": 7.25,
+          "note": "Open-ready 2",
+          "tif": "GTC"
+        },
+        {
+          "tranche": 3,
+          "quantity": 14,
+          "lmtPrice": 7.25,
+          "note": "Open-ready 3",
+          "tif": "GTC"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 132.73,
+    "combo_bid": 5.4,
+    "combo_ask": 6.9,
+    "combo_mid": 6.15,
+    "target_quantity": 42,
+    "entry_debit_estimate": 30380.0,
+    "max_value_at_expiry": 58800.0,
+    "expected_pnl": -1016.94,
+    "conditional_downside_coverage_pct": 41.1
+  }
+}

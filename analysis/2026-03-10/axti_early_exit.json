@@ -1,0 +1,43 @@
+{
+  "symbol": "AXTI",
+  "spot": 38.65,
+  "iv": 1.40,
+  "budget": 25000,
+  "scenarios": [
+    {"label": "2x@3mo", "move": 1.0, "probability": 0.50},
+    {"label": "3x@3mo", "move": 2.0, "probability": 0.50}
+  ],
+  "instruments": [
+    {
+      "type": "stock",
+      "label": "Stock"
+    },
+    {
+      "type": "call",
+      "label": "ATM 40C",
+      "strike_pct": 1.035,
+      "expiry": "20270115"
+    },
+    {
+      "type": "debit_spread",
+      "label": "35/45 spread",
+      "long_strike_pct": 0.906,
+      "short_strike_pct": 1.165,
+      "expiry": "20270115"
+    },
+    {
+      "type": "debit_spread",
+      "label": "40/45 spread",
+      "long_strike_pct": 1.035,
+      "short_strike_pct": 1.165,
+      "expiry": "20270115"
+    }
+  ],
+  "settings": {
+    "risk_free_rate": 0.045,
+    "hold_period_days": 90,
+    "pricing_model": "bs",
+    "fetch_live_quotes": false
+  },
+  "output_file": "axti_early_exit_matrix.json"
+}

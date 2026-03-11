@@ -1,0 +1,63 @@
+{
+  "description": "EWY May 15 2026 135/125 put spread core hedge",
+  "generated": "2026-03-11 00:31",
+  "notes": "Recommended low-bleed core hedge for a few more weeks of volatile sideways-to-down EWY action. Based on refreshed public quotes from 2026-03-10 US market showing the 135/125 put spread with leg-mid around 4.55 and a wide natural market. GTC combo limits.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260515",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 125.0,
+            "right": "P",
+            "expiry": "20260515",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 5,
+          "lmtPrice": 4.55,
+          "note": "Near refreshed leg-mid"
+        },
+        {
+          "tranche": 2,
+          "quantity": 4,
+          "lmtPrice": 4.35,
+          "note": "Lower bid if combo market improves"
+        },
+        {
+          "tranche": 3,
+          "quantity": 2,
+          "lmtPrice": 4.15,
+          "note": "Patient lower bid"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 132.73,
+    "leg_mid_reference": 4.55,
+    "estimated_natural_bid": 3.5,
+    "estimated_natural_ask": 5.6,
+    "spread_width": 10.0,
+    "all_in_estimated_cost": 4845.0,
+    "all_in_max_value_at_expiry": 11000.0,
+    "all_in_max_profit_at_expiry": 6155.0
+  }
+}

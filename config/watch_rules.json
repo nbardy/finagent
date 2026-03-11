@@ -1,0 +1,45 @@
+{
+  "watch": {
+    "bands": [
+      {
+        "name": "tight",
+        "max_spread_pct": 0.15,
+        "poll_seconds": 20,
+        "observation_seconds": 180,
+        "confidence": 0.85
+      },
+      {
+        "name": "tradable",
+        "max_spread_pct": 0.35,
+        "poll_seconds": 45,
+        "observation_seconds": 420,
+        "confidence": 0.7
+      },
+      {
+        "name": "wide",
+        "max_spread_pct": 0.75,
+        "poll_seconds": 90,
+        "observation_seconds": 900,
+        "confidence": 0.45
+      },
+      {
+        "name": "very_wide",
+        "poll_seconds": 180,
+        "observation_seconds": 1500,
+        "confidence": 0.2
+      }
+    ],
+    "adjustments": {
+      "one_sided_market_penalty": 0.2,
+      "no_last_trade_penalty": 0.05,
+      "first_fill_bonus": 0.2,
+      "additional_fill_bonus": 0.05,
+      "fill_ratio_bonus": 0.2
+    },
+    "thresholds": {
+      "bulk_ready_confidence": 0.75,
+      "reprice_confidence": 0.45,
+      "do_not_force_confidence": 0.3
+    }
+  }
+}

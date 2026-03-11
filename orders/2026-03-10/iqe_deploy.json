@@ -1,0 +1,33 @@
+{
+  "description": "IQE PLC — $6K market + $6K laddered pullback buys",
+  "generated": "2026-03-10",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "order_type": "MKT",
+      "quantity": 21000,
+      "tif": "GTC"
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        { "tranche": 1, "quantity": 7400, "lmtPrice": 0.21, "note": "Small dip — ~£1,554" },
+        { "tranche": 2, "quantity": 8000, "lmtPrice": 0.195, "note": "Moderate pullback — ~£1,560" },
+        { "tranche": 3, "quantity": 8700, "lmtPrice": 0.18, "note": "Deep pullback — ~£1,566" }
+      ]
+    }
+  ]
+}

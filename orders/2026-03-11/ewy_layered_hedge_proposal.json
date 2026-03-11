@@ -1,0 +1,102 @@
+{
+  "description": "EWY layered hedge: May 135/125 core + Mar 130/120 kicker",
+  "generated": "2026-03-11 00:33",
+  "notes": "Combined ticket for the recommended low-bleed core hedge plus the optional short-dated crash kicker.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260515",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 125.0,
+            "right": "P",
+            "expiry": "20260515",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 5,
+          "lmtPrice": 4.55,
+          "note": "Near refreshed leg-mid"
+        },
+        {
+          "tranche": 2,
+          "quantity": 4,
+          "lmtPrice": 4.35,
+          "note": "Lower bid if combo market improves"
+        },
+        {
+          "tranche": 3,
+          "quantity": 2,
+          "lmtPrice": 4.15,
+          "note": "Patient lower bid"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 130.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 2,
+          "lmtPrice": 3.25,
+          "note": "Near refreshed spread mid"
+        },
+        {
+          "tranche": 2,
+          "quantity": 2,
+          "lmtPrice": 3.1,
+          "note": "Lower bid"
+        },
+        {
+          "tranche": 3,
+          "quantity": 2,
+          "lmtPrice": 2.95,
+          "note": "Patient lower bid"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "estimated_total_cost": 6705.0
+  }
+}

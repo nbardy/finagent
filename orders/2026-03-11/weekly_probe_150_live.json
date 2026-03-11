@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-03-11T01:52:00",
+  "action": "SELL",
+  "contract": {
+    "symbol": "EWY",
+    "secType": "OPT",
+    "exchange": "SMART",
+    "currency": "USD",
+    "lastTradeDateOrContractMonth": "20260313",
+    "strike": 150.0,
+    "right": "C"
+  },
+  "tif": "DAY",
+  "total_quantity": 108,
+  "held_back_quantity": 105,
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.45,
+      "tif": "DAY",
+      "orderRef": "EWY_150C_probe_045"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.40,
+      "tif": "DAY",
+      "orderRef": "EWY_150C_probe_040"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 0.35,
+      "tif": "DAY",
+      "orderRef": "EWY_150C_probe_035"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "symbol": "AXTI",
+  "spot": 38.65,
+  "iv": 1.4,
+  "budget": 25000,
+  "hold_period_days": 280,
+  "pricing_model": "bs",
+  "scenarios": [
+    {
+      "label": "2x@exp",
+      "move": 1.0,
+      "probability": 0.5,
+      "terminal_spot": 77.3
+    },
+    {
+      "label": "3x@exp",
+      "move": 2.0,
+      "probability": 0.5,
+      "terminal_spot": 115.95
+    }
+  ],
+  "matrix": {
+    "Stock": {
+      "2x@exp": {
+        "pct_return": 100.0,
+        "dollar_pnl": 25000.0,
+        "entry_cost": 38.65,
+        "exit_value": 77.3,
+        "quantity": 646.8305304010349
+      },
+      "3x@exp": {
+        "pct_return": 200.0,
+        "dollar_pnl": 50000.0,
+        "entry_cost": 38.65,
+        "exit_value": 115.94999999999999,
+        "quantity": 646.8305304010349
+      }
+    },
+    "ATM 40C": {
+      "2x@exp": {
+        "pct_return": 101.9,
+        "dollar_pnl": 25486.8,
+        "entry_cost": 18.6351,
+        "exit_value": 37.6331,
+        "quantity": 13.42
+      },
+      "3x@exp": {
+        "pct_return": 308.4,
+        "dollar_pnl": 77089.39,
+        "entry_cost": 18.6351,
+        "exit_value": 76.098,
+        "quantity": 13.42
+      }
+    },
+    "35/45 spread": {
+      "2x@exp": {
+        "pct_return": 279.8,
+        "dollar_pnl": 69953.72,
+        "entry_cost": 2.5159,
+        "exit_value": 9.5557,
+        "quantity": 99.37
+      },
+      "3x@exp": {
+        "pct_return": 295.9,
+        "dollar_pnl": 73983.16,
+        "entry_cost": 2.5159,
+        "exit_value": 9.9613,
+        "quantity": 99.37
+      }
+    },
+    "40/45 spread": {
+      "2x@exp": {
+        "pct_return": 297.8,
+        "dollar_pnl": 74444.54,
+        "entry_cost": 1.182,
+        "exit_value": 4.7016,
+        "quantity": 211.51
+      },
+      "3x@exp": {
+        "pct_return": 321.3,
+        "dollar_pnl": 80333.55,
+        "entry_cost": 1.182,
+        "exit_value": 4.98,
+        "quantity": 211.51
+      }
+    }
+  },
+  "summaries": {
+    "Stock": {
+      "expected_return_pct": 150.0,
+      "prob_loss": 0,
+      "worst_return_pct": 100.0,
+      "best_return_pct": 200.0,
+      "budget_becomes": 62500.0
+    },
+    "ATM 40C": {
+      "expected_return_pct": 205.1,
+      "prob_loss": 0,
+      "worst_return_pct": 101.9,
+      "best_return_pct": 308.4,
+      "budget_becomes": 76288.0
+    },
+    "35/45 spread": {
+      "expected_return_pct": 287.9,
+      "prob_loss": 0,
+      "worst_return_pct": 279.8,
+      "best_return_pct": 295.9,
+      "budget_becomes": 96962.0
+    },
+    "40/45 spread": {
+      "expected_return_pct": 309.6,
+      "prob_loss": 0,
+      "worst_return_pct": 297.8,
+      "best_return_pct": 321.3,
+      "budget_becomes": 102388.0
+    }
+  }
+}

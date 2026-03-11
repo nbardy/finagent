@@ -1,0 +1,159 @@
+{
+  "spot": 132.73,
+  "risk_free_rate": 0.045,
+  "book": {
+    "positions": [
+      {
+        "label": "EWY 151C 20260313",
+        "right": "C",
+        "strike": 151.0,
+        "dte": 1,
+        "qty": -1,
+        "mark": 0.2458
+      },
+      {
+        "label": "EWY 165C 20270115",
+        "right": "C",
+        "strike": 165.0,
+        "dte": 309,
+        "qty": 40,
+        "mark": 15.4346
+      },
+      {
+        "label": "EWY 145C 20280121",
+        "right": "C",
+        "strike": 145.0,
+        "dte": 680,
+        "qty": 18,
+        "mark": 32.5307
+      },
+      {
+        "label": "EWY 150C 20280121",
+        "right": "C",
+        "strike": 150.0,
+        "dte": 680,
+        "qty": 90,
+        "mark": 30.7995
+      },
+      {
+        "label": "EWY 210C 20280121",
+        "right": "C",
+        "strike": 210.0,
+        "dte": 680,
+        "qty": 110,
+        "mark": 16.3701
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "label": "Relief bounce",
+      "days": 14,
+      "spot": 140.0,
+      "vol_shift": -0.03,
+      "probability": 0.2
+    },
+    {
+      "label": "Sideways high vol",
+      "days": 14,
+      "spot": 132.73,
+      "vol_shift": 0.02,
+      "probability": 0.25
+    },
+    {
+      "label": "Controlled pullback",
+      "days": 14,
+      "spot": 126.09,
+      "vol_shift": 0.05,
+      "probability": 0.25
+    },
+    {
+      "label": "Escalation drawdown",
+      "days": 14,
+      "spot": 122.11,
+      "vol_shift": 0.03,
+      "probability": 0.2
+    },
+    {
+      "label": "Tail event",
+      "days": 14,
+      "spot": 116.8,
+      "vol_shift": 0.06,
+      "probability": 0.1
+    }
+  ],
+  "hedges": [
+    {
+      "name": "Apr17 135/125 x25",
+      "entry_cost": 11185.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 38,
+          "qty": 25,
+          "mark": 12.55,
+          "iv": 0.653141
+        },
+        {
+          "label": "Short 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 38,
+          "qty": -25,
+          "mark": 7.9,
+          "iv": 0.676883
+        }
+      ]
+    },
+    {
+      "name": "May15 135/125 x11",
+      "entry_cost": 4845.0,
+      "legs": [
+        {
+          "label": "Long 135P",
+          "right": "P",
+          "strike": 135.0,
+          "dte": 66,
+          "qty": 11,
+          "mark": 14.9,
+          "iv": 0.602055
+        },
+        {
+          "label": "Short 125P",
+          "right": "P",
+          "strike": 125.0,
+          "dte": 66,
+          "qty": -11,
+          "mark": 10.35,
+          "iv": 0.632084
+        }
+      ]
+    },
+    {
+      "name": "Mar20 130/120 x6",
+      "entry_cost": 1860.0,
+      "legs": [
+        {
+          "label": "Long 130P",
+          "right": "P",
+          "strike": 130.0,
+          "dte": 10,
+          "qty": 6,
+          "mark": 5.6,
+          "iv": 0.756594
+        },
+        {
+          "label": "Short 120P",
+          "right": "P",
+          "strike": 120.0,
+          "dte": 10,
+          "qty": -6,
+          "mark": 2.375,
+          "iv": 0.797365
+        }
+      ]
+    }
+  ]
+}

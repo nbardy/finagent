@@ -1,0 +1,172 @@
+{
+  "generated_at": "2026-03-10T06:17:12",
+  "action": "SELL",
+  "contract": {
+    "symbol": "EWY",
+    "secType": "OPT",
+    "exchange": "SMART",
+    "currency": "USD",
+    "lastTradeDateOrContractMonth": "20260313",
+    "strike": 151.0,
+    "right": "C"
+  },
+  "anchor_price": 2.53,
+  "probe_qty": 1,
+  "probe_count": 3,
+  "total_quantity": 108,
+  "held_back_quantity": 105,
+  "tif": "DAY",
+  "probes": [
+    {
+      "probe": 1,
+      "quantity": 1,
+      "lmtPrice": 2.73,
+      "ticks_from_anchor": 4,
+      "offset": 0.2
+    },
+    {
+      "probe": 2,
+      "quantity": 1,
+      "lmtPrice": 2.63,
+      "ticks_from_anchor": 2,
+      "offset": 0.1
+    },
+    {
+      "probe": 3,
+      "quantity": 1,
+      "lmtPrice": 2.53,
+      "ticks_from_anchor": 0,
+      "offset": 0.0
+    }
+  ],
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 2.73,
+      "tif": "DAY",
+      "probe": {
+        "level": 1,
+        "ticks_from_anchor": 4,
+        "offset": 0.2
+      }
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 2.63,
+      "tif": "DAY",
+      "probe": {
+        "level": 2,
+        "ticks_from_anchor": 2,
+        "offset": 0.1
+      }
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 1,
+      "lmtPrice": 2.53,
+      "tif": "DAY",
+      "probe": {
+        "level": 3,
+        "ticks_from_anchor": 0,
+        "offset": 0.0
+      }
+    }
+  ],
+  "quote_source": "yfinance-scenario",
+  "quote_warning": "Yahoo Finance quotes are public snapshots and may be delayed. Verify against your broker before transmitting orders.",
+  "spot_at_pricing": 147.279,
+  "market": {
+    "bid": 1.7324,
+    "ask": 2.5324,
+    "mid": 2.1324,
+    "last_price": 2.1324,
+    "source_note": "yfinance-scenario"
+  },
+  "metrics": {
+    "pricing_model": "Black-Scholes-Merton",
+    "dte": 2,
+    "time_to_expiry_years": 0.005479,
+    "risk_free_rate": 0.03593,
+    "dividend_yield": 0.0,
+    "implied_volatility": 0.734866,
+    "theoretical_value": 1.7194,
+    "suggested_limit": 2.15,
+    "edge_vs_mid": 0.413,
+    "spread_pct": 0.3752
+  },
+  "quote_status": {
+    "market_data_type": null,
+    "is_delayed": null,
+    "quote_time": "2026-03-09 17:53:28+00:00",
+    "model_underlying_price": null,
+    "pv_dividend": null
+  },
+  "weekly_plan": {
+    "generated_at": "2026-03-10T06:17:12",
+    "safe_cover_quantity": 108,
+    "selected_quantity": 108,
+    "estimated_credit_mid": 4860.0,
+    "estimated_credit_ask": 9180.0,
+    "theoretical_value_market_iv": 0.037,
+    "theoretical_value_rv30": 0.0029,
+    "delta_market": 0.0146,
+    "prob_otm_estimate": 0.9854,
+    "edge_vs_rv30": 0.4471,
+    "cover_buckets": [
+      {
+        "strike": 145.0,
+        "expiry": "20280121",
+        "qty_available": 18
+      },
+      {
+        "strike": 150.0,
+        "expiry": "20280121",
+        "qty_available": 90
+      }
+    ],
+    "scenario": {
+      "spot_move_pct": 0.1,
+      "scenario_spot": 147.279,
+      "scenario_iv": 0.734866,
+      "base_model": 0.037,
+      "scenario_model": 1.7194,
+      "model_shift": 1.6824,
+      "delta_market": 0.3344,
+      "prob_otm_estimate": 0.6656,
+      "estimated_credit_mid": 23029.92,
+      "estimated_credit_ask": 27349.92
+    }
+  }
+}

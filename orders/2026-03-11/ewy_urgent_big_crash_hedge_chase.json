@@ -1,0 +1,61 @@
+{
+  "description": "EWY urgent big crash hedge - chased Mar 20 2026 135/120 put spread",
+  "generated": "2026-03-11 03:41",
+  "notes": "Replacement ticket for urgent downside protection after the initial combo limits did not fill. Limits are raised to chase the market while still avoiding a pure market order.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 5.8,
+          "note": "Chase above prior ask"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 5.95,
+          "note": "Near updated natural ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 15,
+          "lmtPrice": 6.05,
+          "note": "At updated ask for urgency"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 130.57,
+    "combo_market_reference": "4.90 x 6.05",
+    "combo_mid_reference": 5.475,
+    "all_in_estimated_cost": 32725.0,
+    "all_in_max_value_at_expiry": 82500.0,
+    "all_in_max_profit_at_expiry": 49775.0
+  }
+}

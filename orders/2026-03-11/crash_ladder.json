@@ -1,0 +1,36 @@
+{
+  "description": "Crash-catching ladders — IQE + 5210.T at 12/18/25% pullback",
+  "generated": "2026-03-11",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        { "tranche": 1, "quantity": 7800, "lmtPrice": 0.20, "note": "-12% pullback — ~£1,560" },
+        { "tranche": 2, "quantity": 8400, "lmtPrice": 0.185, "note": "-18% pullback — ~£1,554" },
+        { "tranche": 3, "quantity": 9100, "lmtPrice": 0.17, "note": "-25% pullback — ~£1,547" }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "5210",
+        "exchange": "SMART",
+        "currency": "JPY"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        { "tranche": 1, "quantity": 100, "lmtPrice": 2750, "note": "-12% pullback — ~¥275K" },
+        { "tranche": 2, "quantity": 100, "lmtPrice": 2550, "note": "-18% pullback — ~¥255K" },
+        { "tranche": 3, "quantity": 100, "lmtPrice": 2350, "note": "-25% pullback — ~¥235K" }
+      ]
+    }
+  ]
+}

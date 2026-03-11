@@ -1,0 +1,84 @@
+{
+  "description": "Photonics stock buys — $15K AAOI + $15K AXTI + $10K IQE",
+  "generated": "2026-03-10",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AAOI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 67,
+          "lmtPrice": 114.0,
+          "note": "Near market — ~$7,638"
+        },
+        {
+          "tranche": 2,
+          "quantity": 67,
+          "lmtPrice": 111.0,
+          "note": "Dip buy — ~$7,437"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "AXTI",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 195,
+          "lmtPrice": 39.0,
+          "note": "Near market — ~$7,605"
+        },
+        {
+          "tranche": 2,
+          "quantity": 195,
+          "lmtPrice": 38.0,
+          "note": "Dip buy — ~$7,410"
+        }
+      ]
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "IQE",
+        "exchange": "SMART",
+        "currency": "GBP"
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20000,
+          "lmtPrice": 0.205,
+          "note": "Catch open rally — ~£4,100"
+        },
+        {
+          "tranche": 2,
+          "quantity": 15000,
+          "lmtPrice": 0.195,
+          "note": "Near close — ~£2,925"
+        },
+        {
+          "tranche": 3,
+          "quantity": 10000,
+          "lmtPrice": 0.185,
+          "note": "Dip buy — ~£1,850"
+        }
+      ]
+    }
+  ]
+}

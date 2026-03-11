@@ -1,0 +1,140 @@
+{
+  "symbol": "EWY",
+  "thesis": "",
+  "candidate_name": "20260320 crash 102/91 put spread",
+  "target_quantity": 42,
+  "budget": 30000.0,
+  "recommended_artifact": "open_ready",
+  "combo": {
+    "symbol": "EWY",
+    "spot": 132.73,
+    "legs": [
+      {
+        "action": "BUY",
+        "strike": 135.0,
+        "right": "P",
+        "expiry": "20260320",
+        "ratio": 1
+      },
+      {
+        "action": "SELL",
+        "strike": 121.0,
+        "right": "P",
+        "expiry": "20260320",
+        "ratio": 1
+      }
+    ],
+    "leg_quotes": [
+      {
+        "strike": 135.0,
+        "right": "P",
+        "expiry": "20260320",
+        "bid": 8.8,
+        "ask": 9.8,
+        "mid": 9.3,
+        "iv": 0.7287624780273438,
+        "last": 7.94,
+        "volume": 30,
+        "open_interest": 6077
+      },
+      {
+        "strike": 121.0,
+        "right": "P",
+        "expiry": "20260320",
+        "bid": 2.9,
+        "ask": 3.4,
+        "mid": 3.15,
+        "iv": 0.7839377075195313,
+        "last": 3.2,
+        "volume": 32,
+        "open_interest": 676
+      }
+    ],
+    "combo_bid": 5.4,
+    "combo_ask": 6.9,
+    "combo_mid": 6.15,
+    "quote_time": "",
+    "source": "yfinance"
+  },
+  "probe_policy": {
+    "probe_qty": 4,
+    "max_wait_seconds": 25,
+    "poll_interval_seconds": 5,
+    "escalation_ticks": [
+      2,
+      1,
+      0
+    ],
+    "stop_after_partials": false
+  },
+  "chase_policy": {
+    "max_rounds": 3,
+    "tick_up_per_round": 0.05,
+    "max_unit_debit": 7.25,
+    "convert_to_open_ready_if_closed": true
+  },
+  "session": {
+    "as_of": "2026-03-10T17:06:27-04:00",
+    "market_tz": "America/New_York",
+    "mode": "closed",
+    "is_trading_day": true,
+    "is_open": false,
+    "minutes_to_close": null,
+    "next_open": "2026-03-11T09:30:00-04:00"
+  },
+  "probe_file": "ewy_urgent_repriced_probe.json",
+  "full_file": "ewy_urgent_repriced_full.json",
+  "open_ready_file": "ewy_urgent_repriced_open_ready.json",
+  "top_candidates": [
+    {
+      "name": "20260320 crash 102/91 put spread",
+      "entry_debit": 28980.0,
+      "target_quantity": 42,
+      "expected_pnl": -1016.94,
+      "expected_combined_pnl": -20576.94,
+      "conditional_downside_coverage_pct": 41.1,
+      "carry_loss_pct": 31.5,
+      "score": 17.6231
+    },
+    {
+      "name": "20260320 crash 100/90 put spread",
+      "entry_debit": 29210.0,
+      "target_quantity": 46,
+      "expected_pnl": -3488.94,
+      "expected_combined_pnl": -23048.95,
+      "conditional_downside_coverage_pct": 22.6,
+      "carry_loss_pct": 35.8,
+      "score": 5.0129
+    },
+    {
+      "name": "20260327 swing 102/94 put spread",
+      "entry_debit": 29280.0,
+      "target_quantity": 48,
+      "expected_pnl": -3056.22,
+      "expected_combined_pnl": -22616.23,
+      "conditional_downside_coverage_pct": 18.5,
+      "carry_loss_pct": 24.7,
+      "score": 4.3693
+    },
+    {
+      "name": "20260327 swing ATM put",
+      "entry_debit": 29580.0,
+      "target_quantity": 29,
+      "expected_pnl": -9363.37,
+      "expected_combined_pnl": -28923.38,
+      "conditional_downside_coverage_pct": 4.3,
+      "carry_loss_pct": 39.7,
+      "score": -8.6082
+    },
+    {
+      "name": "20260410 core ATM put",
+      "entry_debit": 29520.0,
+      "target_quantity": 24,
+      "expected_pnl": -5436.7,
+      "expected_combined_pnl": -24996.71,
+      "conditional_downside_coverage_pct": 3.8,
+      "carry_loss_pct": 25.3,
+      "score": -5.3738
+    }
+  ]
+}

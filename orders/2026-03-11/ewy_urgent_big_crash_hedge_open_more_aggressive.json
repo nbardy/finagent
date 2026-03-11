@@ -1,0 +1,62 @@
+{
+  "description": "EWY urgent big crash hedge - more aggressive open-ready Mar 20 2026 135/120 put spread",
+  "generated": "2026-03-11 04:15",
+  "notes": "More aggressive GTC replacement for the next regular options session. Intended to improve opening fill odds in a fast market; this still cannot fill before the options market opens.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "GTC",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 6.35,
+          "note": "Aggressive open limit"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 6.5,
+          "note": "Above recent ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 15,
+          "lmtPrice": 6.65,
+          "note": "Pay up for immediate hedge at open"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 130.28,
+    "prior_working_ladder": "6.10 / 6.20 / 6.30",
+    "new_ladder": "6.35 / 6.50 / 6.65",
+    "extra_max_debit_vs_prior": 1925.0,
+    "all_in_estimated_cost": 35875.0,
+    "all_in_max_value_at_expiry": 82500.0,
+    "all_in_max_profit_at_expiry": 46625.0
+  }
+}

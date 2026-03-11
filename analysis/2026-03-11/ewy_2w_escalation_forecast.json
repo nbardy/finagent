@@ -1,0 +1,97 @@
+{
+  "description": "EWY 2-week escalation forecast and coverage sizing",
+  "generated": "2026-03-11 00:49",
+  "notes": "Five-scenario inference for the next two weeks given elevated Iran/oil risk. These are model scenarios, not predictive certainty. Current EWY LEAP book is marked from IBKR portfolio. Book behavior is highly sensitive to implied-volatility response; therefore the -8% drawdown case includes a prudent orderly-drawdown stress band as well as the higher-vol panic case.",
+  "book": {
+    "spot_reference": 132.73,
+    "current_value": 577535.68,
+    "delta_shares_estimate": 12501.6,
+    "vega_per_vol_point_estimate": 17088.7
+  },
+  "forecast_scenarios": [
+    {
+      "label": "Relief bounce",
+      "probability_pct": 20,
+      "horizon_days": 14,
+      "ewy_spot": 140.0,
+      "vol_shift": -0.03,
+      "book_pnl_from_here": 28918.0
+    },
+    {
+      "label": "Sideways high vol",
+      "probability_pct": 25,
+      "horizon_days": 14,
+      "ewy_spot": 132.73,
+      "vol_shift": 0.02,
+      "book_pnl_from_here": 22564.0
+    },
+    {
+      "label": "Controlled pullback",
+      "probability_pct": 25,
+      "horizon_days": 14,
+      "ewy_spot": 126.09,
+      "vol_shift": 0.05,
+      "book_pnl_from_here": -10626.0
+    },
+    {
+      "label": "Escalation drawdown",
+      "probability_pct": 20,
+      "horizon_days": 14,
+      "ewy_spot": 122.11,
+      "vol_shift": 0.08,
+      "book_pnl_from_here": -11684.0,
+      "stress_band_same_spot": {
+        "vol_shift_0pt": -135530.0,
+        "vol_shift_3pt": -89438.0,
+        "vol_shift_5pt": -58452.0,
+        "vol_shift_8pt": -11684.0
+      }
+    },
+    {
+      "label": "Tail event",
+      "probability_pct": 10,
+      "horizon_days": 14,
+      "ewy_spot": 116.8,
+      "vol_shift": 0.12,
+      "book_pnl_from_here": -15030.0
+    }
+  ],
+  "buy_only_hedge_sizing_for_50pct_cover_on_orderly_8pct_drawdown": {
+    "target_loss_to_cover": 44719.0,
+    "target_assumption": "EWY -8% in 14 days with only +3 vol points; EWY book loss about -89438",
+    "vehicles": [
+      {
+        "name": "Apr17 135/125 put spread",
+        "cost_per_spread": 465.0,
+        "pnl_per_spread_in_target_case": 167.4,
+        "approx_contracts_needed": 268,
+        "approx_cost_needed": 124620.0
+      },
+      {
+        "name": "May15 135/125 put spread",
+        "cost_per_spread": 455.0,
+        "pnl_per_spread_in_target_case": 123.5,
+        "approx_contracts_needed": 363,
+        "approx_cost_needed": 165165.0
+      },
+      {
+        "name": "Apr17 135 put",
+        "cost_per_contract": 1255.0,
+        "pnl_per_contract_in_target_case": 399.9,
+        "approx_contracts_needed": 112,
+        "approx_cost_needed": 140560.0
+      },
+      {
+        "name": "May15 135 put",
+        "cost_per_contract": 1490.0,
+        "pnl_per_contract_in_target_case": 420.5,
+        "approx_contracts_needed": 107,
+        "approx_cost_needed": 159430.0
+      }
+    ]
+  },
+  "conclusion": {
+    "buy_only": "Buying puts or put spreads alone is not capital-efficient enough to recover about half of a ~90k orderly two-week mark hit. The required spend is on the order of 125k-165k.",
+    "practical": "Use a smaller buy-only hedge for convexity, and rely on short call sales or exposure reduction if the goal is true 50% coverage."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "description": "Mine detection stocks — $10K CODA + $10K KRKNF adaptive market buy",
+  "generated": "2026-03-11",
+  "trades": [
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "CODA",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "order_type": "MKT",
+      "quantity": 605,
+      "tif": "DAY",
+      "algo": "Adaptive",
+      "algoPriority": "Normal"
+    },
+    {
+      "contract": {
+        "secType": "STK",
+        "symbol": "KRKNF",
+        "exchange": "SMART",
+        "currency": "USD"
+      },
+      "action": "BUY",
+      "order_type": "MKT",
+      "quantity": 1342,
+      "tif": "DAY",
+      "algo": "Adaptive",
+      "algoPriority": "Normal"
+    }
+  ]
+}

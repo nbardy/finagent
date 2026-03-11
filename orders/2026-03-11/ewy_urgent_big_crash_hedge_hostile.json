@@ -1,0 +1,61 @@
+{
+  "description": "EWY urgent big crash hedge - hostile tape replacement Mar 20 2026 135/120 put spread",
+  "generated": "2026-03-11 04:03",
+  "notes": "Higher-priced replacement ticket for immediate downside protection in a hostile market. Limits are set above the recent combo ask to improve fill odds while still avoiding a raw market order.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 6.10,
+          "note": "Near updated combo ask"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 6.20,
+          "note": "Above ask to improve fill odds"
+        },
+        {
+          "tranche": 3,
+          "quantity": 15,
+          "lmtPrice": 6.30,
+          "note": "Pay up for immediate hedge"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 130.28,
+    "combo_market_reference_estimate": "5.30 x 6.10",
+    "combo_mid_reference": 5.70,
+    "all_in_estimated_cost": 33950.0,
+    "all_in_max_value_at_expiry": 82500.0,
+    "all_in_max_profit_at_expiry": 48550.0
+  }
+}

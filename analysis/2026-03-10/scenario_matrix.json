@@ -1,0 +1,264 @@
+{
+  "symbol": "AXTI",
+  "spot": 38.65,
+  "iv": 1.4,
+  "budget": 25000,
+  "hold_period_days": 120,
+  "pricing_model": "bs",
+  "scenarios": [
+    {
+      "label": "-30%",
+      "move": -0.3,
+      "probability": 0.1,
+      "terminal_spot": 27.05
+    },
+    {
+      "label": "flat",
+      "move": 0.0,
+      "probability": 0.25,
+      "terminal_spot": 38.65
+    },
+    {
+      "label": "2x",
+      "move": 1.0,
+      "probability": 0.3,
+      "terminal_spot": 77.3
+    },
+    {
+      "label": "3x",
+      "move": 2.0,
+      "probability": 0.2,
+      "terminal_spot": 115.95
+    },
+    {
+      "label": "5x",
+      "move": 4.0,
+      "probability": 0.15,
+      "terminal_spot": 193.25
+    }
+  ],
+  "matrix": {
+    "Stock": {
+      "-30%": {
+        "pct_return": -30.0,
+        "dollar_pnl": -7500.0,
+        "entry_cost": 38.65,
+        "exit_value": 27.054999999999996,
+        "quantity": 646.8305304010349
+      },
+      "flat": {
+        "pct_return": 0.0,
+        "dollar_pnl": 0.0,
+        "entry_cost": 38.65,
+        "exit_value": 38.65,
+        "quantity": 646.8305304010349
+      },
+      "2x": {
+        "pct_return": 100.0,
+        "dollar_pnl": 25000.0,
+        "entry_cost": 38.65,
+        "exit_value": 77.3,
+        "quantity": 646.8305304010349
+      },
+      "3x": {
+        "pct_return": 200.0,
+        "dollar_pnl": 50000.0,
+        "entry_cost": 38.65,
+        "exit_value": 115.94999999999999,
+        "quantity": 646.8305304010349
+      },
+      "5x": {
+        "pct_return": 400.0,
+        "dollar_pnl": 100000.0,
+        "entry_cost": 38.65,
+        "exit_value": 193.25,
+        "quantity": 646.8305304010349
+      }
+    },
+    "ATM 40C": {
+      "-30%": {
+        "pct_return": -57.0,
+        "dollar_pnl": -14253.07,
+        "entry_cost": 18.6351,
+        "exit_value": 8.0108,
+        "quantity": 13.42
+      },
+      "flat": {
+        "pct_return": -20.5,
+        "dollar_pnl": -5134.46,
+        "entry_cost": 18.6351,
+        "exit_value": 14.8079,
+        "quantity": 13.42
+      },
+      "2x": {
+        "pct_return": 134.2,
+        "dollar_pnl": 33560.3,
+        "entry_cost": 18.6351,
+        "exit_value": 43.6512,
+        "quantity": 13.42
+      },
+      "3x": {
+        "pct_return": 319.1,
+        "dollar_pnl": 79770.64,
+        "entry_cost": 18.6351,
+        "exit_value": 78.0966,
+        "quantity": 13.42
+      },
+      "5x": {
+        "pct_return": 727.3,
+        "dollar_pnl": 181835.6,
+        "entry_cost": 18.6351,
+        "exit_value": 154.1764,
+        "quantity": 13.42
+      }
+    },
+    "OTM 45C": {
+      "-30%": {
+        "pct_return": -59.0,
+        "dollar_pnl": -14753.53,
+        "entry_cost": 17.4532,
+        "exit_value": 7.1533,
+        "quantity": 14.32
+      },
+      "flat": {
+        "pct_return": -23.1,
+        "dollar_pnl": -5766.66,
+        "entry_cost": 17.4532,
+        "exit_value": 13.4273,
+        "quantity": 14.32
+      },
+      "2x": {
+        "pct_return": 132.9,
+        "dollar_pnl": 33215.98,
+        "entry_cost": 17.4532,
+        "exit_value": 40.6422,
+        "quantity": 14.32
+      },
+      "3x": {
+        "pct_return": 323.3,
+        "dollar_pnl": 80820.93,
+        "entry_cost": 17.4532,
+        "exit_value": 73.8765,
+        "quantity": 14.32
+      },
+      "5x": {
+        "pct_return": 755.4,
+        "dollar_pnl": 188847.8,
+        "entry_cost": 17.4532,
+        "exit_value": 149.293,
+        "quantity": 14.32
+      }
+    },
+    "35/45 spread": {
+      "-30%": {
+        "pct_return": -25.6,
+        "dollar_pnl": -6387.74,
+        "entry_cost": 2.5159,
+        "exit_value": 1.8731,
+        "quantity": 99.37
+      },
+      "flat": {
+        "pct_return": 18.2,
+        "dollar_pnl": 4542.2,
+        "entry_cost": 2.5159,
+        "exit_value": 2.973,
+        "quantity": 99.37
+      },
+      "2x": {
+        "pct_return": 149.7,
+        "dollar_pnl": 37435.34,
+        "entry_cost": 2.5159,
+        "exit_value": 6.2832,
+        "quantity": 99.37
+      },
+      "3x": {
+        "pct_return": 242.2,
+        "dollar_pnl": 60561.36,
+        "entry_cost": 2.5159,
+        "exit_value": 8.6105,
+        "quantity": 99.37
+      },
+      "5x": {
+        "pct_return": 288.2,
+        "dollar_pnl": 72057.3,
+        "entry_cost": 2.5159,
+        "exit_value": 9.7674,
+        "quantity": 99.37
+      }
+    },
+    "40/45 spread": {
+      "-30%": {
+        "pct_return": -27.5,
+        "dollar_pnl": -6863.14,
+        "entry_cost": 1.182,
+        "exit_value": 0.8575,
+        "quantity": 211.51
+      },
+      "flat": {
+        "pct_return": 16.8,
+        "dollar_pnl": 4200.84,
+        "entry_cost": 1.182,
+        "exit_value": 1.3806,
+        "quantity": 211.51
+      },
+      "2x": {
+        "pct_return": 154.6,
+        "dollar_pnl": 38644.57,
+        "entry_cost": 1.182,
+        "exit_value": 3.009,
+        "quantity": 211.51
+      },
+      "3x": {
+        "pct_return": 257.0,
+        "dollar_pnl": 64261.72,
+        "entry_cost": 1.182,
+        "exit_value": 4.2201,
+        "quantity": 211.51
+      },
+      "5x": {
+        "pct_return": 313.2,
+        "dollar_pnl": 78291.28,
+        "entry_cost": 1.182,
+        "exit_value": 4.8834,
+        "quantity": 211.51
+      }
+    }
+  },
+  "summaries": {
+    "Stock": {
+      "expected_return_pct": 127.0,
+      "prob_loss": 10.0,
+      "worst_return_pct": -30.0,
+      "best_return_pct": 400.0,
+      "budget_becomes": 56750.0
+    },
+    "ATM 40C": {
+      "expected_return_pct": 202.3,
+      "prob_loss": 35.0,
+      "worst_return_pct": -57.0,
+      "best_return_pct": 727.3,
+      "budget_becomes": 75588.0
+    },
+    "OTM 45C": {
+      "expected_return_pct": 206.2,
+      "prob_loss": 35.0,
+      "worst_return_pct": -59.0,
+      "best_return_pct": 755.4,
+      "budget_becomes": 76541.0
+    },
+    "35/45 spread": {
+      "expected_return_pct": 138.6,
+      "prob_loss": 10.0,
+      "worst_return_pct": -25.6,
+      "best_return_pct": 288.2,
+      "budget_becomes": 59642.0
+    },
+    "40/45 spread": {
+      "expected_return_pct": 146.2,
+      "prob_loss": 10.0,
+      "worst_return_pct": -27.5,
+      "best_return_pct": 313.2,
+      "budget_becomes": 61553.0
+    }
+  }
+}

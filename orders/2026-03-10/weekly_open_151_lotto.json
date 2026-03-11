@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-03-10T05:27:00",
+  "notes": "User-requested lotto-open shape for Tuesday, March 10, 2026. This is aggressive versus the close, but still below the model-projected ask for a true EWY +10% open gap.",
+  "trades": [
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 2,
+      "lmtPrice": 2.00,
+      "tif": "DAY",
+      "goodAfterTime": "20260310 09:30:00 US/Eastern",
+      "orderRef": "EWY151_lotto_200"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 4,
+      "lmtPrice": 1.85,
+      "tif": "DAY",
+      "goodAfterTime": "20260310 09:30:00 US/Eastern",
+      "orderRef": "EWY151_lotto_185"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 6,
+      "lmtPrice": 1.70,
+      "tif": "DAY",
+      "goodAfterTime": "20260310 09:30:00 US/Eastern",
+      "orderRef": "EWY151_lotto_170"
+    },
+    {
+      "action": "SELL",
+      "contract": {
+        "symbol": "EWY",
+        "secType": "OPT",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260313",
+        "strike": 151.0,
+        "right": "C"
+      },
+      "order_type": "LMT",
+      "quantity": 96,
+      "lmtPrice": 1.55,
+      "tif": "DAY",
+      "goodAfterTime": "20260310 09:37:00 US/Eastern",
+      "orderRef": "EWY151_lotto_bulk_155"
+    }
+  ]
+}

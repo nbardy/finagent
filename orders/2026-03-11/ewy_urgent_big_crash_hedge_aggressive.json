@@ -1,0 +1,62 @@
+{
+  "description": "EWY urgent big crash hedge - aggressive fill Mar 20 2026 135/120 put spread",
+  "generated": "2026-03-11 03:27",
+  "notes": "Aggressive limit version of the urgent pure-buy crash hedge. Uses staged combo limits closer to the current natural ask to improve fill odds without sending a market order.",
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 135.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 120.0,
+            "right": "P",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "BUY",
+      "tif": "DAY",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 20,
+          "lmtPrice": 5.4,
+          "note": "Inside current combo market"
+        },
+        {
+          "tranche": 2,
+          "quantity": 20,
+          "lmtPrice": 5.55,
+          "note": "Near current ask"
+        },
+        {
+          "tranche": 3,
+          "quantity": 15,
+          "lmtPrice": 5.7,
+          "note": "At current natural ask for immediate protection"
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "spot_reference": 131.22,
+    "combo_market_reference": "4.75 x 5.70",
+    "combo_mid_reference": 5.225,
+    "all_in_estimated_cost": 30450.0,
+    "estimated_spread_leak_vs_mid": 1712.5,
+    "all_in_max_value_at_expiry": 82500.0,
+    "all_in_max_profit_at_expiry": 52050.0
+  }
+}
