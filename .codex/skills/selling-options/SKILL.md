@@ -7,23 +7,14 @@ description: Select and size short-call overwrite trades in the ikbr_trader repo
 
 Use this skill for covered-call and PMCC-style overwrite decisions.
 
-## Scope
+Use this skill for covered-call and PMCC overwrite selection, not downside hedge ranking.
 
-This skill owns:
+## Owns
 
-- strike and expiry selection for short calls
-- bucket logic for which long calls can cover which short calls
+- short-call strike and expiry selection
+- cover-bucket logic
 - safe cover sizing
-- separating income sleeves from hedge sleeves
-- deciding whether a short-call sleeve is already full
-
-## Workflow
-
-1. Audit the live long-call and short-call book.
-2. Group the book into cover buckets.
-3. Confirm how much clean cover remains.
-4. Rank candidate short calls by premium, distance, and practical assignment risk.
-5. If the user wants to file the order, hand off to `options-execution`.
+- income-sleeve vs hedge-sleeve separation
 
 ## Guardrails
 
@@ -32,7 +23,7 @@ This skill owns:
 - Separate income logic from downside hedge logic.
 - If another agent already sold the sleeve, say the bucket is full instead of proposing more size.
 
-## Main Tools
+## Main Scripts
 
 - `stock_tooling/planner_weekly.py`
 - `ibkr.py`

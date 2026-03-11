@@ -7,36 +7,26 @@ description: Price and audit option structures in the ikbr_trader repo using IBK
 
 Use this skill to decide whether an option or multi-leg structure is priced well.
 
-## Scope
+Use this skill only for fair-value and quote sanity checks on one chosen structure.
+Use `hedge_modeling` for macro EV and vehicle ranking.
+Use `options-execution` or `hedge_proposal` for live order files.
 
-This skill owns:
+## Owns
 
 - single-leg model audits
 - same-expiry vertical pricing
 - calendar pricing
 - fair-value vs market comparisons
-- quote sanity checks before execution
 
-This skill does not own order submission. Use `options-execution` for probes, fills, and cancellations.
+## Main Scripts
 
-## Workflow
-
-1. Pull fresh IBKR quotes.
-2. Use the correct structure-specific pricer:
-   - `stock_tooling/audit_option_models.py` for one leg
-   - `stock_tooling/price_spread.py` for same-expiry verticals
-   - `stock_tooling/price_calendar.py` for calendars
-3. Report:
-   - market bid, ask, and mid
-   - model fair-value range
-   - model consensus
-   - whether the market is rich or cheap versus the models
-4. If the market looks attractive but execution is uncertain, hand off to `options-execution`.
+- `stock_tooling/audit_option_models.py`
+- `stock_tooling/price_spread.py`
+- `stock_tooling/price_calendar.py`
 
 ## Guardrails
 
-- Use IBKR-first data.
-- Do not silently fall back to Yahoo or stale disk data for live pricing.
-- Treat displayed mid as reference, not executable truth.
-- State clearly when the quote source is delayed or incomplete.
-- If a multi-model audit is weak or inconsistent, say so instead of forcing a strong conclusion.
+- IBKR-first data
+- no silent Yahoo or stale-disk fallback for live pricing
+- reported mid is reference, not executable truth
+- if model consensus is weak, say so

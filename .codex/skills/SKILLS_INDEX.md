@@ -1,27 +1,28 @@
 # Skills Index
 
 Use `.codex/skills/` as the single source of truth for repo-local skills in this repo.
+Read [`references/source_playbook.md`](./references/source_playbook.md) for shared internet/source policy.
 
 ## Recommended Hierarchy
 
 ### Leaf Skills
 
 - `options-pricing`
-  Price and audit single legs, verticals, and calendars with IBKR-first data and the repo's pricing models.
+  Fair-value audit for one chosen structure.
 
 - `options-execution`
-  Probe, fill, cancel, trim, and close option orders safely in IBKR.
+  Live order-entry and fill management.
 
 - `selling-options`
-  Choose overwrite and PMCC short-call strikes, bucket usage, and safe cover sizing for the live book.
+  Covered-call and PMCC overwrite selection.
 
 ### Domain Skills
 
 - `hedge_modeling`
-  Build macro scenarios, run EV, rank hedge vehicles, and choose the right structure.
+  Macro scenarios, EV, stress tests, and hedge ranking.
 
 - `hedge_proposal`
-  Turn the chosen hedge into executable order proposals and close files.
+  Turn the chosen hedge into executable entry, trim, and close files.
 
 - `ikbr-margin`
   Explain account capacity, excess liquidity, and liquidation risk using live IBKR account data.
@@ -40,4 +41,4 @@ Use `.codex/skills/` as the single source of truth for repo-local skills in this
 - Higher-layer skills may reference lower-layer skills.
 - Lower-layer skills should not reference higher-layer skills.
 - Do not combine modeling and execution unless the user wants both in the same turn.
-- Keep live broker-state auditing in both `hedge_proposal` and `options-execution`.
+- Keep repo conventions in code and AGENTS, not duplicated in every skill.
