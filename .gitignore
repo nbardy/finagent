@@ -16,8 +16,8 @@ orders/**
 !orders/.gitkeep
 analysis/**
 !analysis/.gitkeep
-agent_notes/**
-!agent_notes/.gitkeep
+research_sessions/**
+!research_sessions/.gitkeep
 macro_research/**/*.json
 
 # Legacy root-level generated proposals

@@ -73,6 +73,8 @@ Recommended:
   Local generated scenario outputs and audits
 - `custom_scripts/`
   Repo-local extension scripts and strategy-specific logic
+- `research_sessions/{timestamp}_{topic}/`
+  Local deep-research workspaces with notes, source captures, analysis, and a final report
 - `option_pricing/`
   Pricing models and shared option logic
 - `stock_tooling/`
@@ -111,6 +113,21 @@ Examples of good extensions:
 - a custom stock ladder builder
 - a new execution watcher
 - a portfolio-specific overlay screener
+- a stock research orchestrator that drives Codex and saves artifacts into a session folder
+
+The repo already includes a research scaffold at [`custom_scripts/research_session.py`](custom_scripts/research_session.py).
+It can:
+
+- create a timestamped research session tree
+- ask Codex to research in multiple turns and capture the `thread_id`
+- optionally fetch the latest public X/Twitter post for a user
+- organize outputs into `loose_notes/`, `documents/`, `analysis/`, `conclusions/`, and `final_report.md`
+
+Example:
+
+```bash
+uv run python custom_scripts/research_session.py TSEM --ticker TSEM --x-user towersemi
+```
 
 ### Inspect Function Signatures
 
@@ -126,6 +143,7 @@ Examples:
 uv run python one_off_scripts/show_signature.py ibkr get_open_orders
 uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
 uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
+uv run python one_off_scripts/show_signature.py custom_scripts.research_session do_research
 ```
 
 This is the fastest repo-native way to inspect the core API surface before writing a new `custom_scripts/` tool.
@@ -146,7 +164,7 @@ Local-only files are ignored:
 - `config/portfolio_dump.json`
 - generated `orders/`
 - generated `analysis/`
-- `agent_notes/`
+- generated `research_sessions/`
 - local Codex runtime config
 
 If you need a local probe config:
@@ -157,15 +175,16 @@ cp config/probe_config.example.json config/probe_config.json
 
 ## Generated Files
 
-This repo treats live proposals, analysis output, portfolio dumps, and working notes as local artifacts rather than source code.
+This repo treats live proposals, analysis output, portfolio dumps, and research sessions as local artifacts rather than source code.
 
 That means:
 
 - `orders/` is for local generated order JSON
 - `analysis/` is for local generated model output
-- `agent_notes/` is for local operating notes
+- `research_sessions/` is for local research workspaces
+- `agent_notes/` is for tracked operating notes and retrospectives
 
-These paths are ignored for future work and should not be part of a public push.
+`research_sessions/` stays ignored by default because it can accumulate large, messy source captures.
 
 ## Safety
 

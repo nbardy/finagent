@@ -13,6 +13,13 @@ ikbr_trader/
     *.json             # Executor-compatible JSON proposals
   analysis/{YYYY-MM-DD}/ # Scenario matrices, forecasts, comparisons
     *.json
+  research_sessions/{timestamp}_{topic}/ # Local deep-research workspaces
+    loose_notes/
+    documents/{statements,filings,articles}/
+    analysis/
+    conclusions/
+    final_report.md
+  agent_notes/         # Tracked operating notes and thread retrospectives
   custom_scripts/      # Repo-local custom extensions built on the typed core utils
   option_pricing/      # Pricing models (BS, Heston, VG, Merton, calibration)
   stock_tooling/       # Weekly planner, stock analysis tools
@@ -27,15 +34,18 @@ ikbr_trader/
 - Use `.codex/skills/` as the source of truth for repo-local skills.
 - Modeling outputs belong in `analysis/{YYYY-MM-DD}/`.
 - Executable order proposals belong in `orders/{YYYY-MM-DD}/`.
+- Deep research artifacts belong in `research_sessions/{timestamp}_{topic}/`.
 - Hedge and overlay analysis should report `book`, `hedge`, and `combined` separately.
 - Proposal generation should state whether the order is `add`, `replace`, `trim`, or `close`.
 - For executable pricing, prefer IBKR and fail loud on missing live data rather than silently falling back.
+- `agent_notes/` is tracked. Do not treat it as throwaway local output.
 
 ## Extension Model
 
 - Put new repo-specific automation in `custom_scripts/`.
 - Custom logic should import and reuse the typed core modules instead of duplicating broker, pricing, or order-state logic.
 - Keep reusable primitives in the core modules; keep strategy-specific orchestration in `custom_scripts/`.
+- For deep research workflows, prefer creating a dedicated script in `custom_scripts/` that writes into `research_sessions/` and records the Codex thread id it used.
 
 ## Core Utility Modules
 
@@ -66,6 +76,7 @@ More examples:
 uv run python one_off_scripts/show_signature.py ibkr get_open_orders
 uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
 uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
+uv run python one_off_scripts/show_signature.py custom_scripts.research_session do_research
 ```
 
 ## Script Output Paths
