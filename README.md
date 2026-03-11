@@ -1,14 +1,15 @@
-# IKBR Trader
+# FinAgent
 
-`ikbr_trader` is a repo-local Codex workspace for Interactive Brokers trading workflows.
+`ikbr_trader` is the codebase behind **FinAgent**, a repo-local Codex workspace for Interactive Brokers trading workflows.
 It combines:
 
 - IBKR-backed pricing and portfolio reads
 - option modeling and hedge analysis
 - broker-ready order proposal generation
 - repo-local Codex skills under [`.codex/skills/`](.codex/skills/)
+- typed core trading utilities that custom logic can build on
 
-Open the repo in Codex, and you get a trading-focused AI workspace rather than a generic coding shell.
+Open the repo in Codex, and you get **FinAgent**: a trading-focused AI workspace rather than a generic coding shell.
 
 ## What This Repo Is
 
@@ -41,6 +42,13 @@ codex
 
 If IB Gateway is running locally on the default host/port in [`config/pmcc_config.json`](config/pmcc_config.json), Codex can use the repo tooling and skills immediately.
 
+In practice:
+
+- install IB Gateway
+- clone this repo
+- run `codex` inside it
+- and you have **FinAgent**
+
 ## Prerequisites
 
 - Python 3.11+
@@ -63,10 +71,14 @@ Recommended:
   Local generated trade proposals
 - `analysis/{YYYY-MM-DD}/`
   Local generated scenario outputs and audits
+- `custom_scripts/`
+  Repo-local extension scripts and strategy-specific logic
 - `option_pricing/`
   Pricing models and shared option logic
 - `stock_tooling/`
   Planner, pricing, scenario, and watch tooling
+- `one_off_scripts/`
+  Small support scripts, including signature inspection helpers
 - `.codex/skills/`
   Repo-local Codex skill definitions
 
@@ -75,6 +87,48 @@ See:
 - [AGENTS.md](AGENTS.md)
 - [REPO_LAYOUT.md](REPO_LAYOUT.md)
 - [.codex/skills/SKILLS_INDEX.md](.codex/skills/SKILLS_INDEX.md)
+
+## How To Extend
+
+Put repo-specific custom logic in `custom_scripts/`.
+
+The intended pattern is:
+
+- ask your agent to write new logic in `custom_scripts/`
+- keep one-off or strategy-specific logic there
+- import and lean on the typed core utilities instead of re-implementing broker, pricing, or watch logic
+
+Core utility modules to reuse:
+
+- [`ibkr.py`](ibkr.py)
+- [`option_pricing/`](option_pricing/)
+- [`stock_tooling/`](stock_tooling/)
+- [`helpers/`](helpers/)
+
+Examples of good extensions:
+
+- a new sector-specific deployment planner
+- a custom stock ladder builder
+- a new execution watcher
+- a portfolio-specific overlay screener
+
+### Inspect Function Signatures
+
+To inspect a typed function from the terminal, use:
+
+```bash
+uv run python one_off_scripts/show_signature.py ibkr connect
+```
+
+Examples:
+
+```bash
+uv run python one_off_scripts/show_signature.py ibkr get_open_orders
+uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
+uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
+```
+
+This is the fastest repo-native way to inspect the core API surface before writing a new `custom_scripts/` tool.
 
 ## Config
 

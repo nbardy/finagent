@@ -13,19 +13,60 @@ ikbr_trader/
     *.json             # Executor-compatible JSON proposals
   analysis/{YYYY-MM-DD}/ # Scenario matrices, forecasts, comparisons
     *.json
+  custom_scripts/      # Repo-local custom extensions built on the typed core utils
   option_pricing/      # Pricing models (BS, Heston, VG, Merton, calibration)
   stock_tooling/       # Weekly planner, stock analysis tools
+  helpers/             # Shared typed data structures and hedge/execution helpers
+  one_off_scripts/     # Small support scripts and repo maintenance helpers
   macro_research/      # Macro regime research
 ```
 
 ## Repo Conventions
 
+- Treat this repo as the codebase for **FinAgent**.
 - Use `.codex/skills/` as the source of truth for repo-local skills.
 - Modeling outputs belong in `analysis/{YYYY-MM-DD}/`.
 - Executable order proposals belong in `orders/{YYYY-MM-DD}/`.
 - Hedge and overlay analysis should report `book`, `hedge`, and `combined` separately.
 - Proposal generation should state whether the order is `add`, `replace`, `trim`, or `close`.
 - For executable pricing, prefer IBKR and fail loud on missing live data rather than silently falling back.
+
+## Extension Model
+
+- Put new repo-specific automation in `custom_scripts/`.
+- Custom logic should import and reuse the typed core modules instead of duplicating broker, pricing, or order-state logic.
+- Keep reusable primitives in the core modules; keep strategy-specific orchestration in `custom_scripts/`.
+
+## Core Utility Modules
+
+When extending the repo, prefer leaning on:
+
+- `ibkr.py`
+  Live broker connection, quotes, portfolio, open orders, account summary, and recent fills.
+- `option_pricing/`
+  Pricing models, tranche logic, probe construction, and contract/model types.
+- `stock_tooling/`
+  Scenario analysis, price tools, scanners, planners, and watch rules.
+- `helpers/`
+  Shared hedge and scenario dataclasses plus execution-support helpers.
+
+## Signature Inspection
+
+The codebase is intentionally typed so agents can inspect and reuse the library surface safely.
+
+Use this command to inspect a symbol signature from the terminal:
+
+```bash
+uv run python one_off_scripts/show_signature.py ibkr connect
+```
+
+More examples:
+
+```bash
+uv run python one_off_scripts/show_signature.py ibkr get_open_orders
+uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
+uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
+```
 
 ## Script Output Paths
 
