@@ -1,9 +1,31 @@
 .venv/
 __pycache__/
 *.pyc
+*.log
+
+# Local state
 portfolio_state.json
 regime_state.json
-trade_proposal*.json
+config/portfolio_state.json
+config/regime_state.json
+config/portfolio_dump.json
+config/probe_config.json
+
+# Generated outputs and working notes
+orders/**
+!orders/.gitkeep
+analysis/**
+!analysis/.gitkeep
+agent_notes/**
+!agent_notes/.gitkeep
+macro_research/**/*.json
+
+# Legacy root-level generated proposals
+/*_proposal.json
+/weekly_probe*.json
+/ewy_next_open_call_sales.json
+
+# Codex local runtime
 .codex/config.toml
 .codex/skills/.system
 .codex/skills/public
