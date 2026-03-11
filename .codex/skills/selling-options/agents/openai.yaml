@@ -1,0 +1,7 @@
+interface:
+  display_name: "Selling Options"
+  short_description: "Choose and size covered-call overwrites safely."
+  default_prompt: "Use $selling-options to audit the live call buckets, choose short-call strikes, and size the overwrite without double-using cover."
+
+policy:
+  allow_implicit_invocation: true

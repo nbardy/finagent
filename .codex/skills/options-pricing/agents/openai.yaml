@@ -1,0 +1,7 @@
+interface:
+  display_name: "Options Pricing"
+  short_description: "Price options and spreads with model context."
+  default_prompt: "Use $options-pricing to audit the live option, spread, or calendar price against the repo's models before we trade it."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hedge Proposal"
+  short_description: "Price and emit executable hedge orders"
+  default_prompt: "Use $hedge_proposal to reprice a chosen hedge from IBKR and emit broker-ready BAG, probe, entry, trim, or close order JSON under orders/{YYYY-MM-DD}."

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Options Execution"
+  short_description: "Probe, fill, cancel, and close option orders."
+  default_prompt: "Use $options-execution to price the live combo, send a probe, wait for fills, and send or cancel the remainder safely."
+
+policy:
+  allow_implicit_invocation: true

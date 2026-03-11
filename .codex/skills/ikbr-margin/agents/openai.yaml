@@ -1,0 +1,4 @@
+interface:
+  display_name: "IBKR Margin"
+  short_description: "Interpret IBKR margin capacity"
+  default_prompt: "Use $ikbr-margin to explain IBKR cash, buying power, available funds, and liquidation risk in this repo context."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hedge Modeling"
+  short_description: "Model and rank hedge vehicles"
+  default_prompt: "Use $hedge_modeling to define macro scenarios, run EV and stress modeling, and rank hedge vehicles with separate book, hedge, and combined outputs."
