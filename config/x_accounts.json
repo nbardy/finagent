@@ -1,0 +1,79 @@
+{
+  "lists": [
+    {
+      "name": "citrini_affiliates",
+      "description": "Citrini main account plus directly affiliated researchers and analysts.",
+      "accounts": [
+        "citrini",
+        "nick_reece",
+        "zephyr",
+        "jukan"
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "key": "citrini",
+      "username": "Citrini7",
+      "display_name": "Citrini",
+      "description": "Thematic, cross-asset investment research.",
+      "affiliation": "Citrini Research",
+      "location": "New York, NY",
+      "website": "https://citriniresearch.com",
+      "tags": [
+        "thematic",
+        "cross_asset",
+        "research"
+      ],
+      "notes": [
+        "Main Citrini Research account.",
+        "Metadata seeded from user-provided profile details on 2026-03-12."
+      ]
+    },
+    {
+      "key": "nick_reece",
+      "username": "nicholastreece",
+      "display_name": "Nick Reece",
+      "description": "Thematic equity and macro research.",
+      "affiliation": "Citrini",
+      "location": "HK -> SF -> NY",
+      "tags": [
+        "equity",
+        "macro",
+        "research"
+      ],
+      "notes": [
+        "Bio includes CFA and a standard non-advice disclaimer."
+      ]
+    },
+    {
+      "key": "zephyr",
+      "username": "zephyr_z9",
+      "display_name": "Zephyr",
+      "description": "Affiliated account listed on the Citrini profile.",
+      "affiliation": "Citrini",
+      "tags": [
+        "affiliate",
+        "research"
+      ],
+      "notes": [
+        "Only the handle and affiliation were provided."
+      ]
+    },
+    {
+      "key": "jukan",
+      "username": "jukan05",
+      "display_name": "Jukan @GTC2026",
+      "description": "Analyst at Citrini.",
+      "affiliation": "Citrini",
+      "tags": [
+        "analyst",
+        "korean",
+        "research"
+      ],
+      "notes": [
+        "Bio notes Korean coverage and a non-advice disclaimer."
+      ]
+    }
+  ]
+}

@@ -121,6 +121,8 @@ It can:
 - create a timestamped research session tree
 - ask Codex to research in multiple turns and capture the `thread_id`
 - optionally fetch the latest public X/Twitter post for a user
+- resolve tracked X/Twitter accounts from `config/x_accounts.json`
+- print named X/Twitter account lists from the CLI
 - organize outputs into `loose_notes/`, `documents/`, `analysis/`, `conclusions/`, and `final_report.md`
 - run latest-tweet lookup by itself without creating a research session
 
@@ -128,7 +130,35 @@ Examples:
 
 ```bash
 uv run python custom_scripts/research_session.py research TSEM --ticker TSEM --prompt "Research Tower Semiconductor after the recent move. Focus on foundry demand, margins, valuation, and risks." --x-user towersemi
+uv run python custom_scripts/research_session.py research TSEM --ticker TSEM --x-account citrini
 uv run python custom_scripts/research_session.py latest-tweet towersemi --output-dir agent_notes/towersemi_latest_tweet
+uv run python custom_scripts/research_session.py latest-tweet --account nick_reece
+uv run python custom_scripts/research_session.py list-x-accounts --list citrini_affiliates
+```
+
+There is also an X cashtag polling helper at [`custom_scripts/x_ticker_watch.py`](custom_scripts/x_ticker_watch.py).
+It can:
+
+- poll a tracked account list or explicit account set
+- persist a local dedupe state so hourly polling does not reprocess the same post URLs
+- extract `$TICKER` mentions from new source posts
+- fetch recent related X/Twitter posts for each extracted ticker
+- bound each nested X query with a timeout so the hourly poll fails with caveats instead of hanging forever
+- write JSON and markdown summaries into `analysis/{today}/`
+
+Examples:
+
+```bash
+uv run python custom_scripts/x_ticker_watch.py
+uv run python custom_scripts/x_ticker_watch.py --list citrini_affiliates --limit-per-account 8 --related-limit 6
+uv run python custom_scripts/x_ticker_watch.py --account citrini --account nick_reece --output analysis/2026-03-12/citrini_watch.json
+uv run python custom_scripts/x_ticker_watch.py --query-timeout-seconds 120
+```
+
+For hourly polling, schedule the single-run command:
+
+```bash
+0 * * * * cd /Users/nicholasbardy/git/ikbr_trader && /usr/bin/env uv run python custom_scripts/x_ticker_watch.py
 ```
 
 ### Inspect Function Signatures
@@ -158,6 +188,7 @@ Tracked, public-safe config files:
 - [`config/pmcc_config.json`](config/pmcc_config.json)
 - [`config/probe_config.example.json`](config/probe_config.example.json)
 - [`config/watch_rules.json`](config/watch_rules.json)
+- [`config/x_accounts.json`](config/x_accounts.json)
 
 Local-only files are ignored:
 
@@ -165,6 +196,7 @@ Local-only files are ignored:
 - `config/portfolio_state.json`
 - `config/regime_state.json`
 - `config/portfolio_dump.json`
+- `config/x_ticker_watch_state.json`
 - generated `orders/`
 - generated `analysis/`
 - generated `research_sessions/`

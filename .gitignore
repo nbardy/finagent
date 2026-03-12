@@ -10,6 +10,7 @@ config/portfolio_state.json
 config/regime_state.json
 config/portfolio_dump.json
 config/probe_config.json
+config/x_ticker_watch_state.json
 
 # Generated outputs and working notes
 orders/**

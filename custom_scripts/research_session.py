@@ -13,6 +13,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RESEARCH_ROOT = REPO_ROOT / "research_sessions"
+DEFAULT_X_ACCOUNTS_PATH = REPO_ROOT / "config" / "x_accounts.json"
 
 
 @dataclass
@@ -38,6 +39,26 @@ class LatestTweetResult:
 
 
 @dataclass
+class XAccount:
+    key: str
+    username: str
+    display_name: str
+    description: str | None = None
+    affiliation: str | None = None
+    location: str | None = None
+    website: str | None = None
+    tags: tuple[str, ...] = ()
+    notes: tuple[str, ...] = ()
+
+
+@dataclass
+class XAccountList:
+    name: str
+    description: str | None
+    accounts: tuple[str, ...]
+
+
+@dataclass
 class ResearchSessionPaths:
     session_dir: Path
     loose_notes_dir: Path
@@ -58,6 +79,90 @@ class ResearchSessionResult:
     thread_id: str | None
     latest_tweet: LatestTweetResult | None
     turns: list[CodexTurnResult]
+
+
+def _load_json_payload(path: Path) -> dict[str, Any]:
+    with path.open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _resolve_accounts_path(path: str | None = None) -> Path:
+    return Path(path) if path else DEFAULT_X_ACCOUNTS_PATH
+
+
+def load_x_accounts(path: str | None = None) -> tuple[XAccount, ...]:
+    payload = _load_json_payload(_resolve_accounts_path(path))
+    return tuple(
+        XAccount(
+            key=entry["key"],
+            username=entry["username"],
+            display_name=entry["display_name"],
+            description=entry.get("description"),
+            affiliation=entry.get("affiliation"),
+            location=entry.get("location"),
+            website=entry.get("website"),
+            tags=tuple(entry.get("tags", [])),
+            notes=tuple(entry.get("notes", [])),
+        )
+        for entry in payload.get("accounts", [])
+    )
+
+
+def load_x_account_lists(path: str | None = None) -> tuple[XAccountList, ...]:
+    payload = _load_json_payload(_resolve_accounts_path(path))
+    return tuple(
+        XAccountList(
+            name=entry["name"],
+            description=entry.get("description"),
+            accounts=tuple(entry.get("accounts", [])),
+        )
+        for entry in payload.get("lists", [])
+    )
+
+
+def get_x_account(identifier: str, path: str | None = None) -> XAccount | None:
+    lookup = identifier.strip().lstrip("@").lower()
+    for account in load_x_accounts(path):
+        if account.key.lower() == lookup or account.username.lower() == lookup:
+            return account
+    return None
+
+
+def get_x_accounts_for_list(list_name: str, path: str | None = None) -> tuple[XAccount, ...]:
+    lookup = list_name.strip().lower()
+    lists = {account_list.name.lower(): account_list for account_list in load_x_account_lists(path)}
+    account_list = lists.get(lookup)
+    if account_list is None:
+        raise ValueError(f"Unknown X account list: {list_name}")
+
+    accounts_by_key = {account.key.lower(): account for account in load_x_accounts(path)}
+    resolved_accounts: list[XAccount] = []
+    for key in account_list.accounts:
+        account = accounts_by_key.get(key.lower())
+        if account is None:
+            raise ValueError(
+                f"X account list `{account_list.name}` references missing account key `{key}`."
+            )
+        resolved_accounts.append(account)
+    return tuple(resolved_accounts)
+
+
+def resolve_x_username(
+    *,
+    username: str | None,
+    account: str | None = None,
+    accounts_path: str | None = None,
+) -> str | None:
+    if username and account:
+        raise ValueError("Pass either a raw username or a configured account, not both.")
+    if account:
+        resolved_account = get_x_account(account, path=accounts_path)
+        if resolved_account is None:
+            raise ValueError(f"Unknown X account: {account}")
+        return resolved_account.username
+    if username:
+        return username.lstrip("@")
+    return None
 
 
 def _slugify(value: str) -> str:
@@ -240,6 +345,7 @@ def _run_codex_turn(
     resume_thread_id: str | None = None,
     full_auto: bool = True,
     dangerously_bypass: bool = False,
+    timeout_seconds: int | None = None,
 ) -> CodexTurnResult:
     with tempfile.TemporaryDirectory(prefix="finagent_codex_") as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -263,19 +369,28 @@ def _run_codex_turn(
             dangerously_bypass=dangerously_bypass,
         )
 
-        process = subprocess.Popen(
-            command,
-            cwd=repo_root,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
+        try:
+            completed = subprocess.run(
+                command,
+                cwd=repo_root,
+                capture_output=True,
+                text=True,
+                timeout=timeout_seconds,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            stderr = (exc.stderr or "").strip() if isinstance(exc.stderr, str) else "n/a"
+            raise RuntimeError(
+                "Codex research turn timed out.\n"
+                f"command={' '.join(command)}\n"
+                f"timeout_seconds={timeout_seconds}\n"
+                f"stderr={stderr or 'n/a'}"
+            ) from exc
 
         events: list[dict[str, Any]] = []
         thread_id = resume_thread_id
 
-        assert process.stdout is not None
-        for raw_line in process.stdout:
+        for raw_line in completed.stdout.splitlines():
             line = raw_line.strip()
             if not line:
                 continue
@@ -287,10 +402,8 @@ def _run_codex_turn(
             if event.get("type") == "thread.started":
                 thread_id = event.get("thread_id", thread_id)
 
-        stderr = ""
-        if process.stderr is not None:
-            stderr = process.stderr.read().strip()
-        exit_code = process.wait()
+        stderr = completed.stderr.strip()
+        exit_code = completed.returncode
 
         last_message = ""
         if output_message_path.exists():
@@ -316,6 +429,28 @@ def _run_codex_turn(
             exit_code=exit_code,
             events=events,
         )
+
+
+def run_structured_json_prompt(
+    prompt: str,
+    schema: dict[str, Any],
+    *,
+    repo_root: Path = REPO_ROOT,
+    profile: str | None = None,
+    full_auto: bool = True,
+    dangerously_bypass: bool = False,
+    timeout_seconds: int | None = None,
+) -> tuple[dict[str, Any], str]:
+    turn = _run_codex_turn(
+        prompt=prompt,
+        repo_root=repo_root,
+        profile=profile,
+        output_schema=schema,
+        full_auto=full_auto,
+        dangerously_bypass=dangerously_bypass,
+        timeout_seconds=timeout_seconds,
+    )
+    return json.loads(turn.last_message), turn.thread_id
 
 
 def get_users_latest_tweet(
@@ -363,15 +498,14 @@ def get_users_latest_tweet(
         ]
     )
 
-    turn = _run_codex_turn(
+    data, thread_id = run_structured_json_prompt(
         prompt=prompt,
+        schema=schema,
         repo_root=repo_root,
         profile=profile,
-        output_schema=schema,
         full_auto=full_auto,
         dangerously_bypass=dangerously_bypass,
     )
-    data = json.loads(turn.last_message)
     result = LatestTweetResult(
         username=data["username"],
         found=data["found"],
@@ -380,7 +514,7 @@ def get_users_latest_tweet(
         text=data["text"],
         summary=data["summary"],
         caveats=list(data["caveats"]),
-        thread_id=turn.thread_id,
+        thread_id=thread_id,
     )
 
     if output_dir:
@@ -586,6 +720,14 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Optional X/Twitter username to inspect before research.",
     )
     research_parser.add_argument(
+        "--x-account",
+        help="Optional configured X account key or username from the tracked account registry.",
+    )
+    research_parser.add_argument(
+        "--accounts-path",
+        help="Optional path to an X account registry JSON file.",
+    )
+    research_parser.add_argument(
         "--profile",
         help="Optional Codex profile name. When provided, the tool uses `codex exec -p <profile>`.",
     )
@@ -609,7 +751,19 @@ def _build_parser() -> argparse.ArgumentParser:
         "latest-tweet",
         help="Fetch the latest public X/Twitter post for a user without starting a research session.",
     )
-    tweet_parser.add_argument("username", help="X/Twitter username without the @.")
+    tweet_parser.add_argument(
+        "username",
+        nargs="?",
+        help="X/Twitter username without the @.",
+    )
+    tweet_parser.add_argument(
+        "--account",
+        help="Configured X account key or username from the tracked account registry.",
+    )
+    tweet_parser.add_argument(
+        "--accounts-path",
+        help="Optional path to an X account registry JSON file.",
+    )
     tweet_parser.add_argument(
         "--profile",
         help="Optional Codex profile name. When provided, the tool uses `codex exec -p <profile>`.",
@@ -628,6 +782,20 @@ def _build_parser() -> argparse.ArgumentParser:
         "--output-dir",
         help="Optional directory for `latest_tweet.json` and `latest_tweet.md`.",
     )
+
+    list_accounts_parser = subparsers.add_parser(
+        "list-x-accounts",
+        help="Print the tracked X/Twitter account registry or a named subset.",
+    )
+    list_accounts_parser.add_argument(
+        "--accounts-path",
+        help="Optional path to an X account registry JSON file.",
+    )
+    list_accounts_parser.add_argument(
+        "--list",
+        dest="account_list",
+        help="Optional list name from the registry. When omitted, all accounts are printed.",
+    )
     return parser
 
 
@@ -635,10 +803,32 @@ def main() -> None:
     parser = _build_parser()
     args = parser.parse_args()
 
+    if args.command == "list-x-accounts":
+        if args.account_list:
+            accounts = get_x_accounts_for_list(args.account_list, path=args.accounts_path)
+        else:
+            accounts = load_x_accounts(args.accounts_path)
+
+        for account in accounts:
+            summary_parts = [f"{account.key}=@{account.username}", account.display_name]
+            if account.affiliation:
+                summary_parts.append(account.affiliation)
+            if account.description:
+                summary_parts.append(account.description)
+            print(" | ".join(summary_parts))
+        return
+
     if args.command == "latest-tweet":
         output_dir = Path(args.output_dir) if args.output_dir else None
+        username = resolve_x_username(
+            username=args.username,
+            account=args.account,
+            accounts_path=args.accounts_path,
+        )
+        if not username:
+            parser.error("latest-tweet requires a username or --account.")
         result = get_users_latest_tweet(
-            args.username,
+            username,
             profile=args.profile,
             full_auto=not args.no_full_auto,
             dangerously_bypass=args.dangerously_bypass_approvals_and_sandbox,
@@ -655,11 +845,17 @@ def main() -> None:
     if args.prompt_file:
         research_prompt = Path(args.prompt_file).read_text(encoding="utf-8").strip()
 
+    x_username = resolve_x_username(
+        username=args.x_user,
+        account=args.x_account,
+        accounts_path=args.accounts_path,
+    )
+
     result = do_research(
         topic=args.topic,
         ticker=args.ticker,
         research_prompt=research_prompt,
-        x_username=args.x_user,
+        x_username=x_username,
         profile=args.profile,
         full_auto=not args.no_full_auto,
         dangerously_bypass=args.dangerously_bypass_approvals_and_sandbox,
