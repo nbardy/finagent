@@ -2,6 +2,8 @@ import json
 import argparse
 from ib_insync import *
 
+from helpers.thesis_db import record_order_event, upsert_thesis
+
 # IBKR currency → price unit mapping.
 # Some exchanges quote in subunits (pence, sen) but use the major currency code.
 # This table defines the minimum plausible limit price per currency — any price
@@ -28,8 +30,8 @@ def assert_price_units(symbol: str, currency: str, price: float, tranche_id=None
         )
 
 
-def _apply_order_fields(order, proposal, outside_rth):
-    order.outsideRth = outside_rth
+def _apply_order_fields(order, proposal, outside_rth_default):
+    order.outsideRth = proposal.get('outsideRth', outside_rth_default)
     order.tif = proposal.get('tif', getattr(order, 'tif', 'DAY'))
     if 'goodAfterTime' in proposal:
         order.goodAfterTime = proposal['goodAfterTime']
@@ -46,6 +48,54 @@ def _apply_order_fields(order, proposal, outside_rth):
         order.algoStrategy = 'Adaptive'
         order.algoParams = [TagValue('adaptivePriority', priority)]
     return order
+
+
+def _proposal_contract_metadata(proposal):
+    c_data = proposal["contract"]
+    sec_type = c_data.get("secType", "OPT")
+    if sec_type == "BAG":
+        first_leg = c_data["legs"][0]
+        return {
+            "symbol": c_data["symbol"],
+            "sec_type": sec_type,
+            "expiry": first_leg.get("expiry", ""),
+            "strike": first_leg.get("strike", 0.0),
+            "right": first_leg.get("right", ""),
+        }
+    return {
+        "symbol": c_data["symbol"],
+        "sec_type": sec_type,
+        "expiry": c_data.get("lastTradeDateOrContractMonth", ""),
+        "strike": c_data.get("strike", 0.0),
+        "right": c_data.get("right", ""),
+    }
+
+
+def _build_submission_context(proposal, *, source_file: str | None = None, db_path=None):
+    metadata = _proposal_contract_metadata(proposal)
+    reason = proposal.get("reason")
+    if not isinstance(reason, str):
+        raise ValueError(
+            f"{metadata['symbol']}: proposal is missing required `reason` string."
+        )
+
+    thesis = upsert_thesis(
+        symbol=metadata["symbol"],
+        sec_type=metadata["sec_type"],
+        expiry=str(metadata["expiry"] or ""),
+        strike=float(metadata["strike"] or 0.0),
+        right=str(metadata["right"] or ""),
+        reason=reason,
+        strategy=str(proposal.get("strategy", "")),
+        intent=str(proposal.get("intent", "")),
+        thesis_id=proposal.get("thesis_id"),
+        base_order_ref=proposal.get("orderRef"),
+        source_file=source_file,
+        db_path=db_path,
+    )
+    proposal["thesis_id"] = thesis.thesis_id
+    proposal["orderRef"] = thesis.order_ref
+    return thesis
 
 
 def execute_trade(file_path):
@@ -75,6 +125,7 @@ def execute_trade(file_path):
         ib.connect(host, port, clientId=client_id) 
         
         for proposal in proposals:
+            thesis = _build_submission_context(proposal, source_file=file_path)
             # Reconstruct contract — dispatch on secType
             c_data = proposal['contract']
             sec_type = c_data.get('secType', 'OPT')
@@ -147,18 +198,31 @@ def execute_trade(file_path):
                     t_payload = dict(proposal)
                     t_payload.update(t_data)
                     t_payload['tif'] = tif
-                    # Pass note as orderRef so it's visible in TWS/Gateway
-                    if 'note' in t_data and 'orderRef' not in t_data:
-                        t_payload['orderRef'] = t_data['note'][:40]
+                    t_payload['orderRef'] = proposal['orderRef']
                     order = _apply_order_fields(order, t_payload, outside_rth)
                     
                     print(
                         f" Tranche {i+1}: {action} {qty} @ {lmt_price} tif={tif}"
                         f" goodAfterTime={getattr(order, 'goodAfterTime', '') or 'n/a'}"
+                        f" thesis={thesis.thesis_id}"
                     )
                     
                     trade = ib.placeOrder(contract, order)
                     ib.sleep(2) # Give it a moment to transmit
+                    record_order_event(
+                        thesis_id=thesis.thesis_id,
+                        order_ref=proposal['orderRef'],
+                        symbol=thesis.symbol,
+                        sec_type=thesis.sec_type,
+                        expiry=thesis.expiry,
+                        strike=thesis.strike,
+                        right=thesis.right,
+                        action=action,
+                        quantity=qty,
+                        perm_id=getattr(trade.order, "permId", None),
+                        order_id=getattr(trade.order, "orderId", None),
+                        source_file=file_path,
+                    )
                     print(f"  Status: {trade.orderStatus.status}")
             else:
                 qty = proposal.get('quantity', 1)
@@ -168,9 +232,26 @@ def execute_trade(file_path):
                     order = MarketOrder(action, qty)
                     proposal['tif'] = tif
                     order = _apply_order_fields(order, proposal, outside_rth)
-                    print(f"Executing {order_type} order for {contract_desc}: {action} {qty} tif={tif}")
+                    print(
+                        f"Executing {order_type} order for {contract_desc}: "
+                        f"{action} {qty} tif={tif} thesis={thesis.thesis_id}"
+                    )
                     trade = ib.placeOrder(contract, order)
                     ib.sleep(2)
+                    record_order_event(
+                        thesis_id=thesis.thesis_id,
+                        order_ref=proposal['orderRef'],
+                        symbol=thesis.symbol,
+                        sec_type=thesis.sec_type,
+                        expiry=thesis.expiry,
+                        strike=thesis.strike,
+                        right=thesis.right,
+                        action=action,
+                        quantity=qty,
+                        perm_id=getattr(trade.order, "permId", None),
+                        order_id=getattr(trade.order, "orderId", None),
+                        source_file=file_path,
+                    )
                     print(f"  Status: {trade.orderStatus.status}")
                 elif order_type == 'LMT' and 'lmtPrice' in proposal:
                     lmt_price = proposal['lmtPrice']
@@ -182,10 +263,25 @@ def execute_trade(file_path):
                     print(
                         f"Executing {order_type} order for {contract.symbol} {contract.strike}{contract.right}: "
                         f"{action} {qty} @ {lmt_price} tif={tif} "
-                        f"goodAfterTime={getattr(order, 'goodAfterTime', '') or 'n/a'}"
+                        f"goodAfterTime={getattr(order, 'goodAfterTime', '') or 'n/a'} "
+                        f"thesis={thesis.thesis_id}"
                     )
                     trade = ib.placeOrder(contract, order)
                     ib.sleep(2)
+                    record_order_event(
+                        thesis_id=thesis.thesis_id,
+                        order_ref=proposal['orderRef'],
+                        symbol=thesis.symbol,
+                        sec_type=thesis.sec_type,
+                        expiry=thesis.expiry,
+                        strike=thesis.strike,
+                        right=thesis.right,
+                        action=action,
+                        quantity=qty,
+                        perm_id=getattr(trade.order, "permId", None),
+                        order_id=getattr(trade.order, "orderId", None),
+                        source_file=file_path,
+                    )
                     print(f"  Status: {trade.orderStatus.status}")
                 else:
                     print(f"Unsupported order type or missing parameters in proposal for {contract_desc}")

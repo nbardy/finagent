@@ -297,6 +297,7 @@ class Position:
 class OpenOrder:
     order_id: int
     perm_id: int
+    order_ref: str
     symbol: str
     sec_type: str
     expiry: str
@@ -325,6 +326,7 @@ class FillEvent:
     order_id: int
     perm_id: int
     client_id: int
+    order_ref: str
     exec_id: str
     symbol: str
     sec_type: str
@@ -425,6 +427,7 @@ def get_open_orders(ib: IB, symbols: list[str] | None = None) -> list[OpenOrder]
         orders.append(OpenOrder(
             order_id=trade.order.orderId,
             perm_id=trade.order.permId,
+            order_ref=getattr(trade.order, "orderRef", "") or "",
             symbol=symbol,
             sec_type=getattr(contract, "secType", ""),
             expiry=expiry,
@@ -494,6 +497,7 @@ def get_recent_fills(ib: IB, symbols: list[str] | None = None) -> list[FillEvent
             order_id=execution.orderId,
             perm_id=execution.permId,
             client_id=execution.clientId,
+            order_ref=getattr(execution, "orderRef", "") or "",
             exec_id=execution.execId,
             symbol=symbol,
             sec_type=getattr(contract, "secType", ""),

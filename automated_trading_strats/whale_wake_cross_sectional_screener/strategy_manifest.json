@@ -1,0 +1,21 @@
+{
+  "strategy_key": "whale_wake_cross_sectional_screener",
+  "title": "Whale Wake Cross-Sectional Screener",
+  "created_for": "FinAgent",
+  "status": "draft",
+  "category": "automated_options_screening",
+  "primary_artifact": "strategy.md",
+  "tooling_hooks": {
+    "python_module": "custom_scripts.automated_trading_strats",
+    "inspect_signature": "uv run python one_off_scripts/show_signature.py custom_scripts.automated_trading_strats save_strategy_note",
+    "print_manifest": "uv run python -m custom_scripts.automated_trading_strats --strategy whale_wake_cross_sectional_screener --print-manifest",
+    "strategy_scaffold_module": "custom_scripts.whale_wake_cross_sectional_screener",
+    "scaffold_signature": "uv run python one_off_scripts/show_signature.py custom_scripts.whale_wake_cross_sectional_screener write_scaffold_snapshot",
+    "write_scaffold_snapshot": "uv run python -m custom_scripts.whale_wake_cross_sectional_screener"
+  },
+  "notes": [
+    "Generated outputs under this strategy directory are gitignored by default.",
+    "The saved thesis text was normalized to remove terminal control-sequence artifacts from the source paste.",
+    "Implementation notes capture the yfinance-based production-upgrade draft, but executable pricing in this repo should remain IBKR-first."
+  ]
+}

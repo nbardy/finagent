@@ -11,6 +11,7 @@ config/regime_state.json
 config/portfolio_dump.json
 config/probe_config.json
 config/x_ticker_watch_state.json
+config/thesis_registry.db
 
 # Generated outputs and working notes
 orders/**
@@ -19,6 +20,14 @@ analysis/**
 !analysis/.gitkeep
 research_sessions/**
 !research_sessions/.gitkeep
+automated_trading_strats/*
+!automated_trading_strats/README.md
+!automated_trading_strats/*/
+automated_trading_strats/*/*
+!automated_trading_strats/*/README.md
+!automated_trading_strats/*/strategy.md
+!automated_trading_strats/*/implementation_notes.md
+!automated_trading_strats/*/strategy_manifest.json
 macro_research/**/*.json
 
 # Legacy root-level generated proposals
