@@ -1,0 +1,60 @@
+{
+  "description": "EWY 11-lot overwrite roll: buy back Mar 13 2026 151C and sell Mar 20 2026 150C as one combo",
+  "generated": "2026-03-12",
+  "notes": [
+    "This is the IBKR-style roll expressed as a BAG order so the close and new sale execute together.",
+    "Legs: BUY to close 2026-03-13 151C, SELL to open 2026-03-20 150C.",
+    "Delayed leg marks were approximately 0.00 x 0.05 on the old short and 0.35 x 0.40 on the new short, so realistic roll credit is about 0.30 to 0.35.",
+    "Use this instead of the two-step files if you want atomic execution and no legging risk."
+  ],
+  "trades": [
+    {
+      "contract": {
+        "secType": "BAG",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "legs": [
+          {
+            "action": "BUY",
+            "strike": 151.0,
+            "right": "C",
+            "expiry": "20260313",
+            "ratio": 1
+          },
+          {
+            "action": "SELL",
+            "strike": 150.0,
+            "right": "C",
+            "expiry": "20260320",
+            "ratio": 1
+          }
+        ]
+      },
+      "action": "SELL",
+      "tif": "DAY",
+      "algo": "Adaptive",
+      "algoPriority": "Normal",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 4,
+          "lmtPrice": 0.35,
+          "note": "EWY roll 4x at top credit"
+        },
+        {
+          "tranche": 2,
+          "quantity": 4,
+          "lmtPrice": 0.33,
+          "note": "EWY roll 4x inside market"
+        },
+        {
+          "tranche": 3,
+          "quantity": 3,
+          "lmtPrice": 0.30,
+          "note": "EWY roll 3x at conservative credit"
+        }
+      ]
+    }
+  ]
+}

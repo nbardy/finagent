@@ -47,6 +47,49 @@ class OptionLine:
     iv: float
 
 
+def _weighted_quantile(samples: list[tuple[float, float]], q: float) -> float:
+    if not samples:
+        return 0.0
+    ordered = sorted(samples, key=lambda item: item[0])
+    total = sum(weight for _, weight in ordered)
+    if total <= 0:
+        return ordered[-1][0]
+    threshold = total * q
+    cumulative = 0.0
+    for value, weight in ordered:
+        cumulative += weight
+        if cumulative >= threshold:
+            return value
+    return ordered[-1][0]
+
+
+def _weighted_stats(samples: list[tuple[float, float]]) -> dict[str, float]:
+    if not samples:
+        return {
+            "min": 0.0,
+            "max": 0.0,
+            "p10": 0.0,
+            "p50": 0.0,
+            "p90": 0.0,
+            "stddev": 0.0,
+        }
+    total = sum(weight for _, weight in samples)
+    mean = sum(value * weight for value, weight in samples) / total if total > 0 else 0.0
+    variance = (
+        sum(weight * ((value - mean) ** 2) for value, weight in samples) / total
+        if total > 0 else 0.0
+    )
+    values = [value for value, _ in samples]
+    return {
+        "min": min(values),
+        "max": max(values),
+        "p10": _weighted_quantile(samples, 0.10),
+        "p50": _weighted_quantile(samples, 0.50),
+        "p90": _weighted_quantile(samples, 0.90),
+        "stddev": variance ** 0.5,
+    }
+
+
 MONTHS = {
     "JAN": 1,
     "FEB": 2,
@@ -459,6 +502,8 @@ def analyze(config: dict) -> dict:
             "downside_probability": 0.0,
             "downside_book_pnl_weighted": 0.0,
             "downside_combined_pnl_weighted": 0.0,
+            "overlay_samples": [],
+            "combined_samples": [],
         }
     }
     for candidate in candidates:
@@ -470,6 +515,8 @@ def analyze(config: dict) -> dict:
             "downside_probability": 0.0,
             "downside_book_pnl_weighted": 0.0,
             "downside_combined_pnl_weighted": 0.0,
+            "overlay_samples": [],
+            "combined_samples": [],
         }
 
     for scenario in scenarios:
@@ -498,6 +545,7 @@ def analyze(config: dict) -> dict:
 
         candidate_summaries["No hedge"]["expected_book_pnl"] += book_pnl * scenario.probability
         candidate_summaries["No hedge"]["expected_combined_pnl"] += book_pnl * scenario.probability
+        candidate_summaries["No hedge"]["combined_samples"].append((book_pnl, scenario.probability))
         if book_pnl < 0:
             candidate_summaries["No hedge"]["downside_probability"] += scenario.probability
             candidate_summaries["No hedge"]["downside_book_pnl_weighted"] += book_pnl * scenario.probability
@@ -538,6 +586,8 @@ def analyze(config: dict) -> dict:
             summary["expected_book_pnl"] += book_pnl * scenario.probability
             summary["expected_hedge_pnl"] += hedge_pnl * scenario.probability
             summary["expected_combined_pnl"] += combined_pnl * scenario.probability
+            summary["overlay_samples"].append((hedge_pnl, scenario.probability))
+            summary["combined_samples"].append((combined_pnl, scenario.probability))
             if book_pnl < 0:
                 summary["downside_probability"] += scenario.probability
                 summary["weighted_downside_coverage"] += coverage * scenario.probability
@@ -548,6 +598,8 @@ def analyze(config: dict) -> dict:
 
     summaries = {}
     for name, values in candidate_summaries.items():
+        overlay_stats = _weighted_stats(values["overlay_samples"])
+        combined_stats = _weighted_stats(values["combined_samples"])
         downside_probability = values["downside_probability"]
         conditional_downside_coverage = 0.0
         avg_book_pnl_when_downside = 0.0
@@ -578,6 +630,18 @@ def analyze(config: dict) -> dict:
             "downside_probability_pct": round(downside_probability * 100, 1),
             "avg_book_pnl_when_downside": round(avg_book_pnl_when_downside, 2),
             "avg_combined_pnl_when_downside": round(avg_combined_pnl_when_downside, 2),
+            "overlay_pnl_min": round(overlay_stats["min"], 2),
+            "overlay_pnl_p10": round(overlay_stats["p10"], 2),
+            "overlay_pnl_p50": round(overlay_stats["p50"], 2),
+            "overlay_pnl_p90": round(overlay_stats["p90"], 2),
+            "overlay_pnl_max": round(overlay_stats["max"], 2),
+            "overlay_pnl_stddev": round(overlay_stats["stddev"], 2),
+            "combined_pnl_min": round(combined_stats["min"], 2),
+            "combined_pnl_p10": round(combined_stats["p10"], 2),
+            "combined_pnl_p50": round(combined_stats["p50"], 2),
+            "combined_pnl_p90": round(combined_stats["p90"], 2),
+            "combined_pnl_max": round(combined_stats["max"], 2),
+            "combined_pnl_stddev": round(combined_stats["stddev"], 2),
         }
 
     output = {

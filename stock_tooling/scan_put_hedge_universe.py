@@ -16,6 +16,7 @@ from stock_tooling.portfolio_scenario_ev import analyze
 from stock_tooling.scan_put_overlays import (
     build_calendar_candidates,
     build_vertical_candidates,
+    _select_buy_price,
     suspicious_strikes,
 )
 
@@ -141,6 +142,8 @@ def build_long_put_candidates(
     target_budget: float,
     symbol: str,
     excluded_by_expiry: dict[str, set[float]],
+    entry_pricing: str,
+    entry_slippage_frac: float,
 ) -> list[dict]:
     candidates: list[dict] = []
     for expiry in expiries:
@@ -151,11 +154,24 @@ def build_long_put_candidates(
             quote = quotes_by_expiry[expiry][strike]
             if quote["bid"] <= 0 or quote["ask"] <= 0 or quote["iv"] <= 0 or quote["price"] <= 0:
                 continue
-            qty = max(1, int(round(target_budget / (quote["price"] * 100.0))))
+            selected_price = _select_buy_price(
+                mid=quote["price"],
+                executable=quote["ask"],
+                entry_pricing=entry_pricing,
+                entry_slippage_frac=entry_slippage_frac,
+            )
+            qty = max(1, int(round(target_budget / (selected_price * 100.0))))
             candidates.append({
                 "name": f"Add + {expiry} {int(strike)}P x{qty}",
                 "vehicle_type": "long_put_overlay",
-                "entry_cost": round(quote["price"] * 100.0 * qty, 2),
+                "entry_cost": round(selected_price * 100.0 * qty, 2),
+                "entry_cost_mid": round(quote["price"] * 100.0 * qty, 2),
+                "entry_cost_executable": round(quote["ask"] * 100.0 * qty, 2),
+                "entry_price_method": entry_pricing,
+                "entry_debit_mid": round(quote["price"], 4),
+                "entry_debit_selected": round(selected_price, 4),
+                "entry_debit_executable": round(quote["ask"], 4),
+                "entry_combo_spread": round(quote["ask"] - quote["price"], 4),
                 "legs": [
                     {
                         "label": f"Long {expiry} {int(strike)}P",
@@ -184,6 +200,8 @@ def build_diagonal_candidates(
     symbol: str,
     excluded_by_expiry: dict[str, set[float]],
     max_width: float,
+    entry_pricing: str,
+    entry_slippage_frac: float,
 ) -> list[dict]:
     candidates: list[dict] = []
     for short_expiry, long_expiry in pairs:
@@ -210,7 +228,14 @@ def build_diagonal_candidates(
                 long_quote = long_quotes[long_strike]
                 if long_quote["bid"] <= 0 or long_quote["ask"] <= 0 or long_quote["iv"] <= 0 or long_quote["price"] <= 0:
                     continue
-                debit = long_quote["price"] - short_quote["price"]
+                mid_debit = long_quote["price"] - short_quote["price"]
+                executable_debit = long_quote["ask"] - short_quote["bid"]
+                debit = _select_buy_price(
+                    mid=mid_debit,
+                    executable=executable_debit,
+                    entry_pricing=entry_pricing,
+                    entry_slippage_frac=entry_slippage_frac,
+                )
                 if debit <= 0:
                     continue
                 qty = max(1, int(round(target_budget / (debit * 100.0))))
@@ -218,6 +243,13 @@ def build_diagonal_candidates(
                     "name": f"Add + {short_expiry}/{long_expiry} {int(short_strike)}/{int(long_strike)} put diag x{qty}",
                     "vehicle_type": "put_diagonal_overlay",
                     "entry_cost": round(debit * 100.0 * qty, 2),
+                    "entry_cost_mid": round(mid_debit * 100.0 * qty, 2),
+                    "entry_cost_executable": round(executable_debit * 100.0 * qty, 2),
+                    "entry_price_method": entry_pricing,
+                    "entry_debit_mid": round(mid_debit, 4),
+                    "entry_debit_selected": round(debit, 4),
+                    "entry_debit_executable": round(executable_debit, 4),
+                    "entry_combo_spread": round(executable_debit - mid_debit, 4),
                     "legs": [
                         {
                             "label": f"Short {short_expiry} {int(short_strike)}P",
@@ -256,11 +288,17 @@ def summarize_rankings(output: dict, candidates: list[dict]) -> list[dict]:
             "name": name,
             "vehicle_type": meta[name]["vehicle_type"],
             "entry_cost": meta[name]["entry_cost"],
+            "entry_cost_mid": meta[name].get("entry_cost_mid"),
+            "entry_cost_executable": meta[name].get("entry_cost_executable"),
+            "entry_price_method": meta[name].get("entry_price_method"),
             "expected_book_pnl": summary["expected_book_pnl"],
             "expected_overlay_pnl": summary["expected_hedge_pnl"],
             "expected_combined_pnl": summary["expected_combined_pnl"],
             "weighted_downside_coverage_pct": summary["weighted_downside_coverage_pct"],
             "avg_combined_pnl_when_downside": summary["avg_combined_pnl_when_downside"],
+            "combined_pnl_p10": summary.get("combined_pnl_p10"),
+            "combined_pnl_p50": summary.get("combined_pnl_p50"),
+            "combined_pnl_p90": summary.get("combined_pnl_p90"),
         }
         ranked.append(item)
     ranked.sort(key=lambda item: item["expected_combined_pnl"], reverse=True)
@@ -288,6 +326,7 @@ def write_report(
         "as_of": as_of.isoformat(),
         "symbol": symbol,
         "quote_source": "IBKR historical close + delayed-frozen options",
+        "entry_pricing": ranked[0]["entry_price_method"] if ranked else None,
         "target_budget": target_budget,
         "base_book_definition": base_book_definition,
         "scenarios": scenarios,
@@ -318,8 +357,10 @@ def write_report(
     lines += ["", "## Top 15", ""]
     for idx, item in enumerate(ranked[:15], start=1):
         lines.append(
-            f"{idx}. `{item['name']}` | type `{item['vehicle_type']}` | entry `{item['entry_cost']:.0f}` | "
+            f"{idx}. `{item['name']}` | type `{item['vehicle_type']}` | "
+            f"entry used/mid/exec `{item['entry_cost']:.0f}/{item['entry_cost_mid']:.0f}/{item['entry_cost_executable']:.0f}` | "
             f"overlay EV `{item['expected_overlay_pnl']:.0f}` | combined EV `{item['expected_combined_pnl']:.0f}` | "
+            f"combined p10/p90 `{item['combined_pnl_p10']:.0f}/{item['combined_pnl_p90']:.0f}` | "
             f"downside cover `{item['weighted_downside_coverage_pct']:.1f}%`"
         )
     summary_path.write_text("\n".join(lines) + "\n")
@@ -330,6 +371,18 @@ def main() -> None:
     parser.add_argument("--symbol", default="EWY")
     parser.add_argument("--as-of", default="2026-03-12")
     parser.add_argument("--market-data-type", type=int, default=4)
+    parser.add_argument(
+        "--entry-pricing",
+        choices=("mid", "blended", "executable"),
+        default="blended",
+        help="How to translate option quotes into modeled buy debits.",
+    )
+    parser.add_argument(
+        "--entry-slippage-frac",
+        type=float,
+        default=0.25,
+        help="For blended pricing, charge this fraction of the combo spread above mid.",
+    )
     parser.add_argument("--target-budget", type=float, default=25000.0)
     parser.add_argument("--risk-free-rate", type=float, default=0.045)
     parser.add_argument("--debug", action=argparse.BooleanOptionalAction, default=False)
@@ -419,6 +472,8 @@ def main() -> None:
         target_budget=args.target_budget,
         symbol=symbol,
         excluded_by_expiry=excluded_by_expiry,
+        entry_pricing=args.entry_pricing,
+        entry_slippage_frac=args.entry_slippage_frac,
     ))
     for expiry in vertical_expiries:
         candidates.extend(build_vertical_candidates(
@@ -433,6 +488,8 @@ def main() -> None:
             baseline_entry_cost=0.0,
             excluded_strikes=excluded_by_expiry[expiry],
             symbol=symbol,
+            entry_pricing=args.entry_pricing,
+            entry_slippage_frac=args.entry_slippage_frac,
         ))
     for short_expiry, long_expiry in calendar_pairs:
         candidates.extend(build_calendar_candidates(
@@ -448,6 +505,8 @@ def main() -> None:
             baseline_entry_cost=0.0,
             excluded_strikes=excluded_by_expiry[short_expiry] | excluded_by_expiry[long_expiry],
             symbol=symbol,
+            entry_pricing=args.entry_pricing,
+            entry_slippage_frac=args.entry_slippage_frac,
         ))
     candidates.extend(build_diagonal_candidates(
         pairs=diagonal_pairs,
@@ -459,6 +518,8 @@ def main() -> None:
         symbol=symbol,
         excluded_by_expiry=excluded_by_expiry,
         max_width=args.max_diagonal_width,
+        entry_pricing=args.entry_pricing,
+        entry_slippage_frac=args.entry_slippage_frac,
     ))
 
     weekly_scenarios = [

@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import statistics
 import sys
 from dataclasses import asdict
 from datetime import datetime
@@ -214,6 +215,28 @@ def audit_option_models(
             "params": asdict(cal.params),
         }
 
+    consensus_prices = [payload["price"] for payload in model_prices.values()]
+    rich_model_prices = [
+        payload["price"] for name, payload in model_prices.items() if name != "BSM"
+    ]
+
+    def summarize(prices: list[float]) -> dict[str, float]:
+        if not prices:
+            return {
+                "count": 0,
+                "mean": 0.0,
+                "stdev": 0.0,
+                "min": 0.0,
+                "max": 0.0,
+            }
+        return {
+            "count": len(prices),
+            "mean": round(statistics.mean(prices), 4),
+            "stdev": round(statistics.pstdev(prices), 4) if len(prices) > 1 else 0.0,
+            "min": round(min(prices), 4),
+            "max": round(max(prices), 4),
+        }
+
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "symbol": symbol,
@@ -229,6 +252,8 @@ def audit_option_models(
             "spot_used": round(final_spot, 4),
         },
         "chain_quotes_used": len(quotes),
+        "consensus_summary": summarize(consensus_prices),
+        "rich_model_summary": summarize(rich_model_prices),
         "model_prices": model_prices,
     }
 

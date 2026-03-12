@@ -1,0 +1,46 @@
+{
+  "description": "EWY replace step 2 - sell Mar 20 2026 150C 11x after the Mar 13 2026 151C is closed",
+  "generated": "2026-03-12",
+  "notes": [
+    "Submit only after the Mar 13 2026 151C close fills or after that line expires.",
+    "Current delayed book is approximately 0.35 x 0.40 with last 0.40.",
+    "Chosen as a continuation overwrite for the expiring 11-lot line because the thesis is further downside near term and continuous premium collection now."
+  ],
+  "trades": [
+    {
+      "contract": {
+        "secType": "OPT",
+        "symbol": "EWY",
+        "exchange": "SMART",
+        "currency": "USD",
+        "lastTradeDateOrContractMonth": "20260320",
+        "strike": 150.0,
+        "right": "C"
+      },
+      "action": "SELL",
+      "tif": "DAY",
+      "algo": "Adaptive",
+      "algoPriority": "Normal",
+      "tranches": [
+        {
+          "tranche": 1,
+          "quantity": 4,
+          "lmtPrice": 0.40,
+          "note": "EWY Mar20 150C roll 4x @ ask"
+        },
+        {
+          "tranche": 2,
+          "quantity": 4,
+          "lmtPrice": 0.38,
+          "note": "EWY Mar20 150C roll 4x inside"
+        },
+        {
+          "tranche": 3,
+          "quantity": 3,
+          "lmtPrice": 0.35,
+          "note": "EWY Mar20 150C roll 3x at bid"
+        }
+      ]
+    }
+  ]
+}
