@@ -21,6 +21,9 @@ Read [`references/source_playbook.md`](./references/source_playbook.md) for shar
 - `hedge_modeling`
   Macro scenarios, EV, stress tests, and hedge ranking.
 
+- `hedge_postmortem`
+  Compare realized hedge outcomes to the intended thesis and turn misses into durable rules.
+
 - `hedge_proposal`
   Turn the chosen hedge into executable entry, trim, and close files.
 
@@ -30,6 +33,7 @@ Read [`references/source_playbook.md`](./references/source_playbook.md) for shar
 ## Trigger Guidance
 
 - If the user asks which hedge makes sense: start with `hedge_modeling`.
+- If the user asks why a hedge worked or failed, or what the process should learn: use `hedge_postmortem`.
 - If the user asks for executable hedge files: use `hedge_proposal`.
 - If the user asks how to price a leg, spread, or calendar: use `options-pricing`.
 - If the user asks to probe, cancel, or manage fills: use `options-execution`.

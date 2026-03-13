@@ -40,6 +40,15 @@ ikbr_trader/
 - For executable pricing, prefer IBKR and fail loud on missing live data rather than silently falling back.
 - `agent_notes/` is tracked. Do not treat it as throwaway local output.
 
+## Hedge Analysis Contract
+
+- Every hedge analysis must declare `objective`: `instant_crash`, `hold_down`, `carry`, or `rebound_window`.
+- Every hedge candidate or proposal must declare `intent`: `add`, `replace`, `trim`, or `close`.
+- Hedge comparisons must report `book`, `hedge`, `combined`, and `return_on_hedge_capital`.
+- Hedge analysis must state `path_model`: `terminal`, `linear_path`, or `multi_step`.
+- If modeling continues without executable IBKR option data, set `used_fallback=true`, name the fallback source, and say why IBKR was insufficient.
+- Keep repo-wide hedge rules here; keep step-by-step workflow detail in `.codex/skills/`.
+
 ## Extension Model
 
 - Put new repo-specific automation in `custom_scripts/`.
