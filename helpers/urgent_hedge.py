@@ -95,7 +95,7 @@ def macro_scenario_set_from_dict(payload: dict[str, Any], path_label: str = "mac
             MacroScenario(
                 label=str(raw["label"]),
                 horizon_days=int(raw.get("horizon_days", raw.get("days", 0))),
-                spot_move_pct=float(raw.get("spot_move_pct", (float(raw["spot"]) / reference_spot) - 1.0)),
+                spot_move_pct=float(raw["spot_move_pct"]) if "spot_move_pct" in raw else (float(raw["spot"]) / reference_spot) - 1.0,
                 vol_shift=float(raw.get("vol_shift", 0.0)),
                 probability=float(raw["probability"]),
                 notes=str(raw.get("notes", "")),

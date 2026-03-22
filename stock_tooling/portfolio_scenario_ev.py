@@ -115,11 +115,20 @@ def _load_option_lines(raw_lines: list[dict], spot: float, r: float) -> list[Opt
                 f"Missing IV for option line {raw.get('label', raw)}; "
                 "portfolio_scenario_ev now requires explicit IV."
             )
+        dte = raw.get("dte")
+        if dte is None:
+            expiry = str(raw.get("expiry", ""))
+            if expiry:
+                expiry_dt = datetime.strptime(expiry, "%Y%m%d").date()
+                dte = max((expiry_dt - date.today()).days, 0)
+            else:
+                dte = 0
+
         lines.append(OptionLine(
             label=str(raw["label"]),
             right=str(raw["right"]),
             strike=float(raw["strike"]),
-            dte=int(raw["dte"]),
+            dte=int(dte),
             qty=int(raw["qty"]),
             mark=float(raw["mark"]),
             iv=float(iv),
