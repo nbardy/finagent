@@ -5,7 +5,7 @@ All scripts should use this module instead of managing connections directly.
 Reads connection config from pmcc_config.json once.
 
 Usage:
-    from ibkr import connect, get_spot, get_option_quotes, get_portfolio
+    from ibkr import connect, get_spot, get_option_quotes, get_portfolio, load_fill_ledger
 
     with connect() as ib:
         spot = get_spot(ib, "EWY")
@@ -16,7 +16,7 @@ Usage:
 import json
 import math
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
@@ -337,7 +337,61 @@ class FillEvent:
     shares: float
     price: float
     time: str
+    commission: float
+    realized_pnl: float
+    currency: str
 
+
+import yfinance as yf
+
+_FX_CACHE = {"USD": 1.0}
+
+def _get_fx_rate(currency: str) -> float:
+    if currency in _FX_CACHE:
+        return _FX_CACHE[currency]
+    rate = 1.0
+    if currency:
+        try:
+            if currency == "JPY":
+                tkr = yf.Ticker("JPY=X") # USD/JPY, so 1 USD = X JPY. Rate to USD is 1/X
+                hist = tkr.history(period="1d")
+                if not hist.empty:
+                    rate = 1.0 / hist["Close"].iloc[-1]
+            else:
+                tkr = yf.Ticker(f"{currency}USD=X")
+                hist = tkr.history(period="1d")
+                if not hist.empty:
+                    rate = float(hist["Close"].iloc[-1])
+        except Exception:
+            pass
+    _FX_CACHE[currency] = rate
+    return rate
+
+def get_model_greeks(ib: IB, contracts: list[Contract], timeout: int = 5) -> dict[int, float]:
+    """
+    Fetch IBKR's internal model pricing (modelGreeks.optPrice) for a list of option contracts.
+    
+    Returns a dictionary mapping the contract's conId to its model price.
+    Returns float('nan') for contracts where the model price could not be retrieved within the timeout.
+    """
+    ib.qualifyContracts(*contracts)
+    tickers = ib.reqTickers(*contracts)
+    
+    # Wait for modelGreeks to populate
+    for _ in range(timeout * 2): # Check every 0.5 seconds
+        if all(t.modelGreeks for t in tickers):
+            break
+        ib.sleep(0.5)
+        
+    results = {}
+    for t in tickers:
+        con_id = t.contract.conId
+        if t.modelGreeks and getattr(t.modelGreeks, 'optPrice', None) is not None:
+            results[con_id] = float(t.modelGreeks.optPrice)
+        else:
+            results[con_id] = float('nan')
+            
+    return results
 
 def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
     """
@@ -367,11 +421,23 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
                 pass
 
         qty = int(item.position)
-        avg_cost = item.averageCost
-        market_price = _safe_float(item.marketPrice)
-        market_value = item.marketValue
-        unrealized_pnl = item.unrealizedPNL
-        realized_pnl = item.realizedPNL
+        
+        fx_rate = _get_fx_rate(c.currency)
+        
+        # item.marketValue is already converted to base currency (USD) by IBKR usually,
+        # but averageCost, unrealizedPNL, realizedPNL are often in local currency.
+        # Let's ensure standardizing to USD.
+        avg_cost = item.averageCost * fx_rate
+        market_price = _safe_float(item.marketPrice) * fx_rate
+        market_value = item.marketValue # Usually already USD, but if not we should be careful. Actually, IBKR's item.marketValue IS base currency.
+        
+        # Because we want consistency, let's recalculate market_value safely.
+        # Options multiplier is 100 usually, but let's stick to using IBKR's marketValue
+        # However, to be 100% safe, we will assume item.marketValue is in base currency USD.
+        
+        unrealized_pnl = item.unrealizedPNL * fx_rate
+        realized_pnl = item.realizedPNL * fx_rate
+        
         # IBKR averageCost: for stocks it's per-share, for options it's
         # already total cost per contract (avg_cost_per_share * multiplier).
         # So cost_basis = averageCost * abs(qty) for both.
@@ -493,6 +559,7 @@ def get_recent_fills(ib: IB, symbols: list[str] | None = None) -> list[FillEvent
             expiry = getattr(contract, "lastTradeDateOrContractMonth", "")
 
         execution = fill.execution
+        cr = fill.commissionReport
         fills.append(FillEvent(
             order_id=execution.orderId,
             perm_id=execution.permId,
@@ -508,9 +575,56 @@ def get_recent_fills(ib: IB, symbols: list[str] | None = None) -> list[FillEvent
             shares=_safe_float(execution.shares),
             price=_safe_float(execution.price),
             time=str(execution.time),
+            commission=_safe_float(cr.commission),
+            realized_pnl=_safe_float(cr.realizedPNL),
+            currency=cr.currency or getattr(contract, "currency", ""),
         ))
 
     fills.sort(key=lambda f: (f.time, f.order_id, f.exec_id))
+    return fills
+
+
+_FILL_LEDGER = Path(__file__).parent / "config" / "fill_ledger.json"
+
+
+def persist_fills(fills: list[FillEvent], path: Path = _FILL_LEDGER) -> int:
+    """Append new fills to the local ledger, deduped by exec_id.
+
+    Returns the number of newly added fills.
+    """
+    existing: dict[str, dict] = {}
+    if path.exists():
+        existing = {f["exec_id"]: f for f in json.loads(path.read_text())}
+
+    added = 0
+    for fill in fills:
+        if fill.exec_id not in existing:
+            existing[fill.exec_id] = asdict(fill)
+            added += 1
+
+    if added:
+        all_fills = sorted(existing.values(), key=lambda f: (f["time"], f["exec_id"]))
+        path.write_text(json.dumps(all_fills, indent=2) + "\n")
+
+    return added
+
+
+def load_fill_ledger(
+    path: Path = _FILL_LEDGER,
+    symbol: str | None = None,
+    side: str | None = None,
+) -> list[FillEvent]:
+    """Load persisted fills from the ledger, optionally filtered."""
+    if not path.exists():
+        return []
+
+    fills = []
+    for row in json.loads(path.read_text()):
+        if symbol and row["symbol"] != symbol:
+            continue
+        if side and row["side"] != side:
+            continue
+        fills.append(FillEvent(**row))
     return fills
 
 
@@ -636,10 +750,13 @@ def print_recent_fills(fills: list[FillEvent]) -> None:
             contract_bits.append(fill.expiry)
             contract_bits.append(f"{fill.strike:.1f}{fill.right}")
         contract_label = " ".join(contract_bits)
+        pnl_str = f" pnl={fill.realized_pnl:+,.2f}" if fill.realized_pnl else ""
+        comm_str = f" comm={fill.commission:.2f}" if fill.commission else ""
         print(
             f"  orderId={fill.order_id:<4d} {contract_label:<28}"
             f" side={fill.side:<3} shares={fill.shares:g}"
-            f" price=${fill.price:.2f} time={fill.time}"
+            f" price=${fill.price:.2f}{pnl_str}{comm_str}"
+            f" time={fill.time}"
         )
 
     print(f"{'='*95}")

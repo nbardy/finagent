@@ -25,6 +25,7 @@ from ibkr import (
     get_open_orders,
     get_portfolio,
     get_recent_fills,
+    persist_fills,
 )
 
 
@@ -132,7 +133,28 @@ def print_positions(positions: list[Position]) -> None:
 
     sorted_positions = sorted(positions, key=lambda p: (p.symbol, p.sec_type, p.expiry, p.strike))
     for symbol, group in groupby(sorted_positions, key=lambda p: p.symbol):
-        for index, position in enumerate(group):
+        group_list = list(group)
+        
+        # Calculate group totals if there are multiple legs
+        if len(group_list) > 1:
+            grp_market_value = sum(p.market_value for p in group_list)
+            grp_unrealized = sum(p.unrealized_pnl for p in group_list)
+            grp_cost_basis = sum(p.cost_basis for p in group_list)
+            grp_pct = (grp_unrealized / grp_cost_basis * 100) if grp_cost_basis > 0 else 0.0
+            
+            pnl_s = _color_pnl(grp_unrealized, f"[{_fmt_money(grp_unrealized)}]")
+            pct_s = _color_pnl(grp_pct, f"[{_fmt_pct(grp_pct)}]")
+            
+            print(
+                f"\n  {BOLD}{CYAN}{symbol:<8}{RESET}{' ' * 28} {' ' * 5} "
+                f"{' ' * 10} "
+                f"${grp_market_value:>11,.2f} "
+                f"{pnl_s:>20} {pct_s:>16} "
+                f"{' ' * 28} "
+                f"{DIM}[Combined Strategy View]{RESET}"
+            )
+        
+        for index, position in enumerate(group_list):
             thesis = find_thesis_for_position(
                 symbol=position.symbol,
                 sec_type=position.sec_type,
@@ -142,10 +164,18 @@ def print_positions(positions: list[Position]) -> None:
             )
             pnl_s = _color_pnl(position.unrealized_pnl, _fmt_money(position.unrealized_pnl))
             pct_s = _color_pnl(position.pct_return, _fmt_pct(position.pct_return))
-            symbol_label = f"{BOLD}{CYAN}{symbol:<8}{RESET}" if index == 0 else f"{DIM}{'':8}{RESET}"
+            
+            # Print symbol only if it's a single item, otherwise indent
+            if len(group_list) == 1:
+                symbol_label = f"{BOLD}{CYAN}{symbol:<8}{RESET}"
+                prefix = ""
+            else:
+                symbol_label = f"{DIM}{'│':<8}{RESET}"
+                prefix = f"{DIM}└─{RESET} " if index == len(group_list) - 1 else f"{DIM}├─{RESET} "
+                
             print(
                 f"  {symbol_label}"
-                f"{_describe_position(position):<28} {position.qty:>+5d} "
+                f"{prefix}{_describe_position(position):<26} {position.qty:>+5d} "
                 f"${position.market_price:>9.2f} "
                 f"${position.market_value:>11,.2f} "
                 f"{pnl_s:>20} {pct_s:>16} "
@@ -195,7 +225,7 @@ def print_recent_fills(fills: list[FillEvent]) -> None:
     print(f"  {'─' * (width - 4)}")
     print(
         f"  {BOLD}{'Time':<20} {'Symbol':<8} {'Description':<20} {'Side':<6} {'Qty':>6} "
-        f"{'Price':>8} {'OrderRef':<24} {'Thesis ID':<28} {'Reason':<0}{RESET}"
+        f"{'Price':>8} {'Realized':>10} {'Comm':>7} {'OrderRef':<24} {'Thesis ID':<28} {'Reason':<0}{RESET}"
     )
     print(f"  {'─' * (width - 4)}")
 
@@ -213,9 +243,12 @@ def print_recent_fills(fills: list[FillEvent]) -> None:
             strike=fill.strike,
             right=fill.right,
         )
+        pnl_s = _color_pnl(fill.realized_pnl, f"{fill.realized_pnl:>+10,.2f}") if fill.realized_pnl else f"{'':>10}"
+        comm_s = f"{fill.commission:>7.2f}" if fill.commission else f"{'':>7}"
         print(
             f"  {fill.time:<20} {fill.symbol:<8} {_describe_fill(fill):<20} "
             f"{fill.side:<6} {int(fill.shares):>6d} {fill.price:>8.2f} "
+            f"{pnl_s} {comm_s} "
             f"{(fill.order_ref or 'n/a'):<24} "
             f"{(thesis['thesis_id'] if thesis else 'n/a'):<28} "
             f"{_thesis_summary(thesis)}"
@@ -262,6 +295,11 @@ def main() -> None:
         default=False,
         help="Print detailed IBKR connection diagnostics.",
     )
+    parser.add_argument(
+        "--stocks-only",
+        action="store_true",
+        help="Show only stock positions, orders, and fills (no options).",
+    )
     args = parser.parse_args()
 
     symbols = [symbol.upper() for symbol in args.symbols] or None
@@ -270,6 +308,11 @@ def main() -> None:
         positions = get_portfolio(ib, symbols=symbols)
         open_orders = get_open_orders(ib, symbols=symbols)
         recent_fills = get_recent_fills(ib, symbols=symbols)
+        # Persist all fills (not just filtered) so the ledger accumulates full history
+        all_fills = get_recent_fills(ib) if symbols else recent_fills
+        added = persist_fills(all_fills)
+        if added:
+            print(f"  [{added} new fill(s) saved to ledger]")
 
         account_tags = {
             "NetLiquidation",
@@ -290,6 +333,11 @@ def main() -> None:
                 account[metric.tag] = float(metric.value)
             except ValueError:
                 continue
+
+    if args.stocks_only:
+        positions = [p for p in positions if p.sec_type == "STK"]
+        open_orders = [o for o in open_orders if o.sec_type == "STK"]
+        recent_fills = [f for f in recent_fills if f.sec_type == "STK"]
 
     print_account_header(account)
     print_positions(positions)

@@ -1,0 +1,3 @@
+[submodule "stratoforge"]
+	path = stratoforge
+	url = git@github.com:nbardy/stratoforge.git
