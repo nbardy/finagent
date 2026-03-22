@@ -1,6 +1,8 @@
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
+from ibkr import QuoteHealth
 from option_pricing import (
     OptionContractSpec,
     OptionMarketSnapshot,
@@ -12,7 +14,7 @@ from option_pricing import (
     price_option_exit,
     recommend_limit,
 )
-from stock_tooling.price_probe import _require_implied_volatility
+from stock_tooling.price_probe import ProbePricingError, _require_implied_volatility, price_probe
 
 
 class BlackScholesTests(unittest.TestCase):
@@ -210,6 +212,63 @@ class QuoteAvailabilityGuardTests(unittest.TestCase):
             ),
             0.42,
         )
+
+
+class _DummyConnection:
+    def __enter__(self):
+        return object()
+
+    def __exit__(self, exc_type, exc, tb):
+        return False
+
+
+class ProbePreflightTests(unittest.TestCase):
+    @patch("stock_tooling.price_probe.connect", return_value=_DummyConnection())
+    @patch("stock_tooling.price_probe.get_smart_option_chain")
+    @patch("stock_tooling.price_probe.inspect_contract_market_data")
+    def test_price_probe_fails_cleanly_when_two_sided_quote_missing(self, inspect_health, get_chain, _connect) -> None:
+        get_chain.return_value = SimpleNamespace(
+            expirations=("20280121",),
+            strikes=(220.0,),
+        )
+        inspect_health.return_value = QuoteHealth(
+            symbol="EWY",
+            sec_type="OPT",
+            expiry="20280121",
+            strike=220.0,
+            right="C",
+            exchange="SMART",
+            market_data_type=3,
+            qualified=True,
+            bid=0.0,
+            ask=0.0,
+            last=0.0,
+            close=0.0,
+            market_price=0.0,
+            mid=0.0,
+            spot=0.0,
+            iv=0.0,
+            delta=0.0,
+            gamma=0.0,
+            theta=0.0,
+            vega=0.0,
+            has_spot=False,
+            has_two_sided_quote=False,
+            has_greeks=False,
+            status="unavailable",
+            reason="empty_quote_and_greeks",
+            contract_summary="EWY 20280121 220.0C SMART",
+        )
+
+        with self.assertRaises(ProbePricingError):
+            price_probe(
+                symbol="EWY",
+                expiry="20280121",
+                strike=220.0,
+                right="C",
+                qty=1,
+                debug=False,
+            )
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ into the shared proposal format and writes executor-ready JSON.
 from __future__ import annotations
 
 import argparse
+from dataclasses import asdict
 import json
 from pathlib import Path
 import sys
@@ -15,10 +16,24 @@ import sys
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from ibkr import connect, get_option_quotes, get_spot
+from ib_insync import Option
+
+from ibkr import (
+    connect,
+    get_option_quotes,
+    get_smart_option_chain,
+    get_spot,
+    inspect_contract_market_data,
+)
 from option_pricing import price_option_probe
 from option_pricing.models import OptionContractSpec, OptionMarketSnapshot
 from stock_tooling.watch_rules import assess_watch_state, load_watch_rules
+
+
+class ProbePricingError(RuntimeError):
+    def __init__(self, payload: dict):
+        self.payload = payload
+        super().__init__(payload.get("reason", "probe pricing failed"))
 
 
 def _parse_steps(raw: str | None) -> tuple[int, ...] | None:
@@ -44,6 +59,32 @@ def _load_probe_config(path: str | None) -> dict:
 
 def _pick(cli_value, config_value):
     return cli_value if cli_value is not None else config_value
+
+
+def _failure_payload(
+    *,
+    symbol: str,
+    expiry: str,
+    strike: float,
+    right: str,
+    status: str,
+    reason: str,
+    used_fallback: bool = False,
+    fallback_source: str | None = None,
+    **extra,
+) -> dict:
+    payload = {
+        "symbol": symbol,
+        "expiry": expiry,
+        "strike": strike,
+        "right": right,
+        "status": status,
+        "reason": reason,
+        "used_fallback": used_fallback,
+        "fallback_source": fallback_source,
+    }
+    payload.update(extra)
+    return payload
 
 
 def _require_implied_volatility(quote, *, symbol: str, expiry: str, strike: float, right: str, iv_override: float | None) -> float:
@@ -74,18 +115,110 @@ def price_probe(
     debug: bool = True,
 ) -> dict:
     with connect(client_id=14, market_data_type=market_data_type, debug=debug) as ib:
-        spot = get_spot(ib, symbol, debug=debug)
+        chain = get_smart_option_chain(ib, symbol, debug=debug)
+        if expiry not in chain.expirations:
+            raise ProbePricingError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=strike,
+                    right=right,
+                    status="expiry_unavailable",
+                    reason=f"Expiry {expiry} is not listed on the current SMART chain.",
+                    available_expiries=list(chain.expirations[:25]),
+                )
+            )
+        if strike not in chain.strikes:
+            raise ProbePricingError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=strike,
+                    right=right,
+                    status="target_strike_unavailable",
+                    reason=f"Strike {strike:.1f} is not listed on the current SMART chain.",
+                    available_strikes=[round(x, 2) for x in chain.strikes[:25]],
+                )
+            )
+
+        probe_contract = Option(symbol, expiry, strike, right, "SMART")
+        quote_health = inspect_contract_market_data(
+            ib,
+            probe_contract,
+            settle_secs=2.0,
+            market_data_type=market_data_type,
+        )
+        if not quote_health.qualified:
+            raise ProbePricingError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=strike,
+                    right=right,
+                    status="contract_unqualified",
+                    reason="IBKR could not qualify the option contract.",
+                    quote_health=asdict(quote_health),
+                )
+            )
+        if not quote_health.has_two_sided_quote:
+            raise ProbePricingError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=strike,
+                    right=right,
+                    status="quote_unavailable",
+                    reason="IBKR did not return a usable two-sided quote for the probe contract.",
+                    quote_health=asdict(quote_health),
+                )
+            )
+
+        spot_source = "underlying_market"
+        try:
+            spot = get_spot(ib, symbol, debug=debug, allow_close_fallback=True)
+        except Exception:
+            if quote_health.spot > 0:
+                spot = quote_health.spot
+                spot_source = "option_model_underlying"
+            else:
+                raise ProbePricingError(
+                    _failure_payload(
+                        symbol=symbol,
+                        expiry=expiry,
+                        strike=strike,
+                        right=right,
+                        status="missing_underlying_price",
+                        reason="Could not recover a usable underlying price from IBKR.",
+                        quote_health=asdict(quote_health),
+                    )
+                )
+
         [quote] = get_option_quotes(ib, symbol, [(strike, expiry, right)], debug=debug)
 
         contract = OptionContractSpec(symbol=symbol, expiry=expiry, strike=strike, right=right)
-        sigma = _require_implied_volatility(
-            quote=quote,
-            symbol=symbol,
-            strike=strike,
-            expiry=contract.expiry,
-            right=contract.right,
-            iv_override=iv_override,
-        )
+        try:
+            sigma = _require_implied_volatility(
+                quote=quote,
+                symbol=symbol,
+                strike=strike,
+                expiry=contract.expiry,
+                right=contract.right,
+                iv_override=iv_override,
+            )
+        except ValueError as exc:
+            raise ProbePricingError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=strike,
+                    right=right,
+                    status="missing_iv",
+                    reason=str(exc),
+                    used_fallback=iv_override is not None,
+                    fallback_source="manual_iv_override" if iv_override is not None else None,
+                    quote_health=asdict(quote_health),
+                )
+            ) from exc
         market = OptionMarketSnapshot(
             spot=spot,
             bid=quote.bid,
@@ -95,7 +228,7 @@ def price_probe(
             risk_free_rate=r,
             dividend_yield=dividend_yield,
             source="ibkr",
-            market_data_type=market_data_type,
+            market_data_type=quote_health.market_data_type or market_data_type,
         )
         payload = price_option_probe(
             contract=contract,
@@ -115,6 +248,10 @@ def price_probe(
             observed_seconds=0.0,
             rules=watch_rules,
         )
+        payload["preflight"] = {
+            "contract": asdict(quote_health),
+            "spot_source": spot_source,
+        }
 
         with open(output_file, "w") as handle:
             json.dump(payload, handle, indent=2)
@@ -202,22 +339,45 @@ def main() -> None:
     if missing:
         parser.error(f"missing required values: {', '.join(missing)}")
 
-    price_probe(
-        symbol=str(symbol).upper(),
-        expiry=str(expiry),
-        strike=float(strike),
-        right=str(right).upper(),
-        qty=int(qty),
-        probe_qty=int(probe_qty),
-        steps=steps,
-        r=float(risk_free),
-        dividend_yield=float(dividend_yield),
-        iv_override=iv if iv is None else float(iv),
-        market_data_type=int(market_data_type),
-        output_file=str(output),
-        watch_rules_config=watch_rules_config,
-        debug=bool(debug),
-    )
+    symbol_str = str(symbol).upper()
+    expiry_str = str(expiry)
+    strike_value = float(strike)
+    right_str = str(right).upper()
+
+    try:
+        price_probe(
+            symbol=symbol_str,
+            expiry=expiry_str,
+            strike=strike_value,
+            right=right_str,
+            qty=int(qty),
+            probe_qty=int(probe_qty),
+            steps=steps,
+            r=float(risk_free),
+            dividend_yield=float(dividend_yield),
+            iv_override=iv if iv is None else float(iv),
+            market_data_type=int(market_data_type),
+            output_file=str(output),
+            watch_rules_config=watch_rules_config,
+            debug=bool(debug),
+        )
+    except ProbePricingError as exc:
+        print(json.dumps(exc.payload, indent=2))
+        raise SystemExit(1) from exc
+    except Exception as exc:
+        status = "ibkr_connection_failed" if isinstance(exc, OSError) else "unexpected_error"
+        print(json.dumps(
+            _failure_payload(
+                symbol=symbol_str,
+                expiry=expiry_str,
+                strike=strike_value,
+                right=right_str,
+                status=status,
+                reason=f"{type(exc).__name__}: {exc}",
+            ),
+            indent=2,
+        ))
+        raise SystemExit(1) from exc
 
 
 if __name__ == "__main__":
