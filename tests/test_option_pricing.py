@@ -1,4 +1,5 @@
 import unittest
+from types import SimpleNamespace
 
 from option_pricing import (
     OptionContractSpec,
@@ -11,6 +12,7 @@ from option_pricing import (
     price_option_exit,
     recommend_limit,
 )
+from stock_tooling.price_probe import _require_implied_volatility
 
 
 class BlackScholesTests(unittest.TestCase):
@@ -178,6 +180,36 @@ class ExitPricingTests(unittest.TestCase):
         self.assertEqual(payload["contract"]["secType"], "STK")
         self.assertEqual(payload["held_back_quantity"], 8)
         self.assertEqual([t["lmtPrice"] for t in payload["trades"]], [127.6, 127.5])
+
+
+class QuoteAvailabilityGuardTests(unittest.TestCase):
+    def test_probe_requires_ibkr_iv_or_manual_override(self) -> None:
+        quote = SimpleNamespace(iv=0.0)
+
+        with self.assertRaises(ValueError):
+            _require_implied_volatility(
+                quote=quote,
+                symbol="EWY",
+                expiry="20280121",
+                strike=220.0,
+                right="C",
+                iv_override=None,
+            )
+
+    def test_probe_accepts_manual_iv_override_when_ibkr_iv_missing(self) -> None:
+        quote = SimpleNamespace(iv=0.0)
+
+        self.assertEqual(
+            _require_implied_volatility(
+                quote=quote,
+                symbol="EWY",
+                expiry="20280121",
+                strike=220.0,
+                right="C",
+                iv_override=0.42,
+            ),
+            0.42,
+        )
 
 
 if __name__ == "__main__":

@@ -51,16 +51,8 @@ def main():
                 elif qty < 0:
                     short_calls_qty += abs(int(qty))
                     
-        # Check for pending limit orders to prevent double filing
-        trades = ib.reqOpenOrders()
+        # Check for pending limit orders to prevent double filing.
         pending_short_qty = 0
-        
-        for trade in trades:
-            # trade is an Order object, we need the contract
-            # ib.reqOpenOrders() actually returns Order objects, but we can also use ib.openTrades() to get Trade objects containing contract and order.
-            pass
-            
-        # Let's use ib.openTrades() which is easier
         open_trades = ib.openTrades()
         for t in open_trades:
             if t.contract.symbol == target_symbol and t.contract.secType == 'OPT' and t.contract.right == 'C':

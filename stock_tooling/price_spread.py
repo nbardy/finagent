@@ -31,6 +31,91 @@ from option_pricing.models import dte_and_time_to_expiry
 from option_pricing.variance_gamma import vg_price
 
 
+class PricingSpreadError(RuntimeError):
+    def __init__(self, payload: dict):
+        self.payload = payload
+        super().__init__(payload.get("reason", "spread pricing failed"))
+
+
+def _failure_payload(
+    *,
+    symbol: str,
+    expiry: str,
+    long_strike: float,
+    short_strike: float,
+    status: str,
+    reason: str,
+    used_fallback: bool = False,
+    fallback_source: str | None = None,
+    **extra,
+) -> dict:
+    payload = {
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "symbol": symbol,
+        "expiry": expiry,
+        "long_strike": long_strike,
+        "short_strike": short_strike,
+        "status": status,
+        "reason": reason,
+        "used_fallback": used_fallback,
+        "fallback_source": fallback_source,
+        "chain_quotes_used": 0,
+        "model_prices": {},
+    }
+    payload.update(extra)
+    return payload
+
+
+def _load_smart_chain(ib, symbol: str) -> dict:
+    from ib_insync import Stock
+
+    underlying = Stock(symbol, "SMART", "USD")
+    [underlying] = ib.qualifyContracts(underlying)
+    chains = ib.reqSecDefOptParams(underlying.symbol, "", underlying.secType, underlying.conId)
+    chain = next((item for item in chains if item.exchange == "SMART"), None)
+    if chain is None:
+        raise PricingSpreadError(
+            _failure_payload(
+                symbol=symbol,
+                expiry="",
+                long_strike=0.0,
+                short_strike=0.0,
+                status="chain_unavailable",
+                reason=f"No SMART option chain found for {symbol}.",
+            )
+        )
+    return {
+        "expirations": sorted(str(exp) for exp in chain.expirations),
+        "strikes": sorted(float(strike) for strike in chain.strikes),
+    }
+
+
+def _slice_chain_strikes(
+    strikes: list[float],
+    center: float,
+    span_steps: int,
+    *,
+    symbol: str,
+    expiry: str,
+) -> list[float]:
+    if center not in strikes:
+        raise PricingSpreadError(
+            _failure_payload(
+                symbol=symbol,
+                expiry=expiry,
+                long_strike=0.0,
+                short_strike=0.0,
+                status="target_strike_unavailable",
+                reason=f"Strike {center:.1f} is not listed on the current SMART chain.",
+                available_strikes=[round(x, 2) for x in strikes[:25]],
+            )
+        )
+    idx = strikes.index(center)
+    left = max(0, idx - span_steps)
+    right = min(len(strikes), idx + span_steps + 1)
+    return strikes[left:right]
+
+
 def fetch_chain_quotes(
     symbol: str, expiry: str, spot: float, client_id: int = 30,
 ) -> list[MarketQuote]:
@@ -38,17 +123,31 @@ def fetch_chain_quotes(
     from ibkr import connect, get_option_quotes
 
     dte, T = dte_and_time_to_expiry(expiry)
-
-    # Build strike list: range around spot
-    strikes = []
-    step = 5 if spot > 50 else 2.5
-    k = max(round(spot * 0.5 / step) * step, step)
-    while k <= spot * 2.0:
-        strikes.append((k, expiry, "C"))
-        k += step
-
     quotes = []
+
     with connect(client_id=client_id) as ib:
+        chain = _load_smart_chain(ib, symbol)
+        if expiry not in chain["expirations"]:
+            raise PricingSpreadError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    long_strike=0.0,
+                    short_strike=0.0,
+                    status="expiry_unavailable",
+                    reason=f"Expiry {expiry} is not listed on the current SMART chain.",
+                    available_expiries=chain["expirations"][:25],
+                )
+            )
+        strikes_only = _slice_chain_strikes(
+            chain["strikes"],
+            min(chain["strikes"], key=lambda k: abs(k - spot)),
+            8,
+            symbol=symbol,
+            expiry=expiry,
+        )
+        strikes = [(k, expiry, "C") for k in strikes_only]
+
         raw = get_option_quotes(ib, symbol, strikes)
         for q in raw:
             if q.bid > 0 and q.ask > 0:
@@ -58,6 +157,63 @@ def fetch_chain_quotes(
                     weight=1.0,
                 ))
 
+    return quotes
+
+
+def _load_quotes_for_spread(
+    symbol: str,
+    expiry: str,
+    long_k: float,
+    short_k: float,
+    spot: float,
+    client_id: int = 30,
+) -> list[MarketQuote]:
+    from ibkr import connect, get_option_quotes
+
+    dte, T = dte_and_time_to_expiry(expiry)
+
+    with connect(client_id=client_id) as ib:
+        chain = _load_smart_chain(ib, symbol)
+        if expiry not in chain["expirations"]:
+            raise PricingSpreadError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    long_strike=long_k,
+                    short_strike=short_k,
+                    status="expiry_unavailable",
+                    reason=f"Expiry {expiry} is not listed on the current SMART chain.",
+                    available_expiries=chain["expirations"][:25],
+                )
+            )
+        if long_k not in chain["strikes"] or short_k not in chain["strikes"]:
+            raise PricingSpreadError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    long_strike=long_k,
+                    short_strike=short_k,
+                    status="target_strike_unavailable",
+                    reason="One or both spread strikes are not listed on the current SMART chain.",
+                    available_strikes=[round(x, 2) for x in chain["strikes"][:30]],
+                )
+            )
+
+        center = min(chain["strikes"], key=lambda k: abs(k - ((long_k + short_k) / 2.0)))
+        window = _slice_chain_strikes(chain["strikes"], center, 8)
+        strike_specs = [(k, expiry, "C") for k in window]
+        raw = get_option_quotes(ib, symbol, strike_specs)
+
+    quotes = []
+    for q in raw:
+        if q.bid > 0 and q.ask > 0:
+            quotes.append(MarketQuote(
+                strike=q.strike,
+                T=T,
+                market_price=(q.bid + q.ask) / 2.0,
+                right="C",
+                weight=1.0,
+            ))
     return quotes
 
 
@@ -177,11 +333,31 @@ def main():
     spot = args.spot
     if spot is None and not args.no_live:
         from ibkr import connect, get_spot
-        with connect(client_id=29) as ib:
-            spot = get_spot(ib, args.symbol)
+        try:
+            with connect(client_id=29) as ib:
+                spot = get_spot(ib, args.symbol)
+        except Exception as exc:
+            failure = _failure_payload(
+                symbol=args.symbol.upper(),
+                expiry=args.expiry,
+                long_strike=long_k,
+                short_strike=short_k,
+                status="missing_underlying_price",
+                reason=f"Could not load IBKR spot: {type(exc).__name__}: {exc}",
+            )
+            print(json.dumps(failure, indent=2))
+            raise SystemExit(1)
     if spot is None:
-        print("ERROR: No spot price. Provide --spot or connect to IBKR.")
-        sys.exit(1)
+        failure = _failure_payload(
+            symbol=args.symbol.upper(),
+            expiry=args.expiry,
+            long_strike=long_k,
+            short_strike=short_k,
+            status="missing_underlying_price",
+            reason="No spot price provided and live IBKR spot was unavailable.",
+        )
+        print(json.dumps(failure, indent=2))
+        raise SystemExit(1)
 
     print(f"  Spot: ${spot:.2f}")
 
@@ -189,8 +365,12 @@ def main():
     quotes = []
     if not args.no_live:
         print(f"  Fetching option chain from IBKR...")
-        quotes = fetch_chain_quotes(args.symbol, args.expiry, spot)
-        print(f"  Got {len(quotes)} quotes with valid bid/ask")
+        try:
+            quotes = _load_quotes_for_spread(args.symbol, args.expiry, long_k, short_k, spot)
+            print(f"  Got {len(quotes)} quotes with valid bid/ask")
+        except PricingSpreadError as exc:
+            print(json.dumps(exc.payload, indent=2))
+            raise SystemExit(1)
 
     # BS pricing (always available)
     iv = args.iv
@@ -204,8 +384,20 @@ def main():
             print(f"  ATM IV (from K={q.strike}): {iv:.1%}")
 
     if iv is None:
-        print("ERROR: No IV available. Provide --iv or connect to IBKR.")
-        sys.exit(1)
+        failure = _failure_payload(
+            symbol=args.symbol.upper(),
+            expiry=args.expiry,
+            long_strike=long_k,
+            short_strike=short_k,
+            status="missing_iv",
+            reason="No IV available. Provide --iv or connect to IBKR.",
+            target_market={
+                "spot": spot,
+                "quote_count": len(quotes),
+            },
+        )
+        print(json.dumps(failure, indent=2))
+        raise SystemExit(1)
 
     bs_spread = price_spread_bs(spot, long_k, short_k, T, args.r, iv)
 

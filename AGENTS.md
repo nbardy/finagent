@@ -36,6 +36,7 @@ ikbr_trader/
 - Modeling outputs belong in `analysis/{YYYY-MM-DD}/`.
 - Executable order proposals belong in `orders/{YYYY-MM-DD}/`.
 - Deep research artifacts belong in `research_sessions/{timestamp}_{topic}/`.
+- `agent_notes/` is historical operating context, not live state. Before acting on a thread note, verify the current IBKR portfolio, open orders, and quote availability.
 - Hedge and overlay analysis should report `book`, `hedge`, and `combined` separately.
 - Proposal generation should state whether the order is `add`, `replace`, `trim`, or `close`.
 - For executable pricing, prefer IBKR and fail loud on missing live data rather than silently falling back.
@@ -64,6 +65,7 @@ When extending the repo, prefer leaning on:
 
 - `ibkr.py`
   Live broker connection, quotes, portfolio, open orders, account summary, and recent fills.
+  - Contract qualification only proves the contract exists. It does not prove there is a usable bid/ask or model greek surface for pricing.
   - `get_recent_fills()` — returns `FillEvent` with `realized_pnl`, `commission`, `currency`
   - `persist_fills()` — appends new fills to `config/fill_ledger.json` (deduped by `exec_id`)
   - `load_fill_ledger(symbol=, side=)` — loads full fill history from ledger with optional filters

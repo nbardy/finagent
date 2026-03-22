@@ -21,6 +21,7 @@ Use this skill for covered-call and PMCC overwrite selection, not downside hedge
 - Do not double-encumber the same cover bucket.
 - Distinguish low-bucket overwrites from higher-strike diagonals.
 - Separate income logic from downside hedge logic.
+- Treat historical notes as context only; always re-sync current portfolio and open orders before assuming a bucket is still free.
 - If another agent already sold the sleeve, say the bucket is full instead of proposing more size.
 
 ## Main Scripts

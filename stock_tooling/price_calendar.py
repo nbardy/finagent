@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ib_insync import Option
+from ib_insync import Option, Stock
 
 from ibkr import connect
 from option_pricing.black_scholes import implied_volatility_from_price, option_price
@@ -71,6 +71,104 @@ def _build_strike_grid(center_strike: float, provisional_spot: float, span_steps
     return strikes
 
 
+class PricingCalendarError(RuntimeError):
+    def __init__(self, payload: dict):
+        self.payload = payload
+        super().__init__(payload.get("reason", "calendar pricing failed"))
+
+
+def _failure_payload(
+    *,
+    symbol: str,
+    short_expiry: str,
+    long_expiry: str,
+    strike: float,
+    right: str,
+    status: str,
+    reason: str,
+    used_fallback: bool = False,
+    fallback_source: str | None = None,
+    **extra,
+) -> dict:
+    payload = {
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "symbol": symbol,
+        "short_expiry": short_expiry,
+        "long_expiry": long_expiry,
+        "strike": strike,
+        "right": right,
+        "status": status,
+        "reason": reason,
+        "used_fallback": used_fallback,
+        "fallback_source": fallback_source,
+        "chain_quotes_used": 0,
+        "model_prices": {},
+        "consensus": {"mean_calendar": 0.0, "stdev_calendar": 0.0, "min_calendar": 0.0, "max_calendar": 0.0, "market_calendar": 0.0},
+    }
+    payload.update(extra)
+    return payload
+
+
+def _load_smart_chain(ib, symbol: str) -> dict:
+    underlying = Stock(symbol, "SMART", "USD")
+    [underlying] = ib.qualifyContracts(underlying)
+    chains = ib.reqSecDefOptParams(underlying.symbol, "", underlying.secType, underlying.conId)
+    chain = next((item for item in chains if item.exchange == "SMART"), None)
+    if chain is None:
+        raise PricingCalendarError(
+            _failure_payload(
+                symbol=symbol,
+                short_expiry="",
+                long_expiry="",
+                strike=0.0,
+                right="",
+                status="chain_unavailable",
+                reason=f"No SMART option chain found for {symbol}.",
+                used_fallback=False,
+                fallback_source=None,
+            )
+        )
+    return {
+        "trading_class": getattr(chain, "tradingClass", ""),
+        "exchange": getattr(chain, "exchange", "SMART"),
+        "expirations": sorted(str(exp) for exp in chain.expirations),
+        "strikes": sorted(float(strike) for strike in chain.strikes),
+    }
+
+
+def _slice_shared_strikes(
+    short_strikes: list[float],
+    long_strikes: list[float],
+    target_strike: float,
+    span_steps: int,
+    *,
+    symbol: str,
+    short_expiry: str,
+    long_expiry: str,
+    right: str,
+) -> list[float]:
+    shared = sorted(set(short_strikes).intersection(long_strikes))
+    if target_strike not in shared:
+        raise PricingCalendarError(
+            _failure_payload(
+                symbol=symbol,
+                short_expiry=short_expiry,
+                long_expiry=long_expiry,
+                strike=target_strike,
+                right=right,
+                status="target_strike_unavailable",
+                reason=f"Strike {target_strike:.1f} is not listed on both expiries.",
+                used_fallback=False,
+                fallback_source=None,
+                available_strikes=[round(x, 2) for x in shared[:25]],
+            )
+        )
+    idx = shared.index(target_strike)
+    left = max(0, idx - span_steps)
+    right = min(len(shared), idx + span_steps + 1)
+    return shared[left:right]
+
+
 def fetch_calendar_slice(
     *,
     symbol: str,
@@ -88,8 +186,49 @@ def fetch_calendar_slice(
     long_expiry = normalize_expiry(long_expiry)
 
     with connect(client_id=client_id, readonly=True, market_data_type=market_data_type, debug=False) as ib:
-        provisional_spot = strike
-        strikes = _build_strike_grid(strike, provisional_spot, span_steps)
+        short_chain = _load_smart_chain(ib, symbol)
+        long_chain = _load_smart_chain(ib, symbol)
+        if short_expiry not in short_chain["expirations"]:
+            raise PricingCalendarError(
+                _failure_payload(
+                    symbol=symbol,
+                    short_expiry=short_expiry,
+                    long_expiry=long_expiry,
+                    strike=strike,
+                    right=right,
+                    status="short_expiry_unavailable",
+                    reason=f"Expiry {short_expiry} is not listed on the current SMART chain.",
+                    used_fallback=False,
+                    fallback_source=None,
+                    available_short_expiries=short_chain["expirations"][:25],
+                )
+            )
+        if long_expiry not in long_chain["expirations"]:
+            raise PricingCalendarError(
+                _failure_payload(
+                    symbol=symbol,
+                    short_expiry=short_expiry,
+                    long_expiry=long_expiry,
+                    strike=strike,
+                    right=right,
+                    status="long_expiry_unavailable",
+                    reason=f"Expiry {long_expiry} is not listed on the current SMART chain.",
+                    used_fallback=False,
+                    fallback_source=None,
+                    available_long_expiries=long_chain["expirations"][:25],
+                )
+            )
+
+        strikes = _slice_shared_strikes(
+            short_chain["strikes"],
+            long_chain["strikes"],
+            strike,
+            span_steps,
+            symbol=symbol,
+            short_expiry=short_expiry,
+            long_expiry=long_expiry,
+            right=right,
+        )
         contracts = []
         for expiry in (short_expiry, long_expiry):
             for k in strikes:
@@ -102,6 +241,7 @@ def fetch_calendar_slice(
         quotes: list[MarketQuote] = []
         short_snapshot: dict | None = None
         long_snapshot: dict | None = None
+        quote_rows: list[dict] = []
 
         for ticker in tickers:
             greeks = getattr(ticker, "modelGreeks", None)
@@ -114,6 +254,8 @@ def fetch_calendar_slice(
             last = _safe_float(ticker.last)
             mid = (bid + ask) / 2.0 if bid > 0 and ask > 0 else 0.0
             iv = _safe_float(getattr(greeks, "impliedVol", None))
+            delta = _safe_float(getattr(greeks, "delta", None))
+            greeks_present = bool(greeks and (iv > 0 or delta != 0 or und_price > 0))
 
             expiry = ticker.contract.lastTradeDateOrContractMonth
             k = float(ticker.contract.strike)
@@ -138,18 +280,48 @@ def fetch_calendar_slice(
                 "mid": mid,
                 "last": last,
                 "iv": iv,
+                "delta": delta,
                 "und_price": und_price,
                 "market_data_type": getattr(ticker, "marketDataType", None),
+                "greeks_present": greeks_present,
+                "quote_present": bid > 0 and ask > 0,
             }
+            quote_rows.append(snapshot)
             if expiry == short_expiry and k == float(strike):
                 short_snapshot = snapshot
             elif expiry == long_expiry and k == float(strike):
                 long_snapshot = snapshot
 
     if not spot_candidates:
-        raise RuntimeError("Could not recover underlying price from IBKR option greeks for calendar audit.")
+        raise PricingCalendarError(
+            _failure_payload(
+                symbol=symbol,
+                short_expiry=short_expiry,
+                long_expiry=long_expiry,
+                strike=strike,
+                right=right,
+                status="missing_underlying_price",
+                reason="Could not recover underlying price from IBKR option greeks for calendar audit.",
+                used_fallback=False,
+                fallback_source=None,
+                quotes=quote_rows,
+            )
+        )
     if short_snapshot is None or long_snapshot is None:
-        raise RuntimeError("Target calendar leg was not returned by IBKR.")
+        raise PricingCalendarError(
+            _failure_payload(
+                symbol=symbol,
+                short_expiry=short_expiry,
+                long_expiry=long_expiry,
+                strike=strike,
+                right=right,
+                status="target_unavailable",
+                reason="Target calendar leg was not returned by IBKR.",
+                used_fallback=False,
+                fallback_source=None,
+                quotes=quote_rows,
+            )
+        )
 
     return float(spot_candidates[0]), short_snapshot, long_snapshot, quotes
 
@@ -183,17 +355,20 @@ def audit_calendar_models(
     long_expiry = normalize_expiry(long_expiry)
     right = right.upper()
 
-    ibkr_spot, short_snapshot, long_snapshot, quotes = fetch_calendar_slice(
-        symbol=symbol,
-        short_expiry=short_expiry,
-        long_expiry=long_expiry,
-        strike=strike,
-        right=right,
-        span_steps=span_steps,
-        client_id=client_id,
-        settle_secs=settle_secs,
-        market_data_type=market_data_type,
-    )
+    try:
+        ibkr_spot, short_snapshot, long_snapshot, quotes = fetch_calendar_slice(
+            symbol=symbol,
+            short_expiry=short_expiry,
+            long_expiry=long_expiry,
+            strike=strike,
+            right=right,
+            span_steps=span_steps,
+            client_id=client_id,
+            settle_secs=settle_secs,
+            market_data_type=market_data_type,
+        )
+    except PricingCalendarError as exc:
+        return exc.payload
     final_spot = spot if spot and spot > 0 else ibkr_spot
 
     short_dte, short_t = dte_and_time_to_expiry(short_expiry)
@@ -204,19 +379,42 @@ def audit_calendar_models(
     market_calendar = long_mid - short_mid
 
     short_iv = float(short_snapshot["iv"])
+    used_fallback = False
+    fallback_source: str | None = None
     if short_iv <= 0 and short_mid > 0:
         short_iv = implied_volatility_from_price(final_spot, strike, short_t, risk_free_rate, short_mid, right, dividend_yield) or 0.0
+        if short_iv > 0:
+            used_fallback = True
+            fallback_source = "short_leg_mid_implied_volatility"
     long_iv = float(long_snapshot["iv"])
     if long_iv <= 0 and long_mid > 0:
         long_iv = implied_volatility_from_price(final_spot, strike, long_t, risk_free_rate, long_mid, right, dividend_yield) or 0.0
+        if long_iv > 0:
+            used_fallback = True
+            fallback_source = fallback_source or "long_leg_mid_implied_volatility"
     if short_iv <= 0 or long_iv <= 0:
-        raise RuntimeError("Could not determine leg implied volatilities for calendar BS audit.")
+        return _failure_payload(
+            symbol=symbol,
+            short_expiry=short_expiry,
+            long_expiry=long_expiry,
+            strike=strike,
+            right=right,
+            status="missing_iv",
+            reason="Could not determine leg implied volatilities for calendar BS audit.",
+            used_fallback=used_fallback,
+            fallback_source=fallback_source,
+            target_market={
+                "short_leg": short_snapshot,
+                "long_leg": long_snapshot,
+                "calendar_mid": round(market_calendar, 4),
+            },
+            chain_quotes_used=len(quotes),
+        )
 
     bs_short = option_price(final_spot, strike, short_t, risk_free_rate, short_iv, right, dividend_yield)
     bs_long = option_price(final_spot, strike, long_t, risk_free_rate, long_iv, right, dividend_yield)
     bs_calendar = bs_long - bs_short
 
-    calibrations = calibrate_all(final_spot, risk_free_rate, quotes, dividend_yield)
     model_prices = {
         "BSM": {
             "short_leg": round(bs_short, 4),
@@ -227,35 +425,58 @@ def audit_calendar_models(
         }
     }
 
-    for name, cal in calibrations.items():
-        short_price = _price_model(
-            name,
-            spot=final_spot,
-            strike=strike,
-            T=short_t,
-            r=risk_free_rate,
-            right=right,
-            dividend_yield=dividend_yield,
-            params=cal.params,
-        )
-        long_price = _price_model(
-            name,
-            spot=final_spot,
-            strike=strike,
-            T=long_t,
-            r=risk_free_rate,
-            right=right,
-            dividend_yield=dividend_yield,
-            params=cal.params,
-        )
-        model_prices[name] = {
-            "short_leg": round(short_price, 4),
-            "long_leg": round(long_price, 4),
-            "calendar": round(long_price - short_price, 4),
-            "rmse": cal.rmse,
-            "max_error": cal.max_error,
-            "params": asdict(cal.params),
-        }
+    if len(quotes) >= 3:
+        try:
+            calibrations = calibrate_all(final_spot, risk_free_rate, quotes, dividend_yield)
+        except Exception as exc:
+            return _failure_payload(
+                symbol=symbol,
+                short_expiry=short_expiry,
+                long_expiry=long_expiry,
+                strike=strike,
+                right=right,
+                status="calibration_failed",
+                reason=f"Model calibration failed: {type(exc).__name__}: {exc}",
+                used_fallback=used_fallback,
+                fallback_source=fallback_source,
+                target_market={
+                    "short_leg": short_snapshot,
+                    "long_leg": long_snapshot,
+                    "calendar_mid": round(market_calendar, 4),
+                },
+                chain_quotes_used=len(quotes),
+                model_prices=model_prices,
+            )
+
+        for name, cal in calibrations.items():
+            short_price = _price_model(
+                name,
+                spot=final_spot,
+                strike=strike,
+                T=short_t,
+                r=risk_free_rate,
+                right=right,
+                dividend_yield=dividend_yield,
+                params=cal.params,
+            )
+            long_price = _price_model(
+                name,
+                spot=final_spot,
+                strike=strike,
+                T=long_t,
+                r=risk_free_rate,
+                right=right,
+                dividend_yield=dividend_yield,
+                params=cal.params,
+            )
+            model_prices[name] = {
+                "short_leg": round(short_price, 4),
+                "long_leg": round(long_price, 4),
+                "calendar": round(long_price - short_price, 4),
+                "rmse": cal.rmse,
+                "max_error": cal.max_error,
+                "params": asdict(cal.params),
+            }
 
     calendar_values = [float(row["calendar"]) for row in model_prices.values()]
     consensus = {
@@ -276,6 +497,10 @@ def audit_calendar_models(
         "spot": round(final_spot, 4),
         "risk_free_rate": risk_free_rate,
         "dividend_yield": dividend_yield,
+        "status": "success",
+        "reason": None,
+        "used_fallback": used_fallback,
+        "fallback_source": fallback_source,
         "chain_quotes_used": len(quotes),
         "target_market": {
             "short_leg": short_snapshot,
@@ -304,20 +529,33 @@ def main() -> None:
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
-    audit = audit_calendar_models(
-        symbol=args.symbol.upper(),
-        short_expiry=args.short_expiry,
-        long_expiry=args.long_expiry,
-        strike=args.strike,
-        right=args.right.upper(),
-        spot=args.spot,
-        risk_free_rate=args.r,
-        dividend_yield=args.q,
-        span_steps=args.span_steps,
-        client_id=args.client_id,
-        settle_secs=args.settle_secs,
-        market_data_type=args.market_data_type,
-    )
+    try:
+        audit = audit_calendar_models(
+            symbol=args.symbol.upper(),
+            short_expiry=args.short_expiry,
+            long_expiry=args.long_expiry,
+            strike=args.strike,
+            right=args.right.upper(),
+            spot=args.spot,
+            risk_free_rate=args.r,
+            dividend_yield=args.q,
+            span_steps=args.span_steps,
+            client_id=args.client_id,
+            settle_secs=args.settle_secs,
+            market_data_type=args.market_data_type,
+        )
+    except Exception as exc:
+        audit = _failure_payload(
+            symbol=args.symbol.upper(),
+            short_expiry=normalize_expiry(args.short_expiry),
+            long_expiry=normalize_expiry(args.long_expiry),
+            strike=args.strike,
+            right=args.right.upper(),
+            status="unexpected_error",
+            reason=f"{type(exc).__name__}: {exc}",
+            used_fallback=False,
+            fallback_source=None,
+        )
 
     output_path = Path(args.output) if args.output else _default_output_path(
         audit["symbol"],
@@ -329,13 +567,24 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(audit, indent=2) + "\n")
 
-    print(json.dumps({
-        "output": str(output_path),
-        "spot": audit["spot"],
-        "market": audit["target_market"],
-        "consensus": audit["consensus"],
-        "models": audit["model_prices"],
-    }, indent=2))
+    if audit.get("status") == "success":
+        print(json.dumps({
+            "output": str(output_path),
+            "status": audit["status"],
+            "spot": audit["spot"],
+            "market": audit["target_market"],
+            "consensus": audit["consensus"],
+            "models": audit["model_prices"],
+        }, indent=2))
+    else:
+        print(json.dumps({
+            "output": str(output_path),
+            "status": audit.get("status"),
+            "reason": audit.get("reason"),
+            "target_market": audit.get("target_market"),
+            "chain_quotes_used": audit.get("chain_quotes_used", 0),
+        }, indent=2))
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

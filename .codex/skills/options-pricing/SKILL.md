@@ -29,4 +29,5 @@ Use `options-execution` or `hedge_proposal` for live order files.
 - IBKR-first data
 - no silent Yahoo or stale-disk fallback for live pricing
 - reported mid is reference, not executable truth
+- contract qualification is not quote availability; if bid/ask or greeks are empty, say so explicitly
 - if model consensus is weak, say so

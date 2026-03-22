@@ -20,7 +20,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
-from ib_insync import IB, Stock, Option
+from ib_insync import IB, Contract, Stock, Option
 
 
 # ---------------------------------------------------------------------------
@@ -204,10 +204,77 @@ class OptionQuote:
         return self.spread / self.mid if self.mid > 0 else float("inf")
 
 
+@dataclass
+class QuoteHealth:
+    """
+    Structured market-data health for a single contract.
+
+    This is broader than OptionQuote so callers can inspect spot, quote, and
+    greek availability in one place.
+    """
+
+    symbol: str
+    sec_type: str
+    expiry: str
+    strike: float
+    right: str
+    exchange: str
+    market_data_type: int
+    qualified: bool
+    bid: float
+    ask: float
+    last: float
+    close: float
+    market_price: float
+    mid: float
+    spot: float
+    iv: float
+    delta: float
+    gamma: float
+    theta: float
+    vega: float
+    has_spot: bool
+    has_two_sided_quote: bool
+    has_greeks: bool
+    status: str
+    reason: str
+    contract_summary: str
+
+
+@dataclass
+class OptionChainInfo:
+    """
+    Option chain metadata returned from reqSecDefOptParams.
+    """
+
+    symbol: str
+    exchange: str
+    trading_class: str
+    multiplier: str
+    expirations: tuple[str, ...]
+    strikes: tuple[float, ...]
+    underlying_con_id: int
+
+    @property
+    def has_contracts(self) -> bool:
+        return bool(self.expirations) and bool(self.strikes)
+
+
 def _safe_float(val, default: float = 0.0) -> float:
     if val is None or (isinstance(val, float) and math.isnan(val)):
         return default
     return float(val)
+
+
+def _safe_int(val, default: int = 0) -> int:
+    try:
+        if val is None:
+            return default
+        if isinstance(val, float) and math.isnan(val):
+            return default
+        return int(val)
+    except Exception:
+        return default
 
 
 def get_option_quotes(
@@ -268,6 +335,220 @@ def get_option_quotes(
             )
 
     return quotes
+
+
+def get_option_chains(
+    ib: IB,
+    symbol: str,
+    exchange: str = "SMART",
+    debug: bool = False,
+) -> list[OptionChainInfo]:
+    """
+    Return option-chain metadata for a symbol.
+
+    This wraps reqSecDefOptParams and normalizes the chain into a typed
+    dataclass so callers can inspect real expirations and strikes.
+    """
+    underlying = Stock(symbol, "SMART", "USD")
+    qualified = ib.qualifyContracts(underlying)
+    if not qualified:
+        raise ValueError(f"Could not qualify underlying contract for {symbol}.")
+    underlying = qualified[0]
+    chains = ib.reqSecDefOptParams(
+        underlying.symbol,
+        "",
+        underlying.secType,
+        underlying.conId,
+    )
+
+    infos: list[OptionChainInfo] = []
+    for chain in chains:
+        if exchange and chain.exchange != exchange:
+            continue
+        infos.append(OptionChainInfo(
+            symbol=symbol,
+            exchange=chain.exchange,
+            trading_class=chain.tradingClass,
+            multiplier=str(chain.multiplier),
+            expirations=tuple(sorted(str(exp) for exp in chain.expirations)),
+            strikes=tuple(sorted(float(strike) for strike in chain.strikes)),
+            underlying_con_id=_safe_int(getattr(chain, "underlyingConId", 0)),
+        ))
+
+    infos.sort(key=lambda info: (info.exchange, info.trading_class, info.multiplier))
+
+    if debug:
+        print(
+            f"[{_ts()}] chain"
+            f" symbol={symbol}"
+            f" exchange={exchange}"
+            f" chains={len(infos)}"
+        )
+
+    return infos
+
+
+def get_smart_option_chain(
+    ib: IB,
+    symbol: str,
+    debug: bool = False,
+) -> OptionChainInfo:
+    """
+    Return the primary SMART option chain for a symbol.
+    """
+    chains = get_option_chains(ib, symbol, exchange="SMART", debug=debug)
+    if not chains:
+        raise ValueError(f"No SMART option chain found for {symbol}.")
+    return chains[0]
+
+
+def select_chain_strikes(
+    chain: OptionChainInfo,
+    center_strike: float,
+    span_steps: int = 6,
+    step: float | None = None,
+) -> list[float]:
+    """
+    Build a strike list clipped to the actual chain.
+
+    If step is omitted, infer it from the smallest positive increment in the
+    available chain strikes.
+    """
+    available = list(chain.strikes)
+    if not available:
+        return [float(center_strike)]
+
+    if step is None:
+        deltas = []
+        for prev, curr in zip(available, available[1:]):
+            diff = round(curr - prev, 8)
+            if diff > 0:
+                deltas.append(diff)
+        step = min(deltas) if deltas else 5.0
+
+    start = center_strike - span_steps * step
+    end = center_strike + span_steps * step
+
+    selected = [
+        strike
+        for strike in available
+        if start - 1e-9 <= strike <= end + 1e-9
+    ]
+
+    if center_strike in available and center_strike not in selected:
+        selected.append(center_strike)
+        selected.sort()
+
+    return selected
+
+
+def inspect_contract_market_data(
+    ib: IB,
+    contract: Contract,
+    settle_secs: float = 2.0,
+    market_data_type: int | None = None,
+) -> QuoteHealth:
+    """
+    Inspect a contract's market-data readiness in a structured way.
+
+    This is generic preflight for pricing tools. It never raises just because
+    the book is empty; instead it returns a status and reason for callers to
+    surface or branch on.
+    """
+    qualified = False
+    ticker = None
+    try:
+        qualified_contracts = ib.qualifyContracts(contract)
+        qualified = bool(qualified_contracts)
+        if qualified_contracts:
+            contract = qualified_contracts[0]
+    except Exception:
+        qualified = False
+
+    bid = ask = last = close = market_price = mid = 0.0
+    spot = iv = delta = gamma = theta = vega = 0.0
+    has_two_sided_quote = False
+    has_greeks = False
+    has_spot = False
+    status = "unavailable"
+    reason = "contract_not_qualified" if not qualified else "no_market_data"
+
+    try:
+        [ticker] = ib.reqTickers(contract)
+        ib.sleep(settle_secs)
+
+        bid = _safe_float(getattr(ticker, "bid", None))
+        ask = _safe_float(getattr(ticker, "ask", None))
+        last = _safe_float(getattr(ticker, "last", None))
+        close = _safe_float(getattr(ticker, "close", None))
+        market_price = _safe_float(ticker.marketPrice())
+        mid = (bid + ask) / 2 if bid > 0 and ask > 0 else market_price
+
+        greeks = getattr(ticker, "modelGreeks", None)
+        if greeks:
+            iv = _safe_float(getattr(greeks, "impliedVol", None))
+            delta = _safe_float(getattr(greeks, "delta", None))
+            gamma = _safe_float(getattr(greeks, "gamma", None))
+            theta = _safe_float(getattr(greeks, "theta", None))
+            vega = _safe_float(getattr(greeks, "vega", None))
+            spot = _safe_float(getattr(greeks, "undPrice", None))
+
+        has_two_sided_quote = bid > 0 and ask > 0
+        has_greeks = bool(greeks)
+        has_spot = spot > 0 or market_price > 0 or close > 0
+
+        if has_two_sided_quote and has_greeks:
+            status = "ready"
+            reason = "two_sided_quote_and_greeks"
+        elif has_two_sided_quote:
+            status = "quoted"
+            reason = "two_sided_quote_no_greeks"
+        elif has_spot:
+            status = "spot_only"
+            reason = "spot_available_no_two_sided_quote"
+        else:
+            status = "unavailable"
+            reason = "empty_quote_and_greeks"
+    except Exception as exc:
+        status = "unavailable"
+        reason = f"{type(exc).__name__}:{exc}"
+
+    if market_data_type is None:
+        market_data_type = _safe_int(getattr(ticker, "marketDataType", None), 0) if ticker is not None else 0
+
+    expiry = getattr(contract, "lastTradeDateOrContractMonth", "") if getattr(contract, "secType", "") == "OPT" else ""
+    strike = float(getattr(contract, "strike", 0.0))
+    right = getattr(contract, "right", "")
+    exchange = getattr(contract, "exchange", "")
+
+    return QuoteHealth(
+        symbol=getattr(contract, "symbol", ""),
+        sec_type=getattr(contract, "secType", ""),
+        expiry=expiry,
+        strike=strike,
+        right=right,
+        exchange=exchange,
+        market_data_type=int(market_data_type),
+        qualified=qualified,
+        bid=bid,
+        ask=ask,
+        last=last,
+        close=close,
+        market_price=market_price,
+        mid=mid,
+        spot=spot,
+        iv=iv,
+        delta=delta,
+        gamma=gamma,
+        theta=theta,
+        vega=vega,
+        has_spot=has_spot,
+        has_two_sided_quote=has_two_sided_quote,
+        has_greeks=has_greeks,
+        status=status,
+        reason=reason,
+        contract_summary=_contract_summary(contract),
+    )
 
 
 # ---------------------------------------------------------------------------
