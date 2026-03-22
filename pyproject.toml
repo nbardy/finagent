@@ -10,5 +10,14 @@ dependencies = [
     "numpy>=2.4.2",
     "pandas>=3.0.1",
     "scipy>=1.17.1",
+    "stratoforge",
     "yfinance>=1.2.0",
+]
+
+[tool.uv.sources]
+stratoforge = { path = "stratoforge", editable = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
 ]

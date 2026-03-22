@@ -19,8 +19,9 @@ ikbr_trader/
     analysis/
     conclusions/
     final_report.md
-  agent_notes/         # Tracked operating notes and thread retrospectives
+  bespoke/             # Personal trading scripts (gitignored)
   custom_scripts/      # Repo-local custom extensions built on the typed core utils
+  stratoforge/         # Strategy forge library (git submodule)
   option_pricing/      # Pricing models (BS, Heston, VG, Merton, calibration)
   stock_tooling/       # Weekly planner, stock analysis tools
   helpers/             # Shared typed data structures and hedge/execution helpers
@@ -38,7 +39,7 @@ ikbr_trader/
 - Hedge and overlay analysis should report `book`, `hedge`, and `combined` separately.
 - Proposal generation should state whether the order is `add`, `replace`, `trim`, or `close`.
 - For executable pricing, prefer IBKR and fail loud on missing live data rather than silently falling back.
-- `agent_notes/` is tracked. Do not treat it as throwaway local output.
+- Personal trading scripts (session-specific, ticker-hardcoded) belong in `bespoke/`. This directory is gitignored and not part of the public repo.
 
 ## Hedge Analysis Contract
 
@@ -55,6 +56,7 @@ ikbr_trader/
 - Custom logic should import and reuse the typed core modules instead of duplicating broker, pricing, or order-state logic.
 - Keep reusable primitives in the core modules; keep strategy-specific orchestration in `custom_scripts/`.
 - For deep research workflows, prefer creating a dedicated script in `custom_scripts/` that writes into `research_sessions/` and records the Codex thread id it used.
+- `bespoke/` is for personal, non-reusable trading scripts — quick checks, one-off order scripts, session experiments. It is gitignored. If a bespoke script proves generally useful, refactor it into `custom_scripts/`.
 
 ## Core Utility Modules
 
@@ -62,6 +64,11 @@ When extending the repo, prefer leaning on:
 
 - `ibkr.py`
   Live broker connection, quotes, portfolio, open orders, account summary, and recent fills.
+  - `get_recent_fills()` — returns `FillEvent` with `realized_pnl`, `commission`, `currency`
+  - `persist_fills()` — appends new fills to `config/fill_ledger.json` (deduped by `exec_id`)
+  - `load_fill_ledger(symbol=, side=)` — loads full fill history from ledger with optional filters
+  - Fill ledger accumulates automatically via `stock_tooling/get_portfolio.py` — every portfolio check persists all fills
+  - To answer "what did I close and at what P&L?" use `load_fill_ledger(symbol="EWY", side="SLD")`
 - `option_pricing/`
   Pricing models, tranche logic, probe construction, and contract/model types.
 - `stock_tooling/`
@@ -98,6 +105,7 @@ Scripts auto-write to the correct directory:
 | `planner.py` | trade proposals | `orders/{today}/trade_proposal.json` |
 | `planner_leap.py` | LEAP proposals | `orders/{today}/trade_proposal.json` |
 | `portfolio.py` | portfolio snapshot | `config/portfolio_state.json` |
+| `stock_tooling/get_portfolio.py` | fill ledger (auto) | `config/fill_ledger.json` |
 | `regime_detector.py` | regime state | `config/regime_state.json` |
 | `stock_tooling/planner_weekly.py` | weekly probes | user-specified `--output` path |
 | `stock_tooling/price_spread.py` | spread proposals | user-specified `--proposal` path |

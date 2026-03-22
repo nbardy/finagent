@@ -8,6 +8,7 @@ portfolio_state.json
 regime_state.json
 config/portfolio_state.json
 config/regime_state.json
+config/fill_ledger.json
 config/portfolio_dump.json
 config/probe_config.json
 config/x_ticker_watch_state.json
@@ -29,6 +30,12 @@ automated_trading_strats/*/*
 !automated_trading_strats/*/implementation_notes.md
 !automated_trading_strats/*/strategy_manifest.json
 macro_research/**/*.json
+
+# Personal scripts and session artifacts
+bespoke/
+agent_notes/
+pending_plans/
+reports/
 
 # Legacy root-level generated proposals
 /*_proposal.json
