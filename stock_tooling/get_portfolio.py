@@ -119,9 +119,9 @@ def print_positions(positions: list[Position]) -> None:
         
         # Calculate group totals if there are multiple legs
         if len(group_list) > 1:
-            grp_market_value = sum(p.market_value for p in group_list)
-            grp_unrealized = sum(p.unrealized_pnl for p in group_list)
-            grp_cost_basis = sum(p.cost_basis for p in group_list)
+            grp_market_value = sum(p.base_market_value for p in group_list)
+            grp_unrealized = sum(p.base_unrealized_pnl for p in group_list)
+            grp_cost_basis = sum(p.base_cost_basis for p in group_list)
             grp_pct = (grp_unrealized / grp_cost_basis * 100) if grp_cost_basis > 0 else 0.0
             
             pnl_s = _color_pnl(grp_unrealized, f"[{_fmt_money(grp_unrealized)}]")
@@ -144,7 +144,7 @@ def print_positions(positions: list[Position]) -> None:
                 strike=position.strike,
                 right=position.right,
             )
-            pnl_s = _color_pnl(position.unrealized_pnl, _fmt_money(position.unrealized_pnl))
+            pnl_s = _color_pnl(position.base_unrealized_pnl, _fmt_money(position.base_unrealized_pnl))
             pct_s = _color_pnl(position.pct_return, _fmt_pct(position.pct_return))
             
             # Print symbol only if it's a single item, otherwise indent
@@ -156,7 +156,7 @@ def print_positions(positions: list[Position]) -> None:
                 prefix = f"{DIM}└─{RESET} " if index == len(group_list) - 1 else f"{DIM}├─{RESET} "
                 
             fx_info = f" {DIM}({position.local_market_price:.2f} {position.currency}){RESET}" if getattr(position, "currency", "USD") != "USD" else ""
-            mkt_price_str = f"${position.market_price:9.2f}"
+            mkt_price_str = f"${position.base_market_price:9.2f}"
             mkt_price_display = f"{mkt_price_str}{fx_info}"
             
             # We use a trick to pad correctly ignoring ANSI for the fx_info if it exists,
@@ -167,7 +167,7 @@ def print_positions(positions: list[Position]) -> None:
                 f"  {symbol_label}"
                 f"{prefix}{describe_position(position):<26} {position.qty:>+5d} "
                 f"{mkt_price_display:<20} "
-                f"${position.market_value:>11,.2f} "
+                f"${position.base_market_value:>11,.2f} "
                 f"{pnl_s:>20} {pct_s:>16} "
                 f"{(thesis['thesis_id'] if thesis else 'n/a'):<28} "
                 f"{_thesis_summary(thesis)}"
@@ -250,8 +250,8 @@ def print_symbol_ranking(positions: list[Position]) -> None:
     rows: list[tuple[str, float, float, float, float]] = []
     for symbol, group in groupby(sorted(positions, key=lambda p: p.symbol), key=lambda p: p.symbol):
         group_list = list(group)
-        market_value = sum(position.market_value for position in group_list)
-        unrealized = sum(position.unrealized_pnl for position in group_list)
+        market_value = sum(position.base_market_value for position in group_list)
+        unrealized = sum(position.base_unrealized_pnl for position in group_list)
         net_cost = market_value - unrealized
         pct = (unrealized / net_cost * 100.0) if net_cost != 0 else 0.0
         rows.append((symbol, net_cost, market_value, unrealized, pct))

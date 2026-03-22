@@ -573,8 +573,20 @@ class Position:
     pct_return: float
     con_id: int
     currency: str = "USD"
+    base_currency: str = "USD"
+    fx_rate_to_base: float = 1.0
     local_avg_cost: float = 0.0
     local_market_price: float = 0.0
+    local_market_value: float = 0.0
+    local_unrealized_pnl: float = 0.0
+    local_realized_pnl: float = 0.0
+    local_cost_basis: float = 0.0
+    base_avg_cost: float = 0.0
+    base_market_price: float = 0.0
+    base_market_value: float = 0.0
+    base_unrealized_pnl: float = 0.0
+    base_realized_pnl: float = 0.0
+    base_cost_basis: float = 0.0
 
 
 @dataclass
@@ -631,7 +643,14 @@ import yfinance as yf
 
 _FX_CACHE = {"USD": 1.0}
 
-def _get_fx_rate(currency: str) -> float:
+def _get_base_currency() -> str:
+    cfg = _load_config()
+    account_cfg = cfg.get("account", {})
+    return str(account_cfg.get("base_currency") or cfg.get("base_currency") or "USD").upper()
+
+
+def _get_usd_rate(currency: str) -> float:
+    currency = (currency or "USD").upper()
     if currency in _FX_CACHE:
         return _FX_CACHE[currency]
     rate = 1.0
@@ -651,6 +670,18 @@ def _get_fx_rate(currency: str) -> float:
             pass
     _FX_CACHE[currency] = rate
     return rate
+
+
+def _get_fx_rate(currency: str, target_currency: str = "USD") -> float:
+    currency = (currency or "USD").upper()
+    target_currency = (target_currency or "USD").upper()
+    if currency == target_currency:
+        return 1.0
+    source_to_usd = _get_usd_rate(currency)
+    target_to_usd = _get_usd_rate(target_currency)
+    if target_to_usd == 0:
+        return 0.0
+    return source_to_usd / target_to_usd
 
 def get_model_greeks(ib: IB, contracts: list[Contract], timeout: int = 5) -> dict[int, float]:
     """
@@ -687,6 +718,7 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
     """
     portfolio_items = ib.portfolio()
     today = datetime.now()
+    base_currency = _get_base_currency()
 
     positions = []
     for item in portfolio_items:
@@ -706,25 +738,26 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
                 pass
 
         qty = int(item.position)
-        
-        fx_rate = _get_fx_rate(c.currency)
-        
-        # item.marketValue is already converted to base currency (USD) by IBKR usually,
-        # but averageCost, unrealizedPNL, realizedPNL are often in local currency.
-        # Let's ensure standardizing to USD.
-        avg_cost = item.averageCost * fx_rate
-        market_price = _safe_float(item.marketPrice) * fx_rate
-        market_value = item.marketValue * fx_rate
-        
-        unrealized_pnl = item.unrealizedPNL * fx_rate
-        realized_pnl = item.realizedPNL * fx_rate
-        
-        # IBKR averageCost: for stocks it's per-share, for options it's
-        # already total cost per contract (avg_cost_per_share * multiplier).
-        # So cost_basis = averageCost * abs(qty) for both.
-        cost_basis = avg_cost * abs(qty)
+        fx_rate_to_base = _get_fx_rate(c.currency, base_currency)
 
-        pct_return = (unrealized_pnl / cost_basis * 100) if cost_basis > 0 else 0.0
+        local_avg_cost = _safe_float(item.averageCost)
+        local_market_price = _safe_float(item.marketPrice)
+        local_market_value = _safe_float(item.marketValue)
+        local_unrealized_pnl = _safe_float(item.unrealizedPNL)
+        local_realized_pnl = _safe_float(item.realizedPNL)
+
+        # IBKR averageCost is already expressed in the contract currency.
+        # Keep those native values and also materialize explicit base-currency
+        # fields so callers no longer need to guess what the old names mean.
+        base_avg_cost = local_avg_cost * fx_rate_to_base
+        base_market_price = local_market_price * fx_rate_to_base
+        base_market_value = local_market_value * fx_rate_to_base
+        base_unrealized_pnl = local_unrealized_pnl * fx_rate_to_base
+        base_realized_pnl = local_realized_pnl * fx_rate_to_base
+
+        local_cost_basis = local_avg_cost * abs(qty)
+        base_cost_basis = base_avg_cost * abs(qty)
+        pct_return = (base_unrealized_pnl / base_cost_basis * 100) if base_cost_basis > 0 else 0.0
 
         positions.append(Position(
             symbol=sym,
@@ -734,17 +767,29 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
             expiry=expiry,
             dte=dte,
             qty=qty,
-            avg_cost=round(avg_cost, 4),
-            market_price=round(market_price, 4),
-            market_value=round(market_value, 2),
-            unrealized_pnl=round(unrealized_pnl, 2),
-            realized_pnl=round(realized_pnl, 2),
-            cost_basis=round(cost_basis, 2),
+            avg_cost=round(base_avg_cost, 4),
+            market_price=round(base_market_price, 4),
+            market_value=round(base_market_value, 2),
+            unrealized_pnl=round(base_unrealized_pnl, 2),
+            realized_pnl=round(base_realized_pnl, 2),
+            cost_basis=round(base_cost_basis, 2),
             pct_return=round(pct_return, 2),
             con_id=c.conId,
             currency=c.currency,
-            local_avg_cost=round(item.averageCost, 4),
-            local_market_price=round(_safe_float(item.marketPrice), 4),
+            base_currency=base_currency,
+            fx_rate_to_base=round(fx_rate_to_base, 8),
+            local_avg_cost=round(local_avg_cost, 4),
+            local_market_price=round(local_market_price, 4),
+            local_market_value=round(local_market_value, 2),
+            local_unrealized_pnl=round(local_unrealized_pnl, 2),
+            local_realized_pnl=round(local_realized_pnl, 2),
+            local_cost_basis=round(local_cost_basis, 2),
+            base_avg_cost=round(base_avg_cost, 4),
+            base_market_price=round(base_market_price, 4),
+            base_market_value=round(base_market_value, 2),
+            base_unrealized_pnl=round(base_unrealized_pnl, 2),
+            base_realized_pnl=round(base_realized_pnl, 2),
+            base_cost_basis=round(base_cost_basis, 2),
         ))
 
     positions.sort(key=lambda p: (p.symbol, p.sec_type, p.expiry, p.strike))

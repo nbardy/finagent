@@ -1,7 +1,8 @@
 import math
 import unittest
+from unittest.mock import patch
 
-from ibkr import get_option_quotes, get_spot
+from ibkr import get_option_quotes, get_portfolio, get_spot
 
 
 class FakeModelGreeks:
@@ -62,6 +63,56 @@ class FakeQuoteIB:
         return None
 
 
+class FakeContract:
+    def __init__(
+        self,
+        *,
+        symbol: str = "SIVE",
+        sec_type: str = "STK",
+        currency: str = "SEK",
+        con_id: int = 123,
+        right: str = "",
+        strike: float = 0.0,
+        expiry: str = "",
+    ) -> None:
+        self.symbol = symbol
+        self.secType = sec_type
+        self.currency = currency
+        self.conId = con_id
+        self.right = right
+        self.strike = strike
+        self.lastTradeDateOrContractMonth = expiry
+
+
+class FakePortfolioItem:
+    def __init__(
+        self,
+        *,
+        contract: FakeContract,
+        position: int,
+        average_cost: float,
+        market_price: float,
+        market_value: float,
+        unrealized_pnl: float,
+        realized_pnl: float,
+    ) -> None:
+        self.contract = contract
+        self.position = position
+        self.averageCost = average_cost
+        self.marketPrice = market_price
+        self.marketValue = market_value
+        self.unrealizedPNL = unrealized_pnl
+        self.realizedPNL = realized_pnl
+
+
+class FakePortfolioIB:
+    def __init__(self, items) -> None:
+        self._items = list(items)
+
+    def portfolio(self):
+        return list(self._items)
+
+
 class IbkrSpotTests(unittest.TestCase):
     def test_get_spot_raises_without_explicit_close_fallback(self) -> None:
         ib = FakeIB(FakeTicker(market_price=math.nan, close=123.45))
@@ -91,3 +142,35 @@ class IbkrOptionQuoteTests(unittest.TestCase):
         self.assertEqual(quote.gamma, 0.0)
         self.assertEqual(quote.theta, 0.0)
         self.assertEqual(quote.vega, 0.0)
+
+
+class IbkrPortfolioTests(unittest.TestCase):
+    def test_get_portfolio_populates_explicit_base_currency_fields(self) -> None:
+        item = FakePortfolioItem(
+            contract=FakeContract(),
+            position=100,
+            average_cost=10.0,
+            market_price=12.0,
+            market_value=1200.0,
+            unrealized_pnl=200.0,
+            realized_pnl=50.0,
+        )
+        ib = FakePortfolioIB([item])
+
+        with patch("ibkr._get_base_currency", return_value="USD"), patch("ibkr._get_fx_rate", return_value=0.1):
+            [position] = get_portfolio(ib)
+
+        self.assertEqual(position.currency, "SEK")
+        self.assertEqual(position.base_currency, "USD")
+        self.assertEqual(position.fx_rate_to_base, 0.1)
+        self.assertEqual(position.local_market_price, 12.0)
+        self.assertEqual(position.base_market_price, 1.2)
+        self.assertEqual(position.market_price, 1.2)
+        self.assertEqual(position.local_market_value, 1200.0)
+        self.assertEqual(position.base_market_value, 120.0)
+        self.assertEqual(position.market_value, 120.0)
+        self.assertEqual(position.local_unrealized_pnl, 200.0)
+        self.assertEqual(position.base_unrealized_pnl, 20.0)
+        self.assertEqual(position.unrealized_pnl, 20.0)
+        self.assertEqual(position.base_cost_basis, 100.0)
+        self.assertEqual(position.cost_basis, 100.0)

@@ -50,7 +50,7 @@ def describe_fill(fill: FillEvent) -> str:
 
 def format_position_market_price(position: Position) -> str:
     """Return a market-price string with local-currency context when applicable."""
-    mkt_str = f"${position.market_price:.2f}" if position.market_price else "N/A"
+    mkt_str = f"${position.base_market_price:.2f}" if position.base_market_price else "N/A"
     if getattr(position, "currency", "USD") != "USD":
         mkt_str += f" ({position.local_market_price:.2f} {position.currency})"
     return mkt_str
@@ -58,7 +58,7 @@ def format_position_market_price(position: Position) -> str:
 
 def format_position_avg_cost(position: Position) -> str:
     """Return an average-cost string with local-currency context when applicable."""
-    avg_str = f"${position.avg_cost:.2f}"
+    avg_str = f"${position.base_avg_cost:.2f}"
     if getattr(position, "currency", "USD") != "USD":
         avg_str += f" ({position.local_avg_cost:.2f} {position.currency})"
     return avg_str
@@ -66,9 +66,9 @@ def format_position_avg_cost(position: Position) -> str:
 
 def print_portfolio(positions: list[Position]) -> None:
     """Pretty-print a list of positions with P&L."""
-    total_market_value = sum(p.market_value for p in positions)
-    total_cost = sum(p.cost_basis for p in positions)
-    total_unrealized = sum(p.unrealized_pnl for p in positions)
+    total_market_value = sum(p.base_market_value for p in positions)
+    total_cost = sum(p.base_cost_basis for p in positions)
+    total_unrealized = sum(p.base_unrealized_pnl for p in positions)
     total_pct = (total_unrealized / total_cost * 100) if total_cost > 0 else 0.0
 
     print(f"\n{'='*95}")
@@ -93,9 +93,9 @@ def print_portfolio(positions: list[Position]) -> None:
             print(f"\n  {current_sym}")
             print(f"  {'─'*85}")
 
-        sym_pnl += pos.unrealized_pnl
-        sym_cost += pos.cost_basis
-        pnl_str = f"${pos.unrealized_pnl:+,.0f}"
+        sym_pnl += pos.base_unrealized_pnl
+        sym_cost += pos.base_cost_basis
+        pnl_str = f"${pos.base_unrealized_pnl:+,.0f}"
         pct_str = f"{pos.pct_return:+.1f}%"
         mkt_str = format_position_market_price(pos)
 
@@ -110,7 +110,7 @@ def print_portfolio(positions: list[Position]) -> None:
             print(
                 f"    {pos.strike:>8.1f}{pos.right}  "
                 f"{pos.expiry}  {pos.qty:+4d}  "
-                f"avg=${pos.avg_cost:.2f}  mkt={mkt_str}  "
+                f"avg=${pos.base_avg_cost:.2f}  mkt={mkt_str}  "
                 f"P&L={pnl_str} ({pct_str})  {dte_str}"
             )
 
