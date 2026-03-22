@@ -23,10 +23,10 @@ and Option Pricing," European Finance Review 2, 79-105.
 
 from __future__ import annotations
 
+import cmath
 import math
 from dataclasses import dataclass
 
-import numpy as np
 from scipy.integrate import quad
 
 
@@ -102,19 +102,30 @@ def _vg_characteristic_function(
     The last factor is the characteristic function of the VG increment
     raised to the power T/nu (self-decomposability of the Gamma subordinator).
     """
-    sigma = params.sigma
-    theta = params.theta
-    nu = params.nu
-    omega = params.omega
+    return _vg_characteristic_function_fast(
+        u=u,
+        log_forward=math.log(spot) + (r - q + params.omega) * T,
+        theta_nu=params.theta * params.nu,
+        sigma2_nu=(params.sigma ** 2) * params.nu,
+        time_over_nu=T / params.nu,
+    )
 
-    # Log-forward component
-    log_fwd = np.log(spot) + (r - q + omega) * T
 
-    # VG characteristic exponent: -T/nu * ln(1 - i*u*theta*nu + 0.5*sigma²*nu*u²)
-    inner = 1.0 - 1j * u * theta * nu + 0.5 * sigma ** 2 * nu * u ** 2
-    vg_exponent = -(T / nu) * np.log(inner)
+def _vg_characteristic_function_fast(
+    u: complex,
+    *,
+    log_forward: float,
+    theta_nu: float,
+    sigma2_nu: float,
+    time_over_nu: float,
+) -> complex:
+    """
+    Internal VG characteristic function with precomputed invariants.
 
-    return np.exp(1j * u * log_fwd + vg_exponent)
+    This is the hot path used by pricing/integration routines.
+    """
+    inner = 1.0 - 1j * u * theta_nu + 0.5 * sigma2_nu * u * u
+    return cmath.exp(1j * u * log_forward - time_over_nu * cmath.log(inner))
 
 
 def vg_call(
@@ -138,18 +149,45 @@ def vg_call(
 
     q = dividend_yield
     log_K = math.log(strike)
+    log_forward = math.log(spot) + (r - q + params.omega) * T
+    theta_nu = params.theta * params.nu
+    sigma2_nu = (params.sigma ** 2) * params.nu
+    time_over_nu = T / params.nu
+    phi_neg_i = _vg_characteristic_function_fast(
+        -1j,
+        log_forward=log_forward,
+        theta_nu=theta_nu,
+        sigma2_nu=sigma2_nu,
+        time_over_nu=time_over_nu,
+    )
+    phi_neg_i_inv = 1.0 / phi_neg_i
+    discount_factor = math.exp(-r * T)
+    forward = spot * math.exp((r - q) * T)
 
     def integrand_P1(u: float) -> float:
         """Integrand for the delta probability P1 (share measure)."""
         # phi(u - i) / phi(-i) gives the share-measure CF
-        phi_u_minus_i = _vg_characteristic_function(u - 1j, spot, T, r, q, params)
-        phi_neg_i = _vg_characteristic_function(-1j, spot, T, r, q, params)
-        return np.real(np.exp(-1j * u * log_K) * phi_u_minus_i / (1j * u * phi_neg_i))
+        phase = cmath.exp(-1j * u * log_K)
+        phi_u_minus_i = _vg_characteristic_function_fast(
+            u - 1j,
+            log_forward=log_forward,
+            theta_nu=theta_nu,
+            sigma2_nu=sigma2_nu,
+            time_over_nu=time_over_nu,
+        )
+        return (phase * phi_u_minus_i * phi_neg_i_inv / (1j * u)).real
 
     def integrand_P2(u: float) -> float:
         """Integrand for the strike probability P2 (money-market measure)."""
-        phi_u = _vg_characteristic_function(u, spot, T, r, q, params)
-        return np.real(np.exp(-1j * u * log_K) * phi_u / (1j * u))
+        phase = cmath.exp(-1j * u * log_K)
+        phi_u = _vg_characteristic_function_fast(
+            u,
+            log_forward=log_forward,
+            theta_nu=theta_nu,
+            sigma2_nu=sigma2_nu,
+            time_over_nu=time_over_nu,
+        )
+        return (phase * phi_u / (1j * u)).real
 
     P1_integral, _ = quad(integrand_P1, 1e-8, 200, limit=500)
     P2_integral, _ = quad(integrand_P2, 1e-8, 200, limit=500)
@@ -157,8 +195,7 @@ def vg_call(
     P1 = 0.5 + P1_integral / math.pi
     P2 = 0.5 + P2_integral / math.pi
 
-    forward = spot * math.exp((r - q) * T)
-    call_price = math.exp(-r * T) * (forward * P1 - strike * P2)
+    call_price = discount_factor * (forward * P1 - strike * P2)
 
     return max(call_price, 0.0)
 

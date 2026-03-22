@@ -22,10 +22,10 @@ numerical integration (Carr-Madan / Lewis approach).
 
 from __future__ import annotations
 
+import cmath
 import math
 from dataclasses import dataclass
 
-import numpy as np
 from scipy.integrate import quad
 
 
@@ -73,10 +73,9 @@ class HestonParams:
         return 2.0 * self.kappa * self.theta > self.xi ** 2
 
 
-def _heston_characteristic_function(
+def _heston_characteristic_function_cached(
     u: complex,
-    spot: float,
-    strike: float,
+    log_spot: float,
     T: float,
     r: float,
     q: float,
@@ -94,27 +93,44 @@ def _heston_characteristic_function(
     xi = params.xi
     rho = params.rho
 
-    # d and g
-    d = np.sqrt(
-        (rho * xi * 1j * u - kappa) ** 2
-        + xi ** 2 * (1j * u + u ** 2)
-    )
+    # Precompute the scalar pieces that are reused by both integrands.
+    u_i = 1j * u
+    rho_xi = rho * xi
+    xi_sq = xi * xi
+    common = kappa - rho_xi * u_i
+    d = cmath.sqrt(common * common + xi_sq * (u_i + u * u))
 
-    g = (kappa - rho * xi * 1j * u - d) / (kappa - rho * xi * 1j * u + d)
+    g = (common - d) / (common + d)
 
     # C and D functions
-    exp_neg_dT = np.exp(-d * T)
+    exp_neg_dT = cmath.exp(-d * T)
+    common_minus_d = common - d
+    one_minus_g = 1.0 - g
+    one_minus_g_exp_neg_dT = 1.0 - g * exp_neg_dT
 
-    C = (r - q) * 1j * u * T + (kappa * theta / xi ** 2) * (
-        (kappa - rho * xi * 1j * u - d) * T
-        - 2.0 * np.log((1.0 - g * exp_neg_dT) / (1.0 - g))
+    C = (r - q) * u_i * T + (kappa * theta / xi_sq) * (
+        common_minus_d * T
+        - 2.0 * cmath.log(one_minus_g_exp_neg_dT / one_minus_g)
     )
 
-    D = ((kappa - rho * xi * 1j * u - d) / xi ** 2) * (
-        (1.0 - exp_neg_dT) / (1.0 - g * exp_neg_dT)
+    D = (common_minus_d / xi_sq) * (
+        (1.0 - exp_neg_dT) / one_minus_g_exp_neg_dT
     )
 
-    return np.exp(C + D * v0 + 1j * u * np.log(spot))
+    return cmath.exp(C + D * v0 + u_i * log_spot)
+
+
+def _heston_characteristic_function(
+    u: complex,
+    spot: float,
+    strike: float,
+    T: float,
+    r: float,
+    q: float,
+    params: HestonParams,
+) -> complex:
+    """Backward-compatible wrapper used by existing callers inside this module."""
+    return _heston_characteristic_function_cached(u, math.log(spot), T, r, q, params)
 
 
 def heston_call(
@@ -134,37 +150,22 @@ def heston_call(
         return max(0.0, spot - strike)
 
     q = dividend_yield
+    log_spot = math.log(spot)
     log_K = math.log(strike)
-
-    def integrand(u: float) -> float:
-        # P1 and P2 via characteristic function
-        phi1 = _heston_characteristic_function(
-            u - 1j, spot, strike, T, r, q, params
-        )
-        phi2 = _heston_characteristic_function(
-            u, spot, strike, T, r, q, params
-        )
-
-        # Normalize phi1 by forward price CF
-        cf_forward = _heston_characteristic_function(
-            -1j, spot, strike, T, r, q, params
-        )
-
-        term1 = np.real(np.exp(-1j * u * log_K) * phi1 / (1j * u * cf_forward))
-        term2 = np.real(np.exp(-1j * u * log_K) * phi2 / (1j * u))
-
-        return term1 - np.exp(-r * T) * strike * term2
+    discount = math.exp(-r * T)
+    cf_neg_i = _heston_characteristic_function_cached(-1j, log_spot, T, r, q, params)
 
     # Numerical integration
     # Split into two probability integrals for better numerics
     def integrand_P1(u: float) -> float:
-        phi = _heston_characteristic_function(u - 1j, spot, strike, T, r, q, params)
-        cf_neg_i = _heston_characteristic_function(-1j, spot, strike, T, r, q, params)
-        return np.real(np.exp(-1j * u * log_K) * phi / (1j * u * cf_neg_i))
+        phi = _heston_characteristic_function_cached(u - 1j, log_spot, T, r, q, params)
+        return (
+            cmath.exp(-1j * u * log_K) * phi / (1j * u * cf_neg_i)
+        ).real
 
     def integrand_P2(u: float) -> float:
-        phi = _heston_characteristic_function(u, spot, strike, T, r, q, params)
-        return np.real(np.exp(-1j * u * log_K) * phi / (1j * u))
+        phi = _heston_characteristic_function_cached(u, log_spot, T, r, q, params)
+        return (cmath.exp(-1j * u * log_K) * phi / (1j * u)).real
 
     P1_integral, _ = quad(integrand_P1, 1e-8, 200, limit=500)
     P2_integral, _ = quad(integrand_P2, 1e-8, 200, limit=500)
@@ -172,8 +173,7 @@ def heston_call(
     P1 = 0.5 + P1_integral / math.pi
     P2 = 0.5 + P2_integral / math.pi
 
-    forward = spot * math.exp((r - q) * T)
-    call_price = forward * math.exp(-r * T) * P1 - strike * math.exp(-r * T) * P2
+    call_price = spot * math.exp(-q * T) * P1 - strike * discount * P2
 
     return max(call_price, 0.0)
 

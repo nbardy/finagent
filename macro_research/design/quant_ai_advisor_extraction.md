@@ -1596,3 +1596,706 @@ no information. The ban forces specificity.
 are falsifiable and quantitative.
 **For ikbr_trader**: Yes, adopt directly. This is the single best idea in
 the whole system.
+
+---
+
+## Appendix F: The Validation Pattern (Zod in TypeScript, what to use in Python)
+
+quant-ai-advisor validates every tool call argument with Zod schemas before
+execution. This is critical because LLMs produce malformed tool calls
+surprisingly often — wrong types, missing fields, extra fields, out-of-range
+values.
+
+### How it works in quant-ai-advisor
+
+Each tool in the registry has a Zod schema:
+
+```typescript
+// Simplified from index.ts
+const ThesisArgsSchema = z.object({
+  title: z.string(),
+  body: z.string(),
+  time_horizon_months: z.number().int().min(1).max(120),
+  confidence: z.enum(["low", "medium", "high"]),
+  key_drivers: z.array(z.string()),
+});
+
+const ForecastArgsSchema = z.object({
+  intervals: z.array(z.object({
+    interval: z.tuple([z.number(), z.number()]),
+    probability: z.number().min(0).max(1),
+    description: z.string(),
+  })),
+  as_of: z.string().optional(),
+  logit_commentary: z.string().optional(),
+  notes: z.string().optional(),
+});
+```
+
+The dispatch loop:
+```typescript
+for (const toolCall of toolCalls) {
+  const tool = toolRegistry[toolCall.function.name];
+  if (!tool) {
+    // Return error to model: "Unknown tool"
+    continue;
+  }
+  const parsed = tool.schema.safeParse(JSON.parse(toolCall.function.arguments));
+  if (!parsed.success) {
+    // Return validation error to model with details
+    // Model can retry with corrected args
+    continue;
+  }
+  const result = await tool.handler(state, parsed.data, context);
+  // ...
+}
+```
+
+Key points:
+- `.safeParse()` doesn't throw — it returns `{ success, data, error }`
+- Validation errors are sent BACK to the model as tool results
+- The model can retry with corrected arguments
+- This is self-healing: the model learns from its format mistakes
+
+### The `add_proposed_buy` prerequisite check
+
+This is particularly clever:
+
+```typescript
+set_thesis: {
+  handler: async (state, args) => {
+    state = setThesis(state, args);
+    return { state, result: { status: 'success', message: 'Thesis updated' } };
+  },
+},
+
+add_proposed_buy: {
+  handler: async (state, args) => {
+    // PREREQUISITE CHECK: thesis and forecasts must exist
+    if (!state.thesis) {
+      return {
+        state,
+        result: {
+          status: 'error',
+          message: 'Cannot add trade without thesis. Call set_thesis first.'
+        }
+      };
+    }
+    const hasAnyForecast = state.forecasts.oneMonth ||
+                           state.forecasts.threeMonth ||
+                           state.forecasts.sixMonth;
+    if (!hasAnyForecast) {
+      return {
+        state,
+        result: {
+          status: 'error',
+          message: 'Cannot add trade without forecasts. Call set_forecast_* first.'
+        }
+      };
+    }
+    // OK, proceed
+    state = addProposedBuy(state, args);
+    return { state, result: { status: 'success' } };
+  },
+},
+```
+
+The dependency chain is enforced at the tool level, not just in the prompt.
+Even if the model ignores the prompt instruction to "set thesis before
+proposing trades," the tool will reject the call and tell the model why.
+
+### How to apply this in Python / file-based system
+
+For the CLI-based approach, we can't validate tool calls in real-time
+(Claude writes files directly). But we CAN validate post-hoc:
+
+```python
+# validate_research.py
+import json
+from pathlib import Path
+
+def validate_run(run_dir: Path) -> list[str]:
+    errors = []
+
+    # Check thesis exists
+    thesis_path = run_dir / "thesis.md"
+    if not thesis_path.exists():
+        errors.append("MISSING: thesis.md")
+    else:
+        content = thesis_path.read_text()
+        if "## INPUTS" not in content:
+            errors.append("thesis.md missing INPUTS section")
+        if "## OUTPUT" not in content:
+            errors.append("thesis.md missing OUTPUT section")
+        if "## SENSITIVITY" not in content:
+            errors.append("thesis.md missing SENSITIVITY section")
+        if "## Kill Conditions" not in content:
+            errors.append("thesis.md missing Kill Conditions section")
+
+    # Check forecast
+    forecast_path = run_dir / "forecast.json"
+    if not forecast_path.exists():
+        errors.append("MISSING: forecast.json")
+    else:
+        fc = json.loads(forecast_path.read_text())
+        for horizon, data in fc.get("horizons", {}).items():
+            intervals = data.get("intervals", [])
+            if len(intervals) < 3:
+                errors.append(f"forecast {horizon}: fewer than 3 intervals")
+            prob_sum = sum(iv["probability"] for iv in intervals)
+            if abs(prob_sum - 1.0) > 0.05:
+                errors.append(f"forecast {horizon}: probabilities sum to {prob_sum:.2f}, not ~1.0")
+            for iv in intervals:
+                if not iv.get("description"):
+                    errors.append(f"forecast {horizon}: interval {iv['interval']} has no description")
+
+    # Check trades (only valid if thesis + forecast exist)
+    trades_path = run_dir / "proposed_trades.json"
+    if trades_path.exists():
+        if not thesis_path.exists():
+            errors.append("proposed_trades.json exists but thesis.md is missing")
+        if not forecast_path.exists():
+            errors.append("proposed_trades.json exists but forecast.json is missing")
+
+    return errors
+```
+
+This validator runs in the post-process phase and flags issues. The
+review phase then sees the validation results and can comment on them.
+
+---
+
+## Appendix G: The UI Component Patterns (for future dashboard)
+
+Even though we're building CLI-first, the quant-ai-advisor UI patterns
+are worth documenting for when we build a dashboard.
+
+### Pattern 1: Forecast interval visualization
+
+```typescript
+// From StatePanel.tsx
+const getRangeDisplay = (interval: [number, number]) => {
+  const [low, high] = interval;
+  const magnitude = (Math.abs(high - low) * 100).toFixed(1);
+  const midpoint = (Math.abs((low + high) / 2) * 100).toFixed(1);
+  const isNegative = high < 0;
+  const isPositive = low > 0;
+  return { magnitude, midpoint, isNegative, isPositive };
+};
+```
+
+Each interval gets:
+- A colored arrow (red down, green up, gray mixed)
+- The midpoint percentage as the headline number
+- The range width as context
+- The probability as a badge
+- The description as a tooltip/expandable
+
+For a terminal dashboard, this could be:
+```
+3M Forecast:
+  ↓ -15%  [25%]  10Y > 5%, tech reprices to 20x fwd PE
+  → +2%   [45%]  Base case: one cut in H2, earnings grow 6%
+  ↑ +12%  [20%]  Two cuts + AI capex acceleration
+  ↑ +25%  [10%]  Three cuts + earnings breakout
+```
+
+### Pattern 2: Trade card with collapsible rationale
+
+The ProposedTradeCard shows:
+- Header: direction arrow + ticker + strategy badge
+- Quick metrics: entry, stop, target, R:R, timeframe
+- Collapsed section: full markdown rationale
+
+For terminal output, this maps to:
+```
+LONG TLT (ETF) — 3-6mo — R:R 1:2
+  Entry: $87.00 limit | Stop: $82 | Target: $98
+  Rationale: Duration play on rate cuts. If core PCE drops...
+```
+
+### Pattern 3: Tool execution badges
+
+The ToolUseIndicator renders each tool call as:
+- Icon (colored by tool type)
+- Status (spinner → checkmark → alert)
+- Tool name + arg preview
+- Tooltip with full JSON args
+
+For CLI, this is the stdout stream:
+```
+[✓] Reading data_context.json
+[✓] Writing thesis.md (1247 words)
+[✓] Writing forecast.json (3 horizons, 12 intervals)
+[✓] Writing proposed_trades.json (2 trades)
+```
+
+### Pattern 4: State-driven section visibility
+
+StatePanel only shows sections that have data:
+```typescript
+{state.thesis && (
+  <Card>
+    <CardHeader>Investment Thesis</CardHeader>
+    ...
+  </Card>
+)}
+```
+
+For the summary.md, same principle: only include sections that have content.
+Don't write "## Proposed Trades\n\nNone." — just omit the section.
+
+---
+
+## Appendix H: The Streaming Architecture (for future use)
+
+quant-ai-advisor uses Server-Sent Events for real-time updates. The
+event protocol is:
+
+```
+event: content
+data: {"text": "Looking at IONQ's metrics..."}
+
+event: tool_use
+data: {"id": "tc_123", "tool": "get_instrument_features", "args": {"symbol": "IONQ"}}
+
+event: tool_complete
+data: {"id": "tc_123", "tool": "get_instrument_features"}
+
+event: state_update
+data: {"state": {...}, "conversationId": "conv_456"}
+
+event: done
+data: {"conversationId": "conv_456", "state": {...}}
+```
+
+The client handles these with a buffered flush:
+```typescript
+// 50ms flush interval to avoid excessive re-renders
+const flushInterval = setInterval(() => {
+  if (buffer.length > 0) {
+    setAssistantContent(prev => prev + buffer.join(''));
+    buffer = [];
+  }
+}, 50);
+```
+
+### For future ikbr_trader dashboard
+
+If we build a TUI (textual/rich) or web dashboard, we could capture
+the `claude -p` stdout stream and parse it:
+
+```python
+import subprocess
+
+proc = subprocess.Popen(
+    ["claude", "-p", prompt],
+    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    text=True, bufsize=1,
+)
+
+for line in proc.stdout:
+    # Detect file writes: "Created /path/to/thesis.md"
+    if "Created " in line or "Wrote " in line:
+        emit_event("file_created", parse_path(line))
+    else:
+        emit_event("content", line)
+```
+
+The stream becomes an event source for the dashboard.
+
+---
+
+## Appendix I: State Mutation Functions (implementation reference)
+
+The quant-ai-advisor state mutations are pure functions that return
+modified state. This is good functional design:
+
+```typescript
+function setThesis(state: QuantState, args: ThesisArgs): QuantState {
+  return {
+    ...state,
+    thesis: {
+      title: args.title,
+      body: args.body,
+      time_horizon_months: args.time_horizon_months,
+      confidence: args.confidence,
+      key_drivers: args.key_drivers,
+    },
+  };
+}
+
+function addCurrentMacroFact(state: QuantState, args: MacroFactArgs): QuantState {
+  const fact: MacroFact = {
+    id: crypto.randomUUID(),
+    timestamp_iso: args.timestamp_iso || new Date().toISOString(),
+    label: args.label,
+    detail: args.detail,
+    source: args.source,
+    tags: args.tags || [],
+  };
+  return {
+    ...state,
+    currentMacroFacts: [...state.currentMacroFacts, fact],
+  };
+}
+
+function addProposedBuy(state: QuantState, args: TradeArgs): QuantState {
+  const trade: ProposedTrade = {
+    id: crypto.randomUUID(),
+    timestamp_iso: new Date().toISOString(),
+    ticker: args.ticker,
+    assetType: args.asset_type || 'stock',
+    direction: args.direction || 'long',
+    optionsStrategy: args.options_strategy,
+    legs: args.legs || [],
+    entryPoints: args.entry_points || [],
+    marketContext: args.market_context || { underlyingPrice: 0 },
+    stopLoss: args.stop_loss,
+    profitTarget: args.profit_target,
+    maxLoss: args.max_loss,
+    riskReward: args.risk_reward,
+    positionSize: args.position_size,
+    timeframe: args.timeframe,
+    thesis_summary: args.thesis_summary,
+    description: args.description,
+  };
+  return {
+    ...state,
+    proposedBuys: [...state.proposedBuys, trade],
+  };
+}
+```
+
+### For file-based state
+
+In our system, "state mutation" is "write a file." But the pure-function
+pattern is still useful for the post-process phase:
+
+```python
+def add_scenario_from_interval(
+    scenario_set: MacroScenarioSet,
+    interval: dict,
+    horizon_days: int,
+) -> MacroScenarioSet:
+    """Pure function: returns new scenario set with added scenario."""
+    lo, hi = interval["interval"]
+    new_scenario = MacroScenario(
+        label=interval["description"][:40],
+        horizon_days=horizon_days,
+        spot_move_pct=(lo + hi) / 2,
+        vol_shift=0.0,
+        probability=interval["probability"],
+    )
+    return MacroScenarioSet(
+        thesis=scenario_set.thesis,
+        scenarios=scenario_set.scenarios + (new_scenario,),
+        reference_spot=scenario_set.reference_spot,
+        risk_free_rate=scenario_set.risk_free_rate,
+    )
+```
+
+Immutable types + pure functions = easy to test, easy to compose.
+
+---
+
+## Appendix J: The Pre-Fetch Baseline Pattern
+
+quant-ai-advisor pre-fetches baseline data for new conversations:
+
+```typescript
+// Phase 0: Pre-fetch baseline if new conversation
+if (!conversationId || messages.length === 0) {
+  const baselineSymbols = ['SPY', 'QQQ', 'DIA', 'VIX', 'GLD', 'BND'];
+  for (const symbol of baselineSymbols) {
+    if (!state.stockInformation[symbol]) {
+      const { bundle } = await getInstrumentFeaturesCached(
+        { symbol, benchmarkSymbol: 'SPY' },
+        supabaseClient,
+      );
+      state = setStockMetrics(state, symbol, bundle);
+    }
+  }
+  await saveState(conversationId, state);
+}
+```
+
+This ensures the model always has broad market context before the user
+asks their first question. The model doesn't need to waste a tool call
+fetching SPY data — it's already there.
+
+### For ikbr_trader
+
+This maps directly to `fetch_macro_data.py`. The pre-fetch is Phase 1
+of the pipeline. It runs BEFORE Claude is invoked, so the data is real
+and current. Claude reads it from data_context.json, never hallucinating.
+
+The baseline symbols for macro research should be:
+```python
+BASELINE = {
+    "equities": ["SPY", "QQQ", "IWM", "EFA", "EEM"],
+    "rates": ["TLT", "IEF", "SHY", "HYG", "LQD"],
+    "commodities": ["GLD", "USO", "DBA"],
+    "volatility": ["^VIX"],
+    "fx": ["UUP", "FXE", "FXY"],
+}
+```
+
+Plus user-specific holdings (from IBKR portfolio) and any focus-area
+tickers.
+
+---
+
+## Appendix K: Conversation History as Context
+
+In quant-ai-advisor, the full conversation history (including tool calls
+and results) is passed to the model on every turn. This means the model
+can reference previous analysis:
+
+"Earlier I set a thesis that IONQ is overvalued at $19B. The user now
+asks about AMAT. I should check if AMAT is in the same sector and
+whether the thesis applies."
+
+### For file-based research
+
+The equivalent is: Claude reads all files in the run directory before
+writing new ones. If we want cross-thesis awareness (rare), we could
+pass an index of previous runs:
+
+```bash
+# Tell Claude about previous research
+echo "## PREVIOUS RESEARCH RUNS" >> /tmp/context.md
+for dir in macro_research/2025-03-*/*/; do
+  if [ -f "$dir/thesis.md" ]; then
+    echo "### $(head -1 $dir/thesis.md)" >> /tmp/context.md
+    head -5 "$dir/thesis.md" >> /tmp/context.md
+  fi
+done
+```
+
+But this is a future optimization, not a launch requirement.
+
+---
+
+## Appendix L: What "20K words" should cover that this doesn't yet
+
+Areas this extraction hasn't fully explored:
+
+1. **The FMP data assembly pipeline** — how 4 parallel API calls are
+   merged into one StockMetrics bundle (important for our yfinance equivalent)
+
+2. **The options chain UI interaction model** — how expiration selection
+   triggers re-fetch and state update (relevant for future dashboard)
+
+3. **The conversation sidebar logic** — how conversations are listed,
+   labeled (thesis title or date), and selected (relevant for
+   multi-run comparison)
+
+4. **The portfolio entity CRUD** — create/select/delete portfolios,
+   link to conversations (relevant if we want named portfolio views)
+
+5. **The search tool implementation** — SERP API integration with
+   result formatting (relevant if we use codex with web access)
+
+6. **Error recovery patterns** — what happens when a tool fails mid-loop,
+   how the model retries, how partial state is preserved
+
+7. **The model selection dropdown** — how different models are configured
+   with different token limits, temperatures, provider keys
+
+These are lower priority for the macro research system but worth
+documenting for the full dashboard build later.
+
+---
+
+## Appendix M: The research_session.py Pattern (ikbr_trader's own precedent)
+
+While quant-ai-advisor is the external reference, ikbr_trader ALREADY has
+a working multi-turn AI research system in `custom_scripts/research_session.py`.
+This is arguably more relevant than quant-ai-advisor because it runs in
+the same repo, uses the same tools, and follows the same conventions.
+
+### Architecture
+
+```python
+def do_research(topic, *, ticker, research_prompt, x_username, ...):
+    # 1. Create directory layout
+    paths = _ensure_session_layout(topic, ticker)
+
+    # 2. Optional: fetch latest tweet
+    latest_tweet = get_users_latest_tweet(x_username, ...)
+
+    # 3. Run 3 Codex turns, each building on previous
+    prompts = [
+        "Collect raw sources into loose_notes/",
+        "Synthesize analysis into analysis/",
+        "Write conclusions/ and final_report.md",
+    ]
+    for prompt in prompts:
+        turn = _run_codex_turn(prompt=prompt, resume_thread_id=thread_id)
+        thread_id = turn.thread_id
+        _write_manifest(paths, turns=turns)  # save progress after each turn
+```
+
+### Key patterns to reuse
+
+**1. `_run_codex_turn()` — the execution primitive**
+
+```python
+def _run_codex_turn(*, prompt, repo_root, resume_thread_id, full_auto):
+    command = ["codex", "exec"]
+    if resume_thread_id:
+        command.extend(["resume", resume_thread_id])
+    else:
+        command.extend(["-C", str(repo_root)])
+    if full_auto:
+        command.append("--full-auto")
+    command.extend(["--json", "-o", str(output_path)])
+    command.append(prompt)
+
+    process = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, text=True)
+    for raw_line in process.stdout:
+        event = json.loads(raw_line)  # JSON-lines streaming
+        if event.get("type") == "thread.started":
+            thread_id = event["thread_id"]
+    return CodexTurnResult(thread_id, prompt, last_message, stderr, exit_code, events)
+```
+
+This is the reusable execution primitive. It:
+- Streams JSON events from codex stdout
+- Captures the thread_id for resuming
+- Saves the last message for structured output
+- Handles errors with full context
+
+**2. Manifest pattern — progress persistence**
+
+After EACH turn, the manifest is rewritten:
+```python
+_write_manifest(paths, thread_id=thread_id, turns=turns, latest_tweet=latest_tweet)
+```
+
+This means if turn 2 of 3 fails, the manifest records:
+- Turn 1: completed (thread_id, prompt, last_message)
+- Turn 2: failed (no entry)
+- Turn 3: not started
+
+The user can resume from where it stopped.
+
+**3. Structured output schema via `--output-schema`**
+
+For the tweet fetcher, research_session.py uses Codex's structured output:
+```python
+schema = {
+    "type": "object",
+    "required": ["found", "username", "source_url", "posted_at", "text", "summary", "caveats"],
+    "properties": {
+        "found": {"type": "boolean"},
+        "text": {"type": ["string", "null"]},
+        ...
+    },
+}
+turn = _run_codex_turn(prompt=prompt, output_schema=schema)
+data = json.loads(turn.last_message)
+```
+
+This gives us validated JSON output without the "parse JSON from markdown"
+hack that attempt 1 used. The `--output-schema` flag tells Codex to
+validate the output against a JSON schema.
+
+**4. Multi-turn with thread resumption**
+
+The 3-turn structure uses `resume_thread_id` to continue the same Codex
+conversation:
+```python
+for index, prompt in enumerate(prompts):
+    turn = _run_codex_turn(
+        prompt=prompt,
+        resume_thread_id=thread_id if index > 0 else None,
+    )
+    thread_id = turn.thread_id
+```
+
+Turn 2 sees everything from turn 1 (files created, analysis done).
+Turn 3 sees everything from turns 1 and 2. This is the Codex equivalent
+of quant-ai-advisor's stateful conversation.
+
+### What macro_thesis.py should borrow
+
+| Pattern | How to use it |
+|---------|--------------|
+| `_run_codex_turn()` | Reuse directly (import from research_session) |
+| Manifest with per-turn progress | Write manifest after each phase |
+| `--output-schema` for structured data | Use for forecast.json, proposed_trades.json |
+| Thread resumption | Resume for review phase (same context as generation) |
+| `_ensure_session_layout()` | Adapt for macro research directory structure |
+| `_write_request_brief()` | Write a brief documenting what was requested |
+
+### What macro_thesis.py should do differently
+
+| Aspect | research_session.py | macro_thesis.py |
+|--------|-------------------|-----------------|
+| Pre-fetch data | Only tweet | Full macro snapshot |
+| Turn structure | 3 hardcoded turns | 2-4 configurable phases |
+| Output format | Loose markdown | Structured (thesis.md + forecast.json + trades.json) |
+| Post-processing | None | Convert to MacroScenarioSet, run scenario_analyzer |
+| Review | None (final_report is the output) | Explicit review phase |
+| Integration | Standalone | Bridges to executor, hedge system |
+
+### The `run_structured_json_prompt` helper
+
+research_session.py already has a helper for "get structured JSON from Codex":
+
+```python
+def run_structured_json_prompt(prompt, schema, *, repo_root, profile, full_auto):
+    turn = _run_codex_turn(prompt=prompt, output_schema=schema, ...)
+    return json.loads(turn.last_message), turn.thread_id
+```
+
+macro_thesis.py can use this for the forecast and trades phases:
+```python
+from custom_scripts.research_session import run_structured_json_prompt
+
+forecast_schema = {
+    "type": "object",
+    "required": ["horizons"],
+    "properties": {
+        "horizons": {
+            "type": "object",
+            "properties": {
+                "3m": { "type": "object", "properties": { "intervals": { ... } } },
+                "6m": { ... }
+            }
+        }
+    }
+}
+
+forecast, thread_id = run_structured_json_prompt(
+    prompt="Based on the thesis in thesis.md, generate probabilistic forecasts...",
+    schema=forecast_schema,
+)
+```
+
+This gives us validated structured output without new code.
+
+---
+
+## Appendix N: Comparing the Three Systems
+
+| | quant-ai-advisor | research_session.py | macro_thesis.py (proposed) |
+|---|---|---|---|
+| **Runtime** | Supabase Edge Function | Python + Codex CLI | Python + Claude/Codex CLI |
+| **LLM** | OpenRouter (multi-model) | Codex | Claude or Codex |
+| **State** | Supabase JSONB | Files on disk | Files on disk |
+| **Persistence** | Tool calls (set_thesis) | File writes by Codex | File writes by Claude |
+| **Structured output** | Tool call schemas (Zod) | `--output-schema` flag | `--output-schema` flag |
+| **Multi-turn** | Agentic loop (max 10) | 3 sequential turns | 2-4 sequential phases |
+| **Resumability** | conversation_id | thread_id | thread_id |
+| **Data fetching** | In-model tools (FMP, AV) | In-model web search | Pre-fetched (Python) |
+| **Post-processing** | None (state IS output) | None | Scenario pricing, executor bridge |
+| **Review** | Presenter phase | None | Explicit review phase |
+| **UI** | React StatePanel | Terminal output | Terminal + markdown files |
+
+The proposed macro_thesis.py takes the best of both:
+- quant-ai-advisor's epistemic discipline and structured output types
+- research_session.py's execution model (Codex CLI, thread resumption, manifest)
+- New: pre-fetched data, post-processing pipeline, integration with existing modules

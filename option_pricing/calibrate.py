@@ -18,7 +18,9 @@ Each calibration returns fitted params + calibration diagnostics
 
 from __future__ import annotations
 
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import math
+import os
 from dataclasses import dataclass
 
 import numpy as np
@@ -260,14 +262,37 @@ def calibrate_all(
     dividend_yield: float = 0.0,
 ) -> dict[str, CalibrationResult]:
     """Calibrate all three models and return results keyed by model name."""
-    results = {}
-    for name, calibrator in [
+    tasks = [
         ("Heston", calibrate_heston),
         ("VG", calibrate_vg),
         ("MJD", calibrate_mjd),
-    ]:
-        try:
-            results[name] = calibrator(spot, r, quotes, dividend_yield)
-        except Exception as e:
-            print(f"  {name} calibration failed: {e}")
+    ]
+    if len(tasks) <= 1:
+        return {
+            name: calibrator(spot, r, quotes, dividend_yield)
+            for name, calibrator in tasks
+        }
+
+    max_workers = min(len(tasks), os.cpu_count() or 1)
+    if max_workers <= 1:
+        results: dict[str, CalibrationResult] = {}
+        for name, calibrator in tasks:
+            try:
+                results[name] = calibrator(spot, r, quotes, dividend_yield)
+            except Exception as e:
+                print(f"  {name} calibration failed: {e}")
+        return results
+
+    results: dict[str, CalibrationResult] = {}
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        future_map = {
+            executor.submit(calibrator, spot, r, quotes, dividend_yield): name
+            for name, calibrator in tasks
+        }
+        for future in as_completed(future_map):
+            name = future_map[future]
+            try:
+                results[name] = future.result()
+            except Exception as e:
+                print(f"  {name} calibration failed: {e}")
     return results
