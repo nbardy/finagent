@@ -11,8 +11,8 @@ import argparse
 import json
 
 from ibkr import connect, get_option_quotes, get_spot
-from option_pricing import mc_option_pnl, price_option_exit
-from option_pricing.models import OptionContractSpec, OptionMarketSnapshot, dte_and_time_to_expiry
+from stratoforge.pricing import mc_option_pnl, price_option_exit
+from stratoforge.pricing.models import OptionContractSpec, OptionMarketSnapshot, dte_and_time_to_expiry
 
 
 def _require_implied_volatility(quote, *, symbol: str, expiry: str, strike: float, right: str, iv_override: float | None) -> float:

@@ -24,9 +24,9 @@ Already in repo:
   Polls open orders, fills, and positions.
 - [ibkr.py](/Users/nicholasbardy/git/ikbr_trader/ibkr.py)
   Shared IBKR connection helpers and quote dataclasses.
-- [option_pricing/models.py](/Users/nicholasbardy/git/ikbr_trader/option_pricing/models.py)
+- [stratoforge/pricing/models.py](/Users/nicholasbardy/git/ikbr_trader/stratoforge/pricing/models.py)
   Shared option contract and market snapshot types.
-- [option_pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/option_pricing/probe.py)
+- [stratoforge/pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/stratoforge/pricing/probe.py)
   Probe ladder generation for single-leg orders.
 - [portfolio_scenario_ev.py](/Users/nicholasbardy/git/ikbr_trader/portfolio_scenario_ev.py)
   Portfolio-aware scenario EV engine.
@@ -275,7 +275,7 @@ def write_execution_files(plan: HedgeExecutionPlan, output_dir: str) -> list[str
 
 Important extension:
 
-- generalize [option_pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/option_pricing/probe.py) so it supports `BAG` combo anchors and buy ladders directly
+- generalize [stratoforge/pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/stratoforge/pricing/probe.py) so it supports `BAG` combo anchors and buy ladders directly
 
 ### 4. `run_combo_probe_loop.py`
 
@@ -489,7 +489,7 @@ Need new tests:
 ### Phase 2
 
 - add `price_urgent_hedge.py`
-- extend `option_pricing/probe.py` for combo probes
+- extend `stratoforge/pricing/probe.py` for combo probes
 
 ### Phase 3
 

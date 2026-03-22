@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from option_pricing.black_scholes import option_price
+from stratoforge.pricing.black_scholes import option_price
 
 
 @dataclass(frozen=True)

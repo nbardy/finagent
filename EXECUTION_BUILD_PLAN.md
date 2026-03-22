@@ -48,8 +48,8 @@ The current direction should follow [TOOL_DESIGN_PHILOSOPHY.md](/Users/nicholasb
 - [executor.py](/Users/nicholasbardy/git/ikbr_trader/executor.py)
 - [watch_orders.py](/Users/nicholasbardy/git/ikbr_trader/watch_orders.py)
 - [planner_weekly.py](/Users/nicholasbardy/git/ikbr_trader/planner_weekly.py)
-- [option_pricing/weekly.py](/Users/nicholasbardy/git/ikbr_trader/option_pricing/weekly.py)
-- [option_pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/option_pricing/probe.py)
+- [stratoforge/pricing/weekly.py](/Users/nicholasbardy/git/ikbr_trader/stratoforge/pricing/weekly.py)
+- [stratoforge/pricing/probe.py](/Users/nicholasbardy/git/ikbr_trader/stratoforge/pricing/probe.py)
 - [portfolio.py](/Users/nicholasbardy/git/ikbr_trader/portfolio.py)
 
 These are enough to build the next layer instead of rewriting from scratch.

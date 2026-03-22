@@ -11,11 +11,11 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import yfinance as yf
 
-from option_pricing.black_scholes import option_price
-from option_pricing.limits import TICK_SIZE, split_quantity
-from option_pricing.models import display_expiry, normalize_expiry
-from option_pricing.probe import build_probe_trades
-from option_pricing.yahoo import fetch_spot
+from stratoforge.pricing.black_scholes import option_price
+from stratoforge.pricing.limits import TICK_SIZE, split_quantity
+from stratoforge.pricing.models import display_expiry, normalize_expiry
+from stratoforge.pricing.probe import build_probe_trades
+from stratoforge.pricing.yahoo import fetch_spot
 from helpers.scenario_pricing import ScenarioOptionLine, option_lines_future_value, option_value_under_linear_path
 from helpers.urgent_hedge_types import (
     ChasePolicy,

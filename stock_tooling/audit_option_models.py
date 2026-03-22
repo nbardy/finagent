@@ -30,12 +30,12 @@ from ib_insync import Option
 
 from ibkr import connect, get_smart_option_chain, select_chain_strikes
 
-from option_pricing.black_scholes import implied_volatility_from_price, option_price
-from option_pricing.calibrate import MarketQuote, calibrate_all
-from option_pricing.heston import heston_price
-from option_pricing.merton_jump import mjd_price
-from option_pricing.models import dte_and_time_to_expiry, normalize_expiry
-from option_pricing.variance_gamma import vg_price
+from stratoforge.pricing.black_scholes import implied_volatility_from_price, option_price
+from stratoforge.pricing.calibrate import MarketQuote, calibrate_all
+from stratoforge.pricing.heston import heston_price
+from stratoforge.pricing.merton_jump import mjd_price
+from stratoforge.pricing.models import dte_and_time_to_expiry, normalize_expiry
+from stratoforge.pricing.variance_gamma import vg_price
 
 
 def _default_output_path(symbol: str, expiry: str, strike: float, right: str) -> Path:

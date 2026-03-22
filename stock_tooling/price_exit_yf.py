@@ -16,9 +16,9 @@ from __future__ import annotations
 import argparse
 import json
 
-from option_pricing import price_option_exit
-from option_pricing.models import display_expiry
-from option_pricing.yahoo import fetch_option_snapshot
+from stratoforge.pricing import price_option_exit
+from stratoforge.pricing.models import display_expiry
+from stratoforge.pricing.yahoo import fetch_option_snapshot
 
 
 def price_exit_yf(

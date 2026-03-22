@@ -1141,7 +1141,7 @@ The UI shows calls/puts side by side with ATM highlighting.
 ### How to apply this
 
 ikbr_trader already has `ibkr.py:get_option_quotes()` and the
-`option_pricing/` module. For macro research, options data is relevant
+`stratoforge/pricing/` module. For macro research, options data is relevant
 for:
 - Implied volatility as a sentiment indicator
 - Put/call ratios as positioning data

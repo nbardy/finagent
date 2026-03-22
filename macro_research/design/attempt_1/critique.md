@@ -231,7 +231,7 @@ Nothing in the existing ikbr_trader codebase knows how to:
 - Run `scenario_analyzer.py` against them
 - Compare with `regime_detector.py` output
 - Check against existing `planner_leap.py` proposals
-- Price the proposed options legs via `option_pricing/`
+- Price the proposed options legs via `stratoforge/pricing/`
 
 It's an island. The folder structure is designed for human browsing, not
 machine consumption. There's no `load_latest_research()` function, no

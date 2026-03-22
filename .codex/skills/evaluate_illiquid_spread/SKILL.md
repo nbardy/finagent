@@ -15,7 +15,7 @@ You must not blindly trust the broker's portfolio `marketValue` or `unrealizedPN
     - Write a short script using `ib.reqTickers()` to pull the current `bid`, `ask`, and `mid` for all legs of the spread.
 
 2.  **Run Quantitative Models:**
-    - Use the repo's internal pricing models (`option_pricing/calibrate.py`).
+    - Use the repo's internal pricing models (`stratoforge/pricing/calibrate.py`).
     - Pass the current option chain data into `calibrate_all()` to fit parameters for Heston, Variance Gamma, and Merton Jump Diffusion models.
     - Calculate the theoretical fair value of the specific spread using these models.
 

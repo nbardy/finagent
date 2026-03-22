@@ -1,7 +1,7 @@
 """
 IBKR-backed CLI for building small price-discovery probe orders.
 
-The logic lives in `option_pricing.probe`. This file only adapts IBKR quotes
+The logic lives in `stratoforge.pricing.probe`. This file only adapts IBKR quotes
 into the shared proposal format and writes executor-ready JSON.
 """
 
@@ -25,8 +25,8 @@ from ibkr import (
     get_spot,
     inspect_contract_market_data,
 )
-from option_pricing import price_option_probe
-from option_pricing.models import OptionContractSpec, OptionMarketSnapshot
+from stratoforge.pricing import price_option_probe
+from stratoforge.pricing.models import OptionContractSpec, OptionMarketSnapshot
 from stock_tooling.watch_rules import assess_watch_state, load_watch_rules
 
 

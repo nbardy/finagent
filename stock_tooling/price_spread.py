@@ -23,12 +23,12 @@ import statistics
 import sys
 from datetime import datetime
 
-from option_pricing.black_scholes import option_price
-from option_pricing.calibrate import CalibrationResult, MarketQuote, calibrate_all
-from option_pricing.heston import heston_price
-from option_pricing.merton_jump import mjd_price
-from option_pricing.models import dte_and_time_to_expiry
-from option_pricing.variance_gamma import vg_price
+from stratoforge.pricing.black_scholes import option_price
+from stratoforge.pricing.calibrate import CalibrationResult, MarketQuote, calibrate_all
+from stratoforge.pricing.heston import heston_price
+from stratoforge.pricing.merton_jump import mjd_price
+from stratoforge.pricing.models import dte_and_time_to_expiry
+from stratoforge.pricing.variance_gamma import vg_price
 
 
 class PricingSpreadError(RuntimeError):
@@ -349,7 +349,7 @@ def main():
         # Use the ATM quote to back out IV
         atm_quotes = [q for q in quotes if abs(q.strike - spot) < spot * 0.1]
         if atm_quotes:
-            from option_pricing.black_scholes import implied_volatility_from_price
+            from stratoforge.pricing.black_scholes import implied_volatility_from_price
             q = min(atm_quotes, key=lambda q: abs(q.strike - spot))
             iv = implied_volatility_from_price(spot, q.strike, T, args.r, q.market_price, "C")
             print(f"  ATM IV (from K={q.strike}): {iv:.1%}")

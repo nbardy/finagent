@@ -8,8 +8,8 @@ import unittest
 import numpy as np
 from scipy.integrate import quad
 
-from option_pricing.heston import HestonParams, heston_call
-from option_pricing.variance_gamma import VGParams, vg_call
+from stratoforge.pricing.heston import HestonParams, heston_call
+from stratoforge.pricing.variance_gamma import VGParams, vg_call
 
 
 def _heston_characteristic_function_reference(

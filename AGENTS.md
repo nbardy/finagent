@@ -22,7 +22,7 @@ ikbr_trader/
   bespoke/             # Personal trading scripts (gitignored)
   custom_scripts/      # Repo-local custom extensions built on the typed core utils
   stratoforge/         # Strategy forge library (git submodule)
-  option_pricing/      # Pricing models (BS, Heston, VG, Merton, calibration)
+  stratoforge/pricing/      # Pricing models (BS, Heston, VG, Merton, calibration)
   stock_tooling/       # Weekly planner, stock analysis tools
   helpers/             # Shared typed data structures and hedge/execution helpers
   one_off_scripts/     # Small support scripts and repo maintenance helpers
@@ -71,7 +71,7 @@ When extending the repo, prefer leaning on:
   - `load_fill_ledger(symbol=, side=)` — loads full fill history from ledger with optional filters
   - Fill ledger accumulates automatically via `stock_tooling/get_portfolio.py` — every portfolio check persists all fills
   - To answer "what did I close and at what P&L?" use `load_fill_ledger(symbol="EWY", side="SLD")`
-- `option_pricing/`
+- `stratoforge/pricing/`
   Pricing models, tranche logic, probe construction, and contract/model types.
 - `stock_tooling/`
   Scenario analysis, price tools, scanners, planners, and watch rules.
@@ -93,7 +93,7 @@ More examples:
 ```bash
 uv run python one_off_scripts/show_signature.py ibkr get_open_orders
 uv run python one_off_scripts/show_signature.py stock_tooling.watch_rules load_watch_rules
-uv run python one_off_scripts/show_signature.py option_pricing.probe build_probe_trades
+uv run python one_off_scripts/show_signature.py stratoforge.pricing.probe build_probe_trades
 uv run python one_off_scripts/show_signature.py custom_scripts.research_session do_research
 uv run python one_off_scripts/show_signature.py custom_scripts.research_session get_users_latest_tweet
 ```
@@ -174,4 +174,4 @@ uv run python main.py
 
 ## Model Calibration
 All pricing models (Heston, VG, MJD) require calibrated parameters — no defaults allowed.
-Use `option_pricing/calibrate.py` to fit params to observed option chain before pricing.
+Use `stratoforge/pricing/calibrate.py` to fit params to observed option chain before pricing.

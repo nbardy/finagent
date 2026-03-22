@@ -21,8 +21,8 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
-from option_pricing.black_scholes import option_price, implied_volatility_from_price
-from option_pricing.heston import HestonParams, heston_price
+from stratoforge.pricing.black_scholes import option_price, implied_volatility_from_price
+from stratoforge.pricing.heston import HestonParams, heston_price
 
 
 # ---------------------------------------------------------------------------
@@ -270,7 +270,7 @@ def analyze(config: dict) -> dict:
         inst_type = inst["type"]
         expiry = inst.get("expiry", default_expiry)
 
-        from option_pricing.models import dte_and_time_to_expiry
+        from stratoforge.pricing.models import dte_and_time_to_expiry
         dte, T_entry = dte_and_time_to_expiry(expiry)
         T_exit = max((dte - hold_days) / 365, 0.001)
 

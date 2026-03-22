@@ -572,6 +572,9 @@ class Position:
     cost_basis: float
     pct_return: float
     con_id: int
+    currency: str = "USD"
+    local_avg_cost: float = 0.0
+    local_market_price: float = 0.0
 
 
 @dataclass
@@ -743,6 +746,9 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
             cost_basis=round(cost_basis, 2),
             pct_return=round(pct_return, 2),
             con_id=c.conId,
+            currency=c.currency,
+            local_avg_cost=round(item.averageCost, 4),
+            local_market_price=round(_safe_float(item.marketPrice), 4),
         ))
 
     positions.sort(key=lambda p: (p.symbol, p.sec_type, p.expiry, p.strike))

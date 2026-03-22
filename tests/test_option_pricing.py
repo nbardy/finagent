@@ -3,7 +3,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from ibkr import QuoteHealth
-from option_pricing import (
+from stratoforge.pricing import (
     OptionContractSpec,
     OptionMarketSnapshot,
     bs_call,

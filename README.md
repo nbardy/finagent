@@ -36,7 +36,7 @@ uv run python main.py               # run PMCC bot cycle
 ```
 ibkr.py                  IBKR connection, quotes, portfolio, orders, fills
 executor.py              Order proposal submission with price-unit guards
-option_pricing/          BS, Heston, VG, MJD models + calibration
+stratoforge/pricing/          BS, Heston, VG, MJD models + calibration
 stock_tooling/           Planners, scenario analysis, watch rules
 helpers/                 Shared dataclasses for hedges, scenarios, execution
 stratoforge/             Strategy forge library (git submodule)
@@ -52,10 +52,10 @@ analysis/{YYYY-MM-DD}/   Scenario matrices and model output (local, gitignored)
 ```bash
 # Inspect any typed function signature
 uv run python one_off_scripts/show_signature.py ibkr connect
-uv run python one_off_scripts/show_signature.py option_pricing.heston heston_price
+uv run python one_off_scripts/show_signature.py stratoforge.pricing.heston heston_price
 
 # Calibrate option pricing model against live chain
-uv run python option_pricing/calibrate.py
+uv run python stratoforge/pricing/calibrate.py
 
 # Run tests
 uv run pytest

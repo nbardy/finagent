@@ -4,7 +4,7 @@ import argparse
 import json
 from datetime import datetime
 
-from option_pricing import (
+from stratoforge.pricing import (
     fetch_weekly_candidates,
     load_cover_inventory,
     nearest_weekly_expiry,

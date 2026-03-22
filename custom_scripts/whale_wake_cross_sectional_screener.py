@@ -16,8 +16,8 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from ibkr import connect, get_account_summary, get_open_orders, get_option_quotes, get_portfolio, get_spot
-from option_pricing.limits import recommend_limit, tranche_ladder
-from option_pricing.models import OptionContractSpec, dte_and_time_to_expiry
+from stratoforge.pricing.limits import recommend_limit, tranche_ladder
+from stratoforge.pricing.models import OptionContractSpec, dte_and_time_to_expiry
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

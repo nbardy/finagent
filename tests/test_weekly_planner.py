@@ -1,6 +1,6 @@
 import unittest
 
-from option_pricing import (
+from stratoforge.pricing import (
     CoverBucket,
     OptionContractSpec,
     OptionMarketSnapshot,

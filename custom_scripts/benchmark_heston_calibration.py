@@ -19,8 +19,8 @@ import sys
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from option_pricing.calibrate import MarketQuote
-from option_pricing.heston import HestonParams, heston_price
+from stratoforge.pricing.calibrate import MarketQuote
+from stratoforge.pricing.heston import HestonParams, heston_price
 from stratoforge.domain.contracts import ChainIndex, load_option_contracts
 from stratoforge.domain.thesis import ThesisSchema
 from stratoforge.scoring import build_calibration_quotes

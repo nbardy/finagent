@@ -19,9 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from option_pricing.black_scholes import option_price
-from option_pricing.heston import heston_price, HestonParams
-from option_pricing.variance_gamma import vg_price, VGParams
+from stratoforge.pricing.black_scholes import option_price
+from stratoforge.pricing.heston import heston_price, HestonParams
+from stratoforge.pricing.variance_gamma import vg_price, VGParams
 from helpers.urgent_hedge import load_macro_scenarios
 
 # Default robust parameters for testing
