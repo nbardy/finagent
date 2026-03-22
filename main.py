@@ -29,7 +29,7 @@ def main():
     print(f"Regime Check Passed (State: {regime.get('state')}). Proceeding to Portfolio Sync.")
 
     # 2. Portfolio Sync
-    run_script("portfolio.py")
+    run_script("pmcc_portfolio.py")
     if not os.path.exists('config/portfolio_state.json'):
         print("Error: config/portfolio_state.json not found. Aborting.")
         return

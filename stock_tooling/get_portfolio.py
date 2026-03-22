@@ -27,6 +27,7 @@ from ibkr import (
     get_recent_fills,
     persist_fills,
 )
+from stock_tooling.reporting import describe_fill, describe_order, describe_position
 
 
 RED = "\033[91m"
@@ -64,25 +65,6 @@ def _fmt_money(v: float) -> str:
 
 def _fmt_pct(v: float) -> str:
     return f"{v:+.1f}%"
-
-
-def _describe_position(position: Position) -> str:
-    if position.sec_type == "STK":
-        return "stock"
-    dte_str = f" ({position.dte}d)" if position.dte is not None else ""
-    return f"{position.strike:.0f}{position.right} {position.expiry}{dte_str}"
-
-
-def _describe_order(order: OpenOrder) -> str:
-    if order.sec_type == "STK":
-        return "stock"
-    return f"{order.strike:.0f}{order.right} {order.expiry}"
-
-
-def _describe_fill(fill: FillEvent) -> str:
-    if fill.sec_type == "STK":
-        return "stock"
-    return f"{fill.strike:.0f}{fill.right} {fill.expiry}"
 
 
 def _thesis_summary(thesis: dict | None) -> str:
@@ -173,10 +155,18 @@ def print_positions(positions: list[Position]) -> None:
                 symbol_label = f"{DIM}{'│':<8}{RESET}"
                 prefix = f"{DIM}└─{RESET} " if index == len(group_list) - 1 else f"{DIM}├─{RESET} "
                 
+            fx_info = f" {DIM}({position.local_market_price:.2f} {position.currency}){RESET}" if getattr(position, "currency", "USD") != "USD" else ""
+            mkt_price_str = f"${position.market_price:9.2f}"
+            mkt_price_display = f"{mkt_price_str}{fx_info}"
+            
+            # We use a trick to pad correctly ignoring ANSI for the fx_info if it exists,
+            # but simplest is to just append it to the end of the line or adjust spacing.
+            # We'll just let it extend the market price column dynamically, or format carefully.
+            
             print(
                 f"  {symbol_label}"
-                f"{prefix}{_describe_position(position):<26} {position.qty:>+5d} "
-                f"${position.market_price:>9.2f} "
+                f"{prefix}{describe_position(position):<26} {position.qty:>+5d} "
+                f"{mkt_price_display:<20} "
                 f"${position.market_value:>11,.2f} "
                 f"{pnl_s:>20} {pct_s:>16} "
                 f"{(thesis['thesis_id'] if thesis else 'n/a'):<28} "
@@ -210,7 +200,7 @@ def print_open_orders(orders: list[OpenOrder]) -> None:
             right=order.right,
         )
         print(
-            f"  {order.symbol:<8} {_describe_order(order):<22} {order.action:<6} "
+            f"  {order.symbol:<8} {describe_order(order):<22} {order.action:<6} "
             f"{order.quantity:>5d} {order.limit_price:>8.2f} {order.status:<14} "
             f"{(order.order_ref or 'n/a'):<24} "
             f"{(thesis['thesis_id'] if thesis else 'n/a'):<28} "
@@ -246,7 +236,7 @@ def print_recent_fills(fills: list[FillEvent]) -> None:
         pnl_s = _color_pnl(fill.realized_pnl, f"{fill.realized_pnl:>+10,.2f}") if fill.realized_pnl else f"{'':>10}"
         comm_s = f"{fill.commission:>7.2f}" if fill.commission else f"{'':>7}"
         print(
-            f"  {fill.time:<20} {fill.symbol:<8} {_describe_fill(fill):<20} "
+            f"  {fill.time:<20} {fill.symbol:<8} {describe_fill(fill):<20} "
             f"{fill.side:<6} {int(fill.shares):>6d} {fill.price:>8.2f} "
             f"{pnl_s} {comm_s} "
             f"{(fill.order_ref or 'n/a'):<24} "

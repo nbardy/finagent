@@ -26,10 +26,8 @@ from ibkr import (
     get_portfolio,
     get_recent_fills,
     get_spot,
-    print_open_orders,
-    print_portfolio,
-    print_recent_fills,
 )
+from stock_tooling.reporting import print_open_orders, print_portfolio, print_recent_fills
 from stock_tooling.watch_rules import assess_watch_state, load_watch_rules
 
 

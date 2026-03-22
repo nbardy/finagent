@@ -69,6 +69,25 @@ def _summary_markdown(payload: dict, *, top_n: int) -> str:
             f"path=`{scenario['path_model']}`"
         )
 
+    lines.extend(["", "## Surface", ""])
+    surface_summary = payload.get("surface_summary")
+    if surface_summary:
+        lines.append(
+            f"- `{surface_summary['model']}` "
+            f"rmse_iv=`{surface_summary['rmse_iv']}` "
+            f"max_abs_iv_error=`{surface_summary['max_abs_iv_error']}` "
+            f"n_quotes=`{surface_summary['quote_count']}` "
+            f"arb_ok=`{surface_summary['passed_basic_arb_checks']}`"
+        )
+        lines.append(
+            f"- params "
+            f"`rho={surface_summary['parameters']['rho']}` "
+            f"`eta={surface_summary['parameters']['eta']}` "
+            f"`lam={surface_summary['parameters']['lam']}`"
+        )
+    else:
+        lines.append("- No SSVI surface fit was available.")
+
     lines.extend(["", "## Calibrations", ""])
     if payload["calibration_summary"]:
         for name, summary in sorted(payload["calibration_summary"].items()):
