@@ -99,6 +99,7 @@ class BatesPricingTests(unittest.TestCase):
             dividend_yield=0.01,
             calibrations={"Bates": calibration},
             surface_fit=None,
+            enabled_structural_models=("Bates",),
         )
 
         entry = tensor[f"{expiry.isoformat()}|P|600"]["down"]

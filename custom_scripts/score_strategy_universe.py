@@ -95,7 +95,8 @@ def _summary_markdown(payload: dict, *, top_n: int) -> str:
                 f"- `{name}` "
                 f"rmse=`{summary['rmse']}` "
                 f"max_error=`{summary['max_error']}` "
-                f"n_quotes=`{summary['n_quotes']}`"
+                f"n_quotes=`{summary['n_quotes']}` "
+                f"used_in_consensus=`{summary.get('used_in_consensus', False)}`"
             )
     else:
         lines.append("- No stochastic calibrations were available; ranking fell back to BS or market-mid fallback.")
