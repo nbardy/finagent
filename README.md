@@ -18,8 +18,8 @@ A typed Python framework for algorithmic options trading with Interactive Broker
 Prerequisites: Python 3.12+, [uv](https://github.com/astral-sh/uv), IB Gateway with API access enabled.
 
 ```bash
-git clone https://github.com/nbardy/ikbr_trader.git
-cd ikbr_trader
+git clone --recurse-submodules https://github.com/nbardy/finagent.git
+cd finagent
 uv sync
 ```
 
