@@ -224,10 +224,10 @@ class _DummyConnection:
 
 class ProbePreflightTests(unittest.TestCase):
     @patch("stock_tooling.price_probe.connect", return_value=_DummyConnection())
-    @patch("stock_tooling.price_probe.get_smart_option_chain")
+    @patch("stock_tooling.price_probe.load_smart_chain_or_raise")
     @patch("stock_tooling.price_probe.inspect_contract_market_data")
-    def test_price_probe_fails_cleanly_when_two_sided_quote_missing(self, inspect_health, get_chain, _connect) -> None:
-        get_chain.return_value = SimpleNamespace(
+    def test_price_probe_fails_cleanly_when_two_sided_quote_missing(self, inspect_health, load_chain, _connect) -> None:
+        load_chain.return_value = SimpleNamespace(
             expirations=("20280121",),
             strikes=(220.0,),
         )

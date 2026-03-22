@@ -22,6 +22,7 @@ import json
 import statistics
 import sys
 from datetime import datetime
+from typing import Any
 
 from stratoforge.pricing.black_scholes import option_price
 from stratoforge.pricing.calibrate import CalibrationResult, MarketQuote, calibrate_all
@@ -29,79 +30,84 @@ from stratoforge.pricing.heston import heston_price
 from stratoforge.pricing.merton_jump import mjd_price
 from stratoforge.pricing.models import dte_and_time_to_expiry
 from stratoforge.pricing.variance_gamma import vg_price
+from stock_tooling.pricing_support import (
+    PricingToolError,
+    build_failure_payload,
+    ensure_expiry_or_raise,
+    ensure_strikes_or_raise,
+    load_smart_chain_or_raise,
+)
 
 
-class PricingSpreadError(RuntimeError):
-    def __init__(self, payload: dict):
-        self.payload = payload
-        super().__init__(payload.get("reason", "spread pricing failed"))
-
-
-def _failure_payload(
-    *,
-    symbol: str,
-    expiry: str,
-    long_strike: float,
-    short_strike: float,
-    status: str,
-    reason: str,
-    used_fallback: bool = False,
-    fallback_source: str | None = None,
-    **extra,
-) -> dict:
-    payload = {
-        "generated_at": datetime.now().isoformat(timespec="seconds"),
+def _identity(symbol: str, expiry: str, long_strike: float, short_strike: float) -> dict[str, Any]:
+    return {
         "symbol": symbol,
         "expiry": expiry,
         "long_strike": long_strike,
         "short_strike": short_strike,
-        "status": status,
-        "reason": reason,
-        "used_fallback": used_fallback,
-        "fallback_source": fallback_source,
+    }
+
+
+def _failure_defaults() -> dict[str, Any]:
+    return {
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
         "chain_quotes_used": 0,
         "model_prices": {},
     }
-    payload.update(extra)
-    return payload
+
+
+def _failure(
+    symbol: str,
+    expiry: str,
+    long_strike: float,
+    short_strike: float,
+    *,
+    status: str,
+    reason: str,
+    used_fallback: bool = False,
+    fallback_source: str | None = None,
+    **extra: Any,
+) -> dict[str, Any]:
+    return build_failure_payload(
+        _identity(symbol, expiry, long_strike, short_strike),
+        status=status,
+        reason=reason,
+        used_fallback=used_fallback,
+        fallback_source=fallback_source,
+        defaults=_failure_defaults(),
+        **extra,
+    )
+
+
+def _load_validated_chain(ib, symbol: str, expiry: str, long_k: float, short_k: float):
+    defaults = _failure_defaults()
+    identity = _identity(symbol, expiry, long_k, short_k)
+    chain = load_smart_chain_or_raise(
+        ib,
+        symbol,
+        identity={**identity, "expiry": "", "long_strike": 0.0, "short_strike": 0.0},
+        defaults=defaults,
+    )
+    ensure_expiry_or_raise(
+        chain,
+        expiry,
+        identity=identity,
+        defaults=defaults,
+    )
+    return chain
 
 
 def fetch_chain_quotes(
     symbol: str, expiry: str, spot: float, client_id: int = 30,
 ) -> list[MarketQuote]:
     """Fetch option quotes from IBKR and return as MarketQuote list."""
-    from ibkr import connect, get_option_quotes, get_smart_option_chain, select_chain_strikes
+    from ibkr import connect, get_option_quotes, select_chain_strikes
 
     dte, T = dte_and_time_to_expiry(expiry)
     quotes = []
 
     with connect(client_id=client_id) as ib:
-        try:
-            chain = get_smart_option_chain(ib, symbol)
-        except Exception as exc:
-            raise PricingSpreadError(
-                _failure_payload(
-                    symbol=symbol,
-                    expiry="",
-                    long_strike=0.0,
-                    short_strike=0.0,
-                    status="chain_unavailable",
-                    reason=f"No SMART option chain found for {symbol}: {type(exc).__name__}: {exc}",
-                )
-            ) from exc
-
-        if expiry not in chain.expirations:
-            raise PricingSpreadError(
-                _failure_payload(
-                    symbol=symbol,
-                    expiry=expiry,
-                    long_strike=0.0,
-                    short_strike=0.0,
-                    status="expiry_unavailable",
-                    reason=f"Expiry {expiry} is not listed on the current SMART chain.",
-                    available_expiries=list(chain.expirations[:25]),
-                )
-            )
+        chain = _load_validated_chain(ib, symbol, expiry, 0.0, 0.0)
         center = min(chain.strikes, key=lambda k: abs(k - spot))
         strikes_only = select_chain_strikes(chain, center, 8)
         strikes = [(k, expiry, "C") for k in strikes_only]
@@ -126,49 +132,19 @@ def _load_quotes_for_spread(
     spot: float,
     client_id: int = 30,
 ) -> list[MarketQuote]:
-    from ibkr import connect, get_option_quotes, get_smart_option_chain, select_chain_strikes
+    from ibkr import connect, get_option_quotes, select_chain_strikes
 
     dte, T = dte_and_time_to_expiry(expiry)
 
     with connect(client_id=client_id) as ib:
-        try:
-            chain = get_smart_option_chain(ib, symbol)
-        except Exception as exc:
-            raise PricingSpreadError(
-                _failure_payload(
-                    symbol=symbol,
-                    expiry="",
-                    long_strike=0.0,
-                    short_strike=0.0,
-                    status="chain_unavailable",
-                    reason=f"No SMART option chain found for {symbol}: {type(exc).__name__}: {exc}",
-                )
-            ) from exc
-
-        if expiry not in chain.expirations:
-            raise PricingSpreadError(
-                _failure_payload(
-                    symbol=symbol,
-                    expiry=expiry,
-                    long_strike=long_k,
-                    short_strike=short_k,
-                    status="expiry_unavailable",
-                    reason=f"Expiry {expiry} is not listed on the current SMART chain.",
-                    available_expiries=list(chain.expirations[:25]),
-                )
-            )
-        if long_k not in chain.strikes or short_k not in chain.strikes:
-            raise PricingSpreadError(
-                _failure_payload(
-                    symbol=symbol,
-                    expiry=expiry,
-                    long_strike=long_k,
-                    short_strike=short_k,
-                    status="target_strike_unavailable",
-                    reason="One or both spread strikes are not listed on the current SMART chain.",
-                    available_strikes=[round(x, 2) for x in chain.strikes[:30]],
-                )
-            )
+        chain = _load_validated_chain(ib, symbol, expiry, long_k, short_k)
+        ensure_strikes_or_raise(
+            chain,
+            (long_k, short_k),
+            identity=_identity(symbol, expiry, long_k, short_k),
+            defaults=_failure_defaults(),
+            reason="One or both spread strikes are not listed on the current SMART chain.",
+        )
 
         center = min(chain.strikes, key=lambda k: abs(k - ((long_k + short_k) / 2.0)))
         window = select_chain_strikes(chain, center, 8)
@@ -308,22 +284,22 @@ def main():
             with connect(client_id=29) as ib:
                 spot = get_spot(ib, args.symbol)
         except Exception as exc:
-            failure = _failure_payload(
-                symbol=args.symbol.upper(),
-                expiry=args.expiry,
-                long_strike=long_k,
-                short_strike=short_k,
+            failure = _failure(
+                args.symbol.upper(),
+                args.expiry,
+                long_k,
+                short_k,
                 status="missing_underlying_price",
                 reason=f"Could not load IBKR spot: {type(exc).__name__}: {exc}",
             )
             print(json.dumps(failure, indent=2))
             raise SystemExit(1)
     if spot is None:
-        failure = _failure_payload(
-            symbol=args.symbol.upper(),
-            expiry=args.expiry,
-            long_strike=long_k,
-            short_strike=short_k,
+        failure = _failure(
+            args.symbol.upper(),
+            args.expiry,
+            long_k,
+            short_k,
             status="missing_underlying_price",
             reason="No spot price provided and live IBKR spot was unavailable.",
         )
@@ -339,7 +315,7 @@ def main():
         try:
             quotes = _load_quotes_for_spread(args.symbol, args.expiry, long_k, short_k, spot)
             print(f"  Got {len(quotes)} quotes with valid bid/ask")
-        except PricingSpreadError as exc:
+        except PricingToolError as exc:
             print(json.dumps(exc.payload, indent=2))
             raise SystemExit(1)
 
@@ -355,11 +331,11 @@ def main():
             print(f"  ATM IV (from K={q.strike}): {iv:.1%}")
 
     if iv is None:
-        failure = _failure_payload(
-            symbol=args.symbol.upper(),
-            expiry=args.expiry,
-            long_strike=long_k,
-            short_strike=short_k,
+        failure = _failure(
+            args.symbol.upper(),
+            args.expiry,
+            long_k,
+            short_k,
             status="missing_iv",
             reason="No IV available. Provide --iv or connect to IBKR.",
             target_market={
@@ -388,11 +364,11 @@ def main():
         try:
             calibrations = calibrate_all(spot, args.r, quotes)
         except Exception as exc:
-            failure = _failure_payload(
-                symbol=args.symbol.upper(),
-                expiry=args.expiry,
-                long_strike=long_k,
-                short_strike=short_k,
+            failure = _failure(
+                args.symbol.upper(),
+                args.expiry,
+                long_k,
+                short_k,
                 status="calibration_failed",
                 reason=f"Model calibration failed: {type(exc).__name__}: {exc}",
                 target_market={

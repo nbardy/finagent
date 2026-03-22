@@ -15,6 +15,7 @@ import argparse
 import json
 import statistics
 import sys
+from typing import Any
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
@@ -25,13 +26,20 @@ if str(ROOT) not in sys.path:
 
 from ib_insync import Option
 
-from ibkr import connect, get_smart_option_chain, select_chain_strikes
+from ibkr import connect, select_chain_strikes
 from stratoforge.pricing.black_scholes import implied_volatility_from_price, option_price
 from stratoforge.pricing.calibrate import MarketQuote, calibrate_all
 from stratoforge.pricing.heston import heston_price
 from stratoforge.pricing.merton_jump import mjd_price
 from stratoforge.pricing.models import dte_and_time_to_expiry, normalize_expiry
 from stratoforge.pricing.variance_gamma import vg_price
+from stock_tooling.pricing_support import (
+    PricingToolError,
+    build_failure_payload,
+    ensure_expiry_or_raise,
+    ensure_strike_or_raise,
+    load_smart_chain_or_raise,
+)
 
 
 def _default_output_path(symbol: str, short_expiry: str, long_expiry: str, strike: float, right: str) -> Path:
@@ -48,42 +56,47 @@ def _safe_float(value, default: float = 0.0) -> float:
     return float(value)
 
 
-class PricingCalendarError(RuntimeError):
-    def __init__(self, payload: dict):
-        self.payload = payload
-        super().__init__(payload.get("reason", "calendar pricing failed"))
-
-
-def _failure_payload(
-    *,
-    symbol: str,
-    short_expiry: str,
-    long_expiry: str,
-    strike: float,
-    right: str,
-    status: str,
-    reason: str,
-    used_fallback: bool = False,
-    fallback_source: str | None = None,
-    **extra,
-) -> dict:
-    payload = {
-        "generated_at": datetime.now().isoformat(timespec="seconds"),
+def _identity(symbol: str, short_expiry: str, long_expiry: str, strike: float, right: str) -> dict[str, Any]:
+    return {
         "symbol": symbol,
         "short_expiry": short_expiry,
         "long_expiry": long_expiry,
         "strike": strike,
         "right": right,
-        "status": status,
-        "reason": reason,
-        "used_fallback": used_fallback,
-        "fallback_source": fallback_source,
+    }
+
+
+def _failure_defaults() -> dict[str, Any]:
+    return {
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
         "chain_quotes_used": 0,
         "model_prices": {},
         "consensus": {"mean_calendar": 0.0, "stdev_calendar": 0.0, "min_calendar": 0.0, "max_calendar": 0.0, "market_calendar": 0.0},
     }
-    payload.update(extra)
-    return payload
+
+
+def _failure(
+    symbol: str,
+    short_expiry: str,
+    long_expiry: str,
+    strike: float,
+    right: str,
+    *,
+    status: str,
+    reason: str,
+    used_fallback: bool = False,
+    fallback_source: str | None = None,
+    **extra: Any,
+) -> dict[str, Any]:
+    return build_failure_payload(
+        _identity(symbol, short_expiry, long_expiry, strike, right),
+        status=status,
+        reason=reason,
+        used_fallback=used_fallback,
+        fallback_source=fallback_source,
+        defaults=_failure_defaults(),
+        **extra,
+    )
 
 
 def fetch_calendar_slice(
@@ -103,68 +116,36 @@ def fetch_calendar_slice(
     long_expiry = normalize_expiry(long_expiry)
 
     with connect(client_id=client_id, readonly=True, market_data_type=market_data_type, debug=False) as ib:
-        try:
-            chain = get_smart_option_chain(ib, symbol)
-        except Exception as exc:
-            raise PricingCalendarError(
-                _failure_payload(
-                    symbol=symbol,
-                    short_expiry="",
-                    long_expiry="",
-                    strike=0.0,
-                    right="",
-                    status="chain_unavailable",
-                    reason=f"No SMART option chain found for {symbol}: {type(exc).__name__}: {exc}",
-                    used_fallback=False,
-                    fallback_source=None,
-                )
-            ) from exc
-
-        if short_expiry not in chain.expirations:
-            raise PricingCalendarError(
-                _failure_payload(
-                    symbol=symbol,
-                    short_expiry=short_expiry,
-                    long_expiry=long_expiry,
-                    strike=strike,
-                    right=right,
-                    status="short_expiry_unavailable",
-                    reason=f"Expiry {short_expiry} is not listed on the current SMART chain.",
-                    used_fallback=False,
-                    fallback_source=None,
-                    available_short_expiries=list(chain.expirations[:25]),
-                )
-            )
-        if long_expiry not in chain.expirations:
-            raise PricingCalendarError(
-                _failure_payload(
-                    symbol=symbol,
-                    short_expiry=short_expiry,
-                    long_expiry=long_expiry,
-                    strike=strike,
-                    right=right,
-                    status="long_expiry_unavailable",
-                    reason=f"Expiry {long_expiry} is not listed on the current SMART chain.",
-                    used_fallback=False,
-                    fallback_source=None,
-                    available_long_expiries=list(chain.expirations[:25]),
-                )
-            )
-        if strike not in chain.strikes:
-            raise PricingCalendarError(
-                _failure_payload(
-                    symbol=symbol,
-                    short_expiry=short_expiry,
-                    long_expiry=long_expiry,
-                    strike=strike,
-                    right=right,
-                    status="target_strike_unavailable",
-                    reason=f"Strike {strike:.1f} is not listed on the current SMART chain.",
-                    used_fallback=False,
-                    fallback_source=None,
-                    available_strikes=[round(x, 2) for x in chain.strikes[:25]],
-                )
-            )
+        identity = _identity(symbol, short_expiry, long_expiry, strike, right)
+        defaults = _failure_defaults()
+        chain = load_smart_chain_or_raise(
+            ib,
+            symbol,
+            identity={**identity, "short_expiry": "", "long_expiry": "", "strike": 0.0, "right": ""},
+            defaults=defaults,
+        )
+        ensure_expiry_or_raise(
+            chain,
+            short_expiry,
+            identity=identity,
+            defaults=defaults,
+            status="short_expiry_unavailable",
+            available_key="available_short_expiries",
+        )
+        ensure_expiry_or_raise(
+            chain,
+            long_expiry,
+            identity=identity,
+            defaults=defaults,
+            status="long_expiry_unavailable",
+            available_key="available_long_expiries",
+        )
+        ensure_strike_or_raise(
+            chain,
+            strike,
+            identity=identity,
+            defaults=defaults,
+        )
 
         strikes = select_chain_strikes(chain, strike, span_steps)
         contracts = []
@@ -231,32 +212,28 @@ def fetch_calendar_slice(
                 long_snapshot = snapshot
 
     if not spot_candidates:
-        raise PricingCalendarError(
-            _failure_payload(
-                symbol=symbol,
-                short_expiry=short_expiry,
-                long_expiry=long_expiry,
-                strike=strike,
-                right=right,
+        raise PricingToolError(
+            _failure(
+                symbol,
+                short_expiry,
+                long_expiry,
+                strike,
+                right,
                 status="missing_underlying_price",
                 reason="Could not recover underlying price from IBKR option greeks for calendar audit.",
-                used_fallback=False,
-                fallback_source=None,
                 quotes=quote_rows,
             )
         )
     if short_snapshot is None or long_snapshot is None:
-        raise PricingCalendarError(
-            _failure_payload(
-                symbol=symbol,
-                short_expiry=short_expiry,
-                long_expiry=long_expiry,
-                strike=strike,
-                right=right,
+        raise PricingToolError(
+            _failure(
+                symbol,
+                short_expiry,
+                long_expiry,
+                strike,
+                right,
                 status="target_unavailable",
                 reason="Target calendar leg was not returned by IBKR.",
-                used_fallback=False,
-                fallback_source=None,
                 quotes=quote_rows,
             )
         )
@@ -305,7 +282,7 @@ def audit_calendar_models(
             settle_secs=settle_secs,
             market_data_type=market_data_type,
         )
-    except PricingCalendarError as exc:
+    except PricingToolError as exc:
         return exc.payload
     final_spot = spot if spot and spot > 0 else ibkr_spot
 
@@ -331,12 +308,12 @@ def audit_calendar_models(
             used_fallback = True
             fallback_source = fallback_source or "long_leg_mid_implied_volatility"
     if short_iv <= 0 or long_iv <= 0:
-        return _failure_payload(
-            symbol=symbol,
-            short_expiry=short_expiry,
-            long_expiry=long_expiry,
-            strike=strike,
-            right=right,
+        return _failure(
+            symbol,
+            short_expiry,
+            long_expiry,
+            strike,
+            right,
             status="missing_iv",
             reason="Could not determine leg implied volatilities for calendar BS audit.",
             used_fallback=used_fallback,
@@ -367,12 +344,12 @@ def audit_calendar_models(
         try:
             calibrations = calibrate_all(final_spot, risk_free_rate, quotes, dividend_yield)
         except Exception as exc:
-            return _failure_payload(
-                symbol=symbol,
-                short_expiry=short_expiry,
-                long_expiry=long_expiry,
-                strike=strike,
-                right=right,
+            return _failure(
+                symbol,
+                short_expiry,
+                long_expiry,
+                strike,
+                right,
                 status="calibration_failed",
                 reason=f"Model calibration failed: {type(exc).__name__}: {exc}",
                 used_fallback=used_fallback,
@@ -483,16 +460,14 @@ def main() -> None:
             market_data_type=args.market_data_type,
         )
     except Exception as exc:
-        audit = _failure_payload(
-            symbol=args.symbol.upper(),
-            short_expiry=normalize_expiry(args.short_expiry),
-            long_expiry=normalize_expiry(args.long_expiry),
-            strike=args.strike,
-            right=args.right.upper(),
+        audit = _failure(
+            args.symbol.upper(),
+            normalize_expiry(args.short_expiry),
+            normalize_expiry(args.long_expiry),
+            args.strike,
+            args.right.upper(),
             status="unexpected_error",
             reason=f"{type(exc).__name__}: {exc}",
-            used_fallback=False,
-            fallback_source=None,
         )
 
     output_path = Path(args.output) if args.output else _default_output_path(
