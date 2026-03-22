@@ -592,6 +592,7 @@ class OpenOrder:
     status: str
     filled: float
     remaining: float
+    client_id: int = 0
 
 
 @dataclass
@@ -788,10 +789,70 @@ def get_open_orders(ib: IB, symbols: list[str] | None = None) -> list[OpenOrder]
             status=trade.orderStatus.status,
             filled=_safe_float(trade.orderStatus.filled),
             remaining=_safe_float(trade.orderStatus.remaining),
+            client_id=int(getattr(trade.order, "clientId", 0) or 0),
         ))
 
     orders.sort(key=lambda o: (o.symbol, o.expiry, o.strike, o.order_id))
     return orders
+
+
+def cancel_open_orders(
+    order_ids: set[int] | None = None,
+    symbols: set[str] | None = None,
+    settle_secs: float = 1.0,
+) -> list[OpenOrder]:
+    """
+    Cancel matching open orders across client IDs.
+
+    IBKR isolates orders by clientId, so cancellation must reconnect as the
+    originating client. This helper centralizes that workflow.
+
+    order_ids: optional set of specific order ids to cancel.
+    symbols: optional set of symbols whose open orders should be cancelled.
+    Returns the matched open orders targeted for cancellation.
+    """
+    if not order_ids and not symbols:
+        raise ValueError("cancel_open_orders requires order_ids and/or symbols.")
+
+    cfg = _load_config().get("connection", {})
+    host = cfg.get("host", "127.0.0.1")
+    port = cfg.get("port", 4001)
+    discovery_client_id = cfg.get("client_id_portfolio", 4)
+
+    discovery = IB()
+    matched: list[OpenOrder] = []
+    by_client: dict[int, list[int]] = {}
+    try:
+        discovery.connect(host, port, clientId=discovery_client_id, readonly=False)
+        discovery.reqAllOpenOrders()
+        discovery.sleep(settle_secs)
+
+        for order in get_open_orders(discovery):
+            if order_ids and order.order_id not in order_ids:
+                continue
+            if symbols and order.symbol not in symbols:
+                continue
+            matched.append(order)
+            by_client.setdefault(order.client_id, []).append(order.order_id)
+    finally:
+        if discovery.isConnected():
+            discovery.disconnect()
+
+    for client_id, client_order_ids in by_client.items():
+        ib = IB()
+        try:
+            ib.connect(host, port, clientId=client_id, readonly=False)
+            open_orders = {o.orderId: o for o in ib.openOrders()}
+            for order_id in client_order_ids:
+                order = open_orders.get(order_id)
+                if order:
+                    ib.cancelOrder(order)
+            ib.sleep(settle_secs)
+        finally:
+            if ib.isConnected():
+                ib.disconnect()
+
+    return matched
 
 
 def get_account_summary(

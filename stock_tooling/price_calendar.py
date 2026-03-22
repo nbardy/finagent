@@ -23,9 +23,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ib_insync import Option, Stock
+from ib_insync import Option
 
-from ibkr import connect
+from ibkr import connect, get_smart_option_chain, select_chain_strikes
 from option_pricing.black_scholes import implied_volatility_from_price, option_price
 from option_pricing.calibrate import MarketQuote, calibrate_all
 from option_pricing.heston import heston_price
@@ -46,29 +46,6 @@ def _safe_float(value, default: float = 0.0) -> float:
     if isinstance(value, float) and value != value:
         return default
     return float(value)
-
-
-def _strike_step(spot: float) -> float:
-    if spot >= 200:
-        return 10.0
-    if spot >= 50:
-        return 5.0
-    return 2.5
-
-
-def _build_strike_grid(center_strike: float, provisional_spot: float, span_steps: int) -> list[float]:
-    step = _strike_step(provisional_spot)
-    start = max(step, center_strike - span_steps * step)
-    end = center_strike + span_steps * step
-    strikes: list[float] = []
-    value = start
-    while value <= end + 1e-9:
-        strikes.append(round(value, 2))
-        value += step
-    if center_strike not in strikes:
-        strikes.append(center_strike)
-        strikes.sort()
-    return strikes
 
 
 class PricingCalendarError(RuntimeError):
@@ -109,66 +86,6 @@ def _failure_payload(
     return payload
 
 
-def _load_smart_chain(ib, symbol: str) -> dict:
-    underlying = Stock(symbol, "SMART", "USD")
-    [underlying] = ib.qualifyContracts(underlying)
-    chains = ib.reqSecDefOptParams(underlying.symbol, "", underlying.secType, underlying.conId)
-    chain = next((item for item in chains if item.exchange == "SMART"), None)
-    if chain is None:
-        raise PricingCalendarError(
-            _failure_payload(
-                symbol=symbol,
-                short_expiry="",
-                long_expiry="",
-                strike=0.0,
-                right="",
-                status="chain_unavailable",
-                reason=f"No SMART option chain found for {symbol}.",
-                used_fallback=False,
-                fallback_source=None,
-            )
-        )
-    return {
-        "trading_class": getattr(chain, "tradingClass", ""),
-        "exchange": getattr(chain, "exchange", "SMART"),
-        "expirations": sorted(str(exp) for exp in chain.expirations),
-        "strikes": sorted(float(strike) for strike in chain.strikes),
-    }
-
-
-def _slice_shared_strikes(
-    short_strikes: list[float],
-    long_strikes: list[float],
-    target_strike: float,
-    span_steps: int,
-    *,
-    symbol: str,
-    short_expiry: str,
-    long_expiry: str,
-    right: str,
-) -> list[float]:
-    shared = sorted(set(short_strikes).intersection(long_strikes))
-    if target_strike not in shared:
-        raise PricingCalendarError(
-            _failure_payload(
-                symbol=symbol,
-                short_expiry=short_expiry,
-                long_expiry=long_expiry,
-                strike=target_strike,
-                right=right,
-                status="target_strike_unavailable",
-                reason=f"Strike {target_strike:.1f} is not listed on both expiries.",
-                used_fallback=False,
-                fallback_source=None,
-                available_strikes=[round(x, 2) for x in shared[:25]],
-            )
-        )
-    idx = shared.index(target_strike)
-    left = max(0, idx - span_steps)
-    right = min(len(shared), idx + span_steps + 1)
-    return shared[left:right]
-
-
 def fetch_calendar_slice(
     *,
     symbol: str,
@@ -186,9 +103,24 @@ def fetch_calendar_slice(
     long_expiry = normalize_expiry(long_expiry)
 
     with connect(client_id=client_id, readonly=True, market_data_type=market_data_type, debug=False) as ib:
-        short_chain = _load_smart_chain(ib, symbol)
-        long_chain = _load_smart_chain(ib, symbol)
-        if short_expiry not in short_chain["expirations"]:
+        try:
+            chain = get_smart_option_chain(ib, symbol)
+        except Exception as exc:
+            raise PricingCalendarError(
+                _failure_payload(
+                    symbol=symbol,
+                    short_expiry="",
+                    long_expiry="",
+                    strike=0.0,
+                    right="",
+                    status="chain_unavailable",
+                    reason=f"No SMART option chain found for {symbol}: {type(exc).__name__}: {exc}",
+                    used_fallback=False,
+                    fallback_source=None,
+                )
+            ) from exc
+
+        if short_expiry not in chain.expirations:
             raise PricingCalendarError(
                 _failure_payload(
                     symbol=symbol,
@@ -200,10 +132,10 @@ def fetch_calendar_slice(
                     reason=f"Expiry {short_expiry} is not listed on the current SMART chain.",
                     used_fallback=False,
                     fallback_source=None,
-                    available_short_expiries=short_chain["expirations"][:25],
+                    available_short_expiries=list(chain.expirations[:25]),
                 )
             )
-        if long_expiry not in long_chain["expirations"]:
+        if long_expiry not in chain.expirations:
             raise PricingCalendarError(
                 _failure_payload(
                     symbol=symbol,
@@ -215,20 +147,26 @@ def fetch_calendar_slice(
                     reason=f"Expiry {long_expiry} is not listed on the current SMART chain.",
                     used_fallback=False,
                     fallback_source=None,
-                    available_long_expiries=long_chain["expirations"][:25],
+                    available_long_expiries=list(chain.expirations[:25]),
+                )
+            )
+        if strike not in chain.strikes:
+            raise PricingCalendarError(
+                _failure_payload(
+                    symbol=symbol,
+                    short_expiry=short_expiry,
+                    long_expiry=long_expiry,
+                    strike=strike,
+                    right=right,
+                    status="target_strike_unavailable",
+                    reason=f"Strike {strike:.1f} is not listed on the current SMART chain.",
+                    used_fallback=False,
+                    fallback_source=None,
+                    available_strikes=[round(x, 2) for x in chain.strikes[:25]],
                 )
             )
 
-        strikes = _slice_shared_strikes(
-            short_chain["strikes"],
-            long_chain["strikes"],
-            strike,
-            span_steps,
-            symbol=symbol,
-            short_expiry=short_expiry,
-            long_expiry=long_expiry,
-            right=right,
-        )
+        strikes = select_chain_strikes(chain, strike, span_steps)
         contracts = []
         for expiry in (short_expiry, long_expiry):
             for k in strikes:

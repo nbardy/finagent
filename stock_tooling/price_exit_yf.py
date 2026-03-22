@@ -1,6 +1,12 @@
 """
 Yahoo-backed CLI for pricing option exits.
 
+Fallback-only helper.
+
+The repo direction is IBKR-first for live pricing. Prefer
+`stock_tooling/price_exit.py` whenever IBKR quotes are available. Use this file
+only when you intentionally want a Yahoo-backed fallback path.
+
 The pricing logic lives in the `option_pricing` package. This file is only a
 thin command-line wrapper around those reusable modules.
 """
@@ -25,6 +31,7 @@ def price_exit_yf(
     dividend_yield: float,
     output_file: str,
 ) -> dict:
+    print("WARNING: price_exit_yf.py is a fallback path. Prefer stock_tooling/price_exit.py for IBKR-first pricing.")
     contract, market, nearby = fetch_option_snapshot(
         symbol=symbol,
         expiry=expiry,
@@ -79,7 +86,9 @@ def price_exit_yf(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Yahoo-backed fallback for option exit pricing. Prefer stock_tooling/price_exit.py for IBKR-first pricing."
+    )
     parser.add_argument("--symbol", default="EWY")
     parser.add_argument("--expiry", required=True, help="Option expiry in YYYY-MM-DD format.")
     parser.add_argument("--qty", type=int, default=100, help="Total contracts to exit.")

@@ -26,7 +26,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ib_insync import Option, Stock
+from ib_insync import Option
+
+from ibkr import connect, get_smart_option_chain, select_chain_strikes
 
 from option_pricing.black_scholes import implied_volatility_from_price, option_price
 from option_pricing.calibrate import MarketQuote, calibrate_all
@@ -48,29 +50,6 @@ def _safe_float(value, default: float = 0.0) -> float:
     if isinstance(value, float) and math.isnan(value):
         return default
     return float(value)
-
-
-def _strike_step(spot: float) -> float:
-    if spot >= 200:
-        return 10.0
-    if spot >= 50:
-        return 5.0
-    return 2.5
-
-
-def _build_strike_grid(center_strike: float, spot: float, span_steps: int) -> list[float]:
-    step = _strike_step(spot)
-    start = max(step, center_strike - span_steps * step)
-    end = center_strike + span_steps * step
-    strikes = []
-    k = start
-    while k <= end + 1e-9:
-        strikes.append(round(k, 2))
-        k += step
-    if center_strike not in strikes:
-        strikes.append(center_strike)
-        strikes.sort()
-    return strikes
 
 
 class PricingAuditError(RuntimeError):
@@ -110,61 +89,6 @@ def _failure_payload(
     return payload
 
 
-def _load_smart_chain(ib, symbol: str) -> dict:
-    underlying = Stock(symbol, "SMART", "USD")
-    [underlying] = ib.qualifyContracts(underlying)
-    chains = ib.reqSecDefOptParams(underlying.symbol, "", underlying.secType, underlying.conId)
-    chain = next((item for item in chains if item.exchange == "SMART"), None)
-    if chain is None:
-        raise PricingAuditError(
-            _failure_payload(
-                symbol=symbol,
-                expiry="",
-                strike=0.0,
-                right="",
-                status="chain_unavailable",
-                reason=f"No SMART option chain found for {symbol}.",
-                used_fallback=False,
-                fallback_source=None,
-            )
-        )
-    return {
-        "trading_class": getattr(chain, "tradingClass", ""),
-        "exchange": getattr(chain, "exchange", "SMART"),
-        "expirations": sorted(str(exp) for exp in chain.expirations),
-        "strikes": sorted(float(strike) for strike in chain.strikes),
-    }
-
-
-def _slice_chain_strikes(
-    strikes: list[float],
-    target_strike: float,
-    span_steps: int,
-    *,
-    symbol: str,
-    expiry: str,
-    right: str,
-) -> list[float]:
-    if target_strike not in strikes:
-        raise PricingAuditError(
-            _failure_payload(
-                symbol=symbol,
-                expiry=expiry,
-                strike=target_strike,
-                right=right,
-                status="target_strike_unavailable",
-                reason=f"Strike {target_strike:.1f} is not listed on the current SMART chain.",
-                used_fallback=False,
-                fallback_source=None,
-                available_strikes=[round(x, 2) for x in strikes[:25]],
-            )
-        )
-    center_idx = strikes.index(target_strike)
-    left = max(0, center_idx - span_steps)
-    right = min(len(strikes), center_idx + span_steps + 1)
-    return strikes[left:right]
-
-
 def fetch_option_slice(
     symbol: str,
     expiry: str,
@@ -174,14 +98,27 @@ def fetch_option_slice(
     client_id: int,
     settle_secs: float,
 ) -> tuple[float, dict, list[MarketQuote]]:
-    from ibkr import connect
-
     expiry = normalize_expiry(expiry)
     right = right.upper()
 
     with connect(client_id=client_id, readonly=True, market_data_type=3, debug=False) as ib:
-        chain = _load_smart_chain(ib, symbol)
-        if expiry not in chain["expirations"]:
+        try:
+            chain = get_smart_option_chain(ib, symbol)
+        except Exception as exc:
+            raise PricingAuditError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry="",
+                    strike=0.0,
+                    right="",
+                    status="chain_unavailable",
+                    reason=f"No SMART option chain found for {symbol}: {type(exc).__name__}: {exc}",
+                    used_fallback=False,
+                    fallback_source=None,
+                )
+            ) from exc
+
+        if expiry not in chain.expirations:
             raise PricingAuditError(
                 _failure_payload(
                     symbol=symbol,
@@ -192,11 +129,25 @@ def fetch_option_slice(
                     reason=f"Expiry {expiry} is not listed on the current SMART chain.",
                     used_fallback=False,
                     fallback_source=None,
-                    available_expiries=chain["expirations"][:25],
+                    available_expiries=list(chain.expirations[:25]),
+                )
+            )
+        if target_strike not in chain.strikes:
+            raise PricingAuditError(
+                _failure_payload(
+                    symbol=symbol,
+                    expiry=expiry,
+                    strike=target_strike,
+                    right=right,
+                    status="target_strike_unavailable",
+                    reason=f"Strike {target_strike:.1f} is not listed on the current SMART chain.",
+                    used_fallback=False,
+                    fallback_source=None,
+                    available_strikes=[round(x, 2) for x in chain.strikes[:25]],
                 )
             )
 
-        strikes = _slice_chain_strikes(chain["strikes"], target_strike, span_steps, symbol=symbol, expiry=expiry, right=right)
+        strikes = select_chain_strikes(chain, target_strike, span_steps)
         contracts = [Option(symbol, expiry, strike, right, "SMART") for strike in strikes]
         contracts = ib.qualifyContracts(*contracts)
         tickers = ib.reqTickers(*contracts)
@@ -280,7 +231,7 @@ def fetch_option_slice(
                     reason="Target option was not returned by IBKR.",
                     used_fallback=False,
                     fallback_source=None,
-                    chain={"expirations": chain["expirations"][:25], "strikes_sample": [round(x, 2) for x in strikes]},
+                    chain={"expirations": list(chain.expirations[:25]), "strikes_sample": [round(x, 2) for x in strikes]},
                     quotes=quote_rows,
                 )
             )
@@ -298,7 +249,7 @@ def fetch_option_slice(
                     used_fallback=False,
                     fallback_source=None,
                     target_market=target_snapshot,
-                    chain={"expirations": chain["expirations"][:25], "strikes_sample": [round(x, 2) for x in strikes]},
+                    chain={"expirations": list(chain.expirations[:25]), "strikes_sample": [round(x, 2) for x in strikes]},
                     quotes=quote_rows,
                 )
             )
