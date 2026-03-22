@@ -106,8 +106,8 @@ Scripts auto-write to the correct directory:
 |--------|--------|----|
 | `planner.py` | trade proposals | `orders/{today}/trade_proposal.json` |
 | `planner_leap.py` | LEAP proposals | `orders/{today}/trade_proposal.json` |
-| `portfolio.py` | portfolio snapshot | `config/portfolio_state.json` |
-| `stock_tooling/get_portfolio.py` | fill ledger (auto) | `config/fill_ledger.json` |
+| `pmcc_portfolio.py` | PMCC strategy inventory sync | `config/portfolio_state.json` |
+| `stock_tooling/get_portfolio.py` | general portfolio, multi-currency pricing & fill ledger | `config/fill_ledger.json` |
 | `regime_detector.py` | regime state | `config/regime_state.json` |
 | `stock_tooling/planner_weekly.py` | weekly probes | user-specified `--output` path |
 | `stock_tooling/price_spread.py` | spread proposals | user-specified `--proposal` path |
@@ -158,8 +158,11 @@ Scenario matrices, early-exit models, EV calculations go in `analysis/{YYYY-MM-D
 # Submit a trade proposal
 uv run python executor.py --file orders/2026-03-10/photonics_stocks.json
 
-# Sync portfolio state
-uv run python portfolio.py
+# View full multi-currency portfolio state
+PYTHONPATH=. uv run python stock_tooling/get_portfolio.py
+
+# Sync PMCC state for bot
+uv run python pmcc_portfolio.py
 
 # Run PMCC bot cycle
 uv run python main.py
