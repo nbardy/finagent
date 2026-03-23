@@ -66,6 +66,7 @@ When extending the repo, prefer leaning on:
 - `ibkr.py`
   Live broker connection, quotes, portfolio, open orders, account summary, and recent fills.
   - Contract qualification only proves the contract exists. It does not prove there is a usable bid/ask or model greek surface for pricing.
+  - `Position` now exposes explicit `base_currency`, `fx_rate_to_base`, `base_*`, and `local_*` fields. For new code, prefer those explicit fields over assuming `market_value` or `avg_cost` are native-currency values.
   - `get_recent_fills()` — returns `FillEvent` with `realized_pnl`, `commission`, `currency`
   - `persist_fills()` — appends new fills to `config/fill_ledger.json` (deduped by `exec_id`)
   - `load_fill_ledger(symbol=, side=)` — loads full fill history from ledger with optional filters
@@ -75,8 +76,48 @@ When extending the repo, prefer leaning on:
   Pricing models, tranche logic, probe construction, and contract/model types.
 - `stock_tooling/`
   Scenario analysis, price tools, scanners, planners, and watch rules.
+  - Shared console formatting lives in `stock_tooling/reporting.py`. Keep `stock_tooling/get_portfolio.py` as the rich portfolio CLI and reuse `stock_tooling/reporting.py` for simpler watcher/order views.
 - `helpers/`
   Shared hedge and scenario dataclasses plus execution-support helpers.
+
+## Stratoforge Usage
+
+Use Stratoforge when the job is:
+
+- turn a macro or thesis tree into a large options candidate universe
+- compare many structures under mixed scenario horizons and probabilities
+- score candidates by scenario P&L rather than just enumerate them
+- return scored analysis artifacts under `analysis/{YYYY-MM-DD}/`
+
+Do not use Stratoforge when the job is:
+
+- price one specific live spread for execution
+- build an executable order ticket
+- inspect current IBKR position state
+
+For those cases, prefer the narrower pricing / execution tools.
+
+Canonical Stratoforge entrypoint:
+
+- `uv run python custom_scripts/run_stratoforge.py --thesis ... --chain ...`
+
+Legacy compatibility wrapper:
+
+- `uv run python custom_scripts/score_strategy_universe.py --thesis ... --chain ...`
+
+Current model policy:
+
+- `SSVI` is the canonical surface model
+- `Bates` is the primary structural repricer
+- `Heston` is the structural fallback
+- `BS` is the fallback / sanity anchor
+
+Interpretation rules:
+
+- prefer the scored Stratoforge path, not scan-only enumeration, for decision support
+- read `model_policy`, `calibration_summary`, and `surface_summary` from the output
+- do not assume one model is always best; use the fit-gated consensus returned by the scorer
+- treat fixed-grid Heston/Bates as available but not active unless the scored output explicitly says otherwise
 
 ## Signature Inspection
 
@@ -168,12 +209,26 @@ uv run python pmcc_portfolio.py
 uv run python main.py
 ```
 
+## Order Pricing Rules (MANDATORY)
+
+Agents placing live orders MUST follow these rules. Sloppy limit prices cost real money.
+
+1. **Always price at the mid.** Compute `(bid + ask) / 2` and use that as the limit price. Never use the ask for buys or the bid for sells. If you cannot observe the bid/ask (no market data subscription, market closed), you MUST tell the user and get explicit price guidance before submitting.
+2. **Never use the day's high/low as a limit price.** A high or low is an extreme print, not a fair price. Using it as your limit is crossing the spread for no reason.
+3. **If no live bid/ask is available, do not guess.** Say so. Propose the order with a placeholder price and let the user confirm from TWS or another data source. Submitting a limit order based on stale portfolio snapshots or chart screenshots is not acceptable — those do not show the current spread.
+4. **Round limit prices to the instrument's tick size.** Most US equities tick at $0.01. SEK stocks on SFB tick at 0.01 SEK. Options tick at $0.05 (>$3) or $0.01 (<$3). Do not submit prices with spurious precision.
+5. **For large orders relative to typical volume, tranche the entry.** Split into 2-4 tranches at staggered limit prices around the mid to reduce market impact. Ask the user for tranche sizing preference if not specified.
+6. **State the spread and mid before submitting.** Always print: `bid={bid} ask={ask} mid={mid} → limit={limit}` so the user can verify before the order fires. If the order is urgent and pre-approved, still log it.
+
+Violation of these rules wastes real capital on every fill. There is no "close enough" — a sloppy limit on 20,000 shares at 0.05 SEK over mid is 1,000 SEK lost for nothing.
+
 ## IBKR Gotchas
 - **Adaptive algo**: Not supported on OTC/Pink Sheet stocks (Error 442). Use plain market orders.
 - **Foreign exchange orders**: Require "Bypass Order Precautions" and "Bypass Redirect Order warning" in Gateway → Global Config → API → Precautions.
 - **reqGlobalCancel()**: Orders on closed exchanges get stuck in PendingCancel. Don't cancel+resubmit when exchange is closed.
 - **Client ID isolation**: Different client IDs can't see each other's orders. Use `reqAllOpenOrders()`.
 - **Error 10311**: Direct-routed order precautionary setting. Fix in Gateway API precautions.
+- **Execution preflight**: Before submit, validate venue permissions, `Adaptive` availability, `outsideRth` compatibility, and exchange price units. Do not rely on broker rejections as discovery.
 
 ## Model Calibration
 All pricing models (Heston, VG, MJD) require calibrated parameters — no defaults allowed.
