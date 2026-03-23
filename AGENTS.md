@@ -107,17 +107,17 @@ Legacy compatibility wrapper:
 
 Current model policy:
 
-- `SSVI` is the canonical surface model
-- `Bates` is the primary structural repricer
-- `Heston` is the structural fallback
+- `SSVI` is the canonical surface model and diagnostic state
+- `Bates` is the default decision model
+- `Heston` is the structural fallback when `Bates` is unavailable
 - `BS` is the fallback / sanity anchor
 
 Interpretation rules:
 
 - prefer the scored Stratoforge path, not scan-only enumeration, for decision support
 - read `model_policy`, `calibration_summary`, and `surface_summary` from the output
-- do not assume one model is always best; use the fit-gated consensus returned by the scorer
-- treat fixed-grid Heston/Bates as available but not active unless the scored output explicitly says otherwise
+- do not assume multi-model blending is the right default; on the current validated snapshot, `Bates` is the preferred decision model
+- fixed-grid `Heston/Bates` are active in live scoring; check `fixed_grid_pricers_active` in the output if you need to confirm
 
 ## Signature Inspection
 
