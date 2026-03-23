@@ -740,23 +740,24 @@ def get_portfolio(ib: IB, symbols: list[str] | None = None) -> list[Position]:
         qty = int(item.position)
         fx_rate_to_base = _get_fx_rate(c.currency, base_currency)
 
-        local_avg_cost = _safe_float(item.averageCost)
         local_market_price = _safe_float(item.marketPrice)
-        local_market_value = _safe_float(item.marketValue)
-        local_unrealized_pnl = _safe_float(item.unrealizedPNL)
-        local_realized_pnl = _safe_float(item.realizedPNL)
-
-        # IBKR averageCost is already expressed in the contract currency.
-        # Keep those native values and also materialize explicit base-currency
-        # fields so callers no longer need to guess what the old names mean.
-        base_avg_cost = local_avg_cost * fx_rate_to_base
         base_market_price = local_market_price * fx_rate_to_base
-        base_market_value = local_market_value * fx_rate_to_base
-        base_unrealized_pnl = local_unrealized_pnl * fx_rate_to_base
-        base_realized_pnl = local_realized_pnl * fx_rate_to_base
 
-        local_cost_basis = local_avg_cost * abs(qty)
-        base_cost_basis = base_avg_cost * abs(qty)
+        # IBKR portfolio marketValue and PnL fields are already reported in the
+        # account/base currency for non-base positions. Keep them as the source
+        # of truth, then derive local equivalents by inverting the FX rate.
+        base_market_value = _safe_float(item.marketValue)
+        base_unrealized_pnl = _safe_float(item.unrealizedPNL)
+        base_realized_pnl = _safe_float(item.realizedPNL)
+        base_cost_basis = base_market_value - base_unrealized_pnl
+        base_avg_cost = base_cost_basis / abs(qty) if qty else 0.0
+
+        local_divisor = fx_rate_to_base if fx_rate_to_base > 0 else 1.0
+        local_market_value = base_market_value / local_divisor
+        local_unrealized_pnl = base_unrealized_pnl / local_divisor
+        local_realized_pnl = base_realized_pnl / local_divisor
+        local_cost_basis = base_cost_basis / local_divisor
+        local_avg_cost = local_cost_basis / abs(qty) if qty else 0.0
         pct_return = (base_unrealized_pnl / base_cost_basis * 100) if base_cost_basis > 0 else 0.0
 
         positions.append(Position(

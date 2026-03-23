@@ -151,9 +151,9 @@ class IbkrPortfolioTests(unittest.TestCase):
             position=100,
             average_cost=10.0,
             market_price=12.0,
-            market_value=1200.0,
-            unrealized_pnl=200.0,
-            realized_pnl=50.0,
+            market_value=120.0,
+            unrealized_pnl=20.0,
+            realized_pnl=5.0,
         )
         ib = FakePortfolioIB([item])
 
@@ -172,5 +172,11 @@ class IbkrPortfolioTests(unittest.TestCase):
         self.assertEqual(position.local_unrealized_pnl, 200.0)
         self.assertEqual(position.base_unrealized_pnl, 20.0)
         self.assertEqual(position.unrealized_pnl, 20.0)
+        self.assertEqual(position.local_realized_pnl, 50.0)
+        self.assertEqual(position.base_realized_pnl, 5.0)
         self.assertEqual(position.base_cost_basis, 100.0)
         self.assertEqual(position.cost_basis, 100.0)
+        self.assertEqual(position.local_cost_basis, 1000.0)
+        self.assertEqual(position.local_avg_cost, 10.0)
+        self.assertEqual(position.base_avg_cost, 1.0)
+        self.assertEqual(position.avg_cost, 1.0)
